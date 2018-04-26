@@ -6,8 +6,8 @@ from datetime import datetime
 import time
 import traceback
 
-from .modules import default, fortnite, moderation
-from .modules.data import shop, meta
+from modules import default, fortnite, moderation
+from modules.data import shop, meta
 
 #constants
 SETTINGSLOC = "settings.json"
