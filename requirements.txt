@@ -3,4 +3,3 @@ discord.py
 beautifulsoup4
 html2text
 Pillow
-django
