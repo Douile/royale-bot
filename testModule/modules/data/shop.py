@@ -6,7 +6,7 @@ import requests
 from datetime import datetime
 from random import choice
 from . import fnbr
-from utils import arrays, integers, images
+from ...utils import arrays, integers, images
 
 FONT = "assets/burbank.ttf"
 
