@@ -5,10 +5,12 @@ import os.path
 from datetime import datetime
 import time
 import traceback
+import django
 
 from modules import default, fortnite, moderation
 from modules.data import shop, meta
 
+django.setup()
 #constants
 SETTINGSLOC = "settings.json"
 VERSION = "0.0.5"
