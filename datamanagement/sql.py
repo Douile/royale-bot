@@ -25,7 +25,7 @@ class Table:
         return string
     def alter(self):
         string = "ALTER TABLE IF EXISTS "+self.name
-        for column in columns:
+        for column in self.columns:
             string += " ALTER COLUMN IF EXISTS "
             string += column.name + " SET DATA TYPE"
             string += str(column)
