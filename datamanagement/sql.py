@@ -71,10 +71,10 @@ class Database(Postgres):
         super().__init__(url)
         self.setup_defaults()
     def setup_defaults(self):
-        self.run(str(ServerData))
-        self.run(str(ServerBackgrounds))
-        self.run(str(ServerChannels))
-        self.run(str(Cache))
+        self.run(str(ServerData()))
+        self.run(str(ServerBackgrounds()))
+        self.run(str(ServerChannels()))
+        self.run(str(Cache()))
 
     # server info
     def servers(self):
