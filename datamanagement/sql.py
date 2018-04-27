@@ -30,8 +30,8 @@ class Table:
             string += column.named()
             string += ","
             string += " ALTER COLUMN "
-            string += column.name + " SET DATA TYPE"
-            string += str(column)
+            string += column.name + " SET DATA TYPE "
+            string += column.type
             string += ","
 
         if string.endswith(","):
