@@ -31,7 +31,7 @@ class DefaultModule(Module):
                 if command.startswith(cmd) and isinstance(self.commands[cmd],Command) and cmd != 'help':
                     if self.commands[cmd].permission != None:
                         if self.commands[cmd].permission != 'admin':
-                            pcheck = checkPermissions(msg.channel.id,self.commands[cmd].permission,settings)
+                            pcheck = checkPermissions(msg.channel.id,self.commands[cmd].permission,settings['servers'][msg.server.id])
                         else:
                             pcheck = msg.author.server_permissions.administrator
                         if pcheck:
@@ -103,20 +103,21 @@ class SetChannel(Command):
     def run(self,msg,settings):
         self.reset()
         channelid = msg.channel.id
+        serverid = msg.server.id
         try:
             type = msg.content.split(" ")[1].lower()
         except IndexError:
             type = ""
         success = False
-        self.settings = {'channels':{}}
+        self.settings = settings
         if type == 'all':
             for channeltype in self.types:
-                self.settings['channels'][channeltype] = channelid
+                self.settings['servers'][serverid]['channels'][channeltype] = channelid
             success = True
         else:
             for channeltype in self.types:
                 if type == channeltype:
-                    self.settings['channels'][channeltype] = channelid
+                    self.settings['servers'][serverid]['channels'][channeltype] = channelid
                     success = True
         if success:
             self.content = '<@!{0}> Successfully set {2} channel to <#{1}>'.format(msg.author.id,channelid,type)
@@ -138,9 +139,9 @@ class ResetChannels(Command):
     def run(self,msg,settings):
         self.reset()
         serverid = msg.server.id
-        self.settings = {'channels':{}}
+        self.settings = settings
         for channeltype in self.types:
-            self.settings['channels'][channeltype] = None
+            self.settings['servers'][serverid][channeltype] = ''
         self.content = '<@!{0}> Successfully reset all channels'.format(msg.author.id)
 class Channels(Command):
     def __init__(self,types=[]):
@@ -150,15 +151,16 @@ class Channels(Command):
     def run(self,msg,settings):
         self.reset()
         serverid = msg.server.id
+        server = settings['servers'][serverid]
         name = '{0}\'s channels'.format(server['name'])
         self.embed = discord.Embed(title=name)
         self.embed.set_thumbnail(url=msg.server.icon_url)
         for channeltype in self.types:
-            if channeltype in settings['channels']:
-                if settings['channels'][channeltype] == None:
+            if channeltype in server['channels']:
+                if server['channels'][channeltype] == '':
                     value = 'Not set'
                 else:
-                    value = '<#{0}>'.format(settings['channels'][channeltype])
+                    value = '<#{0}>'.format(server['channels'][channeltype])
             else:
                 value = 'Not set (error)'
             self.embed.add_field(name=channeltype,value=value,inline=False)

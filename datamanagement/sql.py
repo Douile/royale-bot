@@ -42,10 +42,8 @@ class ServerData(Table):
         self.add_column("server_id",type="text",unique=True,not_null=True)
         self.add_column("server_name",type="text")
         self.add_column("last_help_msg",type="text")
-        self.add_column("last_help_channel",type="text")
-        self.add_column("next_shop",type="int")
-        self.add_column("latest_shop",type="text")
-        self.add_column("prefix",type="text")
+        self.add_column("last_help_channel",type="int")
+        self.add_column("next_shop",type="text")
 class ServerBackgrounds(Table):
     def __init__(self):
         super().__init__("server_backgrounds",True)
@@ -59,12 +57,6 @@ class ServerChannels(Table):
         self.add_column("server_id",type="text",not_null=True)
         self.add_column("channel_type",type="text",not_null=True)
         self.add_column("channel_id",type="text")
-class Cache(Table):
-    def __init__(self):
-        super().__init__("cache_data",True)
-        self.add_column("_id",primary_key=True)
-        self.add_column("type",type="text",not_null=True)
-        self.add_column("value",type="text")
 
 class Database(Postgres):
     def __init__(self,*,url):
@@ -74,17 +66,7 @@ class Database(Postgres):
         self.run(str(ServerData))
         self.run(str(ServerBackgrounds))
         self.run(str(ServerChannels))
-        self.run(str(Cache))
-
-    # server info
-    def servers(self):
-        info = self.all("SELECT server_id FROM server_info",back_as=dict,default=None)
-        server_ids = []
-        if info != None:
-            for server in info:
-                if 'server_id' in server:
-                    server_ids.append(server['server_id'])
-    def server_info(self,serverid,backgrounds=False,channels=False):
+    def server_info(self,serverid,backrounds=False,channels=False):
         info = self.one("SELECT * FROM server_data WHERE server_id=%(id)s",
             parameters={'id': serverid},
             back_as=dict,
@@ -94,9 +76,7 @@ class Database(Postgres):
             parameters={'id':serverid},
             back_as=dict,
             default=None)
-            info['backgrounds'] = []
-            for background in backgrounds_data:
-                info['backgrounds'].append(background['background_url'])
+            info['backgrounds'] = backgrounds_data
         else:
             info['backgrounds'] = None
         if channels:
@@ -104,15 +84,11 @@ class Database(Postgres):
             parameters={'id':serverid},
             back_as=dict,
             default=None)
-            info['channels'] = {}
-            for channel in channels_data:
-                info['channels'][channel['channel_type']] = channel['channel_id']
+            info['channels'] = channels_data
         else:
             info['channels'] = None
         return info
-    def set_server_info(self,server_id,server_name=None,last_help_msg=None,last_help_channel=None,next_shop=None,latest_shop=None,prefix=None):
-        if not self.is_server(server_id):
-            self.run("INSERT INTO server_info (server_id) VALUES (%(id)s)",parameters={'id':server_id})
+    def set_server_info(self,serverid,server_name=None,last_help_msg=None,last_help_channel=None,next_shop=None):
         if server_name != None:
             self.set_server_info_string(server_id,'server_name',server_name)
         if last_help_msg != None:
@@ -121,26 +97,12 @@ class Database(Postgres):
             self.set_server_info_string(server_id,'last_help_channel',last_help_channel)
         if next_shop != None:
             self.set_server_info_int(server_id,'next_shop',next_shop)
-        if latest_shop != None:
-            self.set_server_info_string(server_id,'latest_shop',latest_shop)
-        if prefix != None:
-            self.set_server_info_string(server_id,'prefix',prefix)
     def set_server_info_string(self,server_id,column,value):
         self.set_server_info_raw(server_id,column,value,"s")
     def set_server_info_int(self,server_id,column,value):
         self.set_server_info_raw(server_id,column,value,"i")
     def set_server_info_raw(self,server_id,column,value,type="s"):
         self.run("UPDATE server_info %(column)s=%(value){} WHERE server_id=%(id)s".format(type),parameters={'id':server_id,'column':column,'value':value})
-    def is_server(self,server_id):
-        data = self.one("SELECT _id FROM server_info WHERE server_id=%(id)s",parameters={'id':server_id},default=None)
-        exists = False
-        if data == None:
-            exists = False
-        else:
-            exists = True
-        return exists
-
-    # server backgrounds
     def add_server_background(self,server_id,background_url=None):
         self.run("INSERT INTO server_backgrounds (server_id,background_url) VALUES (%(id)s,%(url)s)",parameters={'id':server_id,'url':background_url})
     def reset_server_backgrounds(self,server_id):
@@ -149,8 +111,6 @@ class Database(Postgres):
         self.reset_server_backgrounds(server_info)
         for background in backgrounds:
             self.add_server_background(sever_id,background)
-
-    # server channels
     def set_server_channel(self,server_id,channel_type,channel_id=None):
         if channel_id == None:
             if is_server_channel(server_id,channel_type):
@@ -161,36 +121,10 @@ class Database(Postgres):
             else:
                 self.run("INSERT INTO server_channels (server_id,channel_type,channel_id) VALUES (%(id)s,%(type)s,%(channel)s)",parameters={'id':server_id,'type':channel_type,'channel':channel_id})
     def is_server_channel(self,server_id,channel_type):
-        data = self.one("SELECT _id FROM server_channels WHERE server_id=%(id)s AND channel_type=%(type)s",parameters={'id':server_id,'type':channel_type},default=None)
+        data = self.one("SELECT * FROM server_channels WHERE server_id=%(id)s AND channel_type=%(type)s",parameters={'id':server_id,'type':channel_type},default=None)
         exists = False
         if data == None:
             exists = False
         else:
             exists = True
         return exists
-
-    # cache data
-    def get_cache(self,type,once=False):
-        info = self.all("SELECT value FROM cache_data WHERE type=%(type)s",parameters={'type':type},default=None,back_as=dict)
-        if once:
-            cache = {}
-            if info != None:
-                for data in info:
-                    cache[data['type']] = data['value']
-        else:
-            cache = []
-            if info != None:
-                for data in info:
-                    cache.append(data['value'])
-        return cache
-    def set_cache(self,type,value,once=False):
-        params = {'value':value,'type':type}
-        if once:
-            if self.is_cache(type):
-                self.run("UPDATE cache_data value=%(value)s WHERE cache_type=%(type)s",parameters=params)
-            else:
-                self.run("INSERT INTO cache_data (type,value) VALUES (%(type)s,%(value)s)",parameters=params)
-        else:
-            self.run("INSERT INTO cache_data (type,value) VALUES (%(type)s,%(value)s)",parameters=params)
-    def is_cache(self,type):
-        info = self.one("SELECT _id FROM cache_data WHERE type=%(type)s",parameters=params)
