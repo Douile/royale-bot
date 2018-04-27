@@ -13,7 +13,7 @@ class Module:
                 if command.startswith(cmd) and isinstance(self.commands[cmd],Command):
                     if self.commands[cmd].permission != None:
                         if self.commands[cmd].permission != 'admin':
-                            pcheck = checkPermissions(msg.channel.id,self.commands[cmd].permission,settings['servers'][msg.server.id])
+                            pcheck = checkPermissions(msg.channel.id,self.commands[cmd].permission,settings)
                         else:
                             pcheck = msg.author.server_permissions.administrator
                         if pcheck:
@@ -49,7 +49,8 @@ class Command:
         return sets
 def checkPermissions(channel,type,settings):
     try:
-        if settings['channels'][type] == channel or settings['channels'][type] == '' or not type in settings['channels']:
+        channel_id = settings['channels'].get(type)
+        if channel_id == channel or channel_id == None:
             p = True
         else:
             p = False
