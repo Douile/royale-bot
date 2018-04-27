@@ -69,7 +69,7 @@ class Cache(Table):
 class Database(Postgres):
     def __init__(self,*,url):
         super().__init__(url)
-        self.setupDefaults()
+        self.setup_defaults()
     def setup_defaults(self):
         self.run(str(ServerData))
         self.run(str(ServerBackgrounds))
