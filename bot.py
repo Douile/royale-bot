@@ -2,51 +2,31 @@ import discord
 import asyncio
 import json
 import os.path
+import os.environ
 from datetime import datetime
 import time
 import traceback
 
 from modules import default, fortnite, moderation
 from modules.data import shop, meta
+from datamanagement import sql
+
+def getEnv(name,default=None):
+    value = os.environ.get(name,None)
+    if value == None:
+        if default == None:
+            value = input("Env variable not found, please enter {}: ".format(name))
+        else:
+            value = default
+    return value
 
 #constants
-SETTINGSLOC = "settings.json"
-VERSION = "0.0.6"
-
-# file handlng
-def readJson(fname):
-    try:
-        f = open(fname,"r")
-        c = f.read()
-        f.close()
-    except FileNotFoundError:
-        c = "{}"
-    return json.loads(c)
-def writeJson(fname,data={}):
-    f = open(fname,"w")
-    f.write(json.dumps(data))
-    f.close()
-def save(fname,data):
-    writeJson(fname,data)
-    return readJson(fname)
-def settingsDefaults(): # setup default settings
-    settings = readJson(SETTINGSLOC)
-    if not 'prefix' in settings:
-        settings['prefix'] = '!'
-    if not 'bot_token' in settings:
-        token = input("Enter your discord bot token (https://discordapp.com/developers/applications/me): ")
-        settings['bot_token'] = token
-    if not 'fnbr_key' in settings:
-        key = input("Enter your fnbr api key (https://fnbr.co/api/docs): ")
-        settings['fnbr_key'] = key
-    if not 'tn_key' in settings:
-        key = input("Enter your tn api key (https://fortnitetracker.com/site-api): ")
-        settings['tn_key'] = key
-    if not 'latest_shop' in settings:
-        settings['last_shop'] = ''
-    if not 'servers' in settings:
-        settings['servers'] = {}
-    save(SETTINGSLOC,settings)
+VERSION = "0.0.7"
+KEY_DISCORD = getEnv("KEY_DISCORD")
+KEY_FNBR = getEnv("KEY_FNBR")
+KEY_TRACKERNETWORK = getEnv("KEY_TRACKERNETWORK")
+DATABASE_URL = getEnv("DATABASE_URL")
+BOT_NAME = getEnv("BOT_NAME","FortniteData")
 
 def checkPermissions(channel,type,settings):
     try:
@@ -58,39 +38,6 @@ def checkPermissions(channel,type,settings):
         p = False
     return p
 
-def defaults(settings,serverid,msg,types=[]):
-    # {'name':msg.channel.server.name,'shop':'','stats':'','autoshop':'','last_help':{'msg':'','channel':''},'backgrounds':[]}
-    change = False
-    if not serverid in settings['servers']:
-        settings['servers'][serverid] = {}
-    if not 'name' in settings['servers'][serverid]:
-        settings['servers'][serverid]['name'] = msg.channel.server.name
-        change = True
-    elif settings['servers'][serverid]['name'] != msg.channel.server.name:
-        settings['servers'][serverid]['name'] = msg.channel.server.name
-        change = True
-    if not 'channels' in settings['servers'][serverid]:
-        settings['servers'][serverid]['channels'] = {}
-        for type in types:
-            settings['servers'][serverid]['channels'][type] = ''
-        change = True
-    for type in types:
-        if not type in settings['servers'][serverid]['channels']:
-            settings['servers'][serverid]['channels'][type] = ''
-            change = True
-    if not 'last_help' in settings['servers'][serverid]:
-        settings['servers'][serverid]['last_help'] = {}
-        change = True
-    if not 'msg' in settings['servers'][serverid]['last_help']:
-        settings['servers'][serverid]['last_help']['msg'] = ''
-        change = True
-    if not 'channel' in settings['servers'][serverid]['last_help']:
-        settings['servers'][serverid]['last_help']['channel'] = ''
-        change = True
-    if not 'backgrounds' in settings['servers'][serverid]:
-        settings['servers'][serverid]['backgrounds'] = ''
-        change = True
-    return settings, change
 
 class Command():
     def __init__(self):
@@ -150,18 +97,19 @@ def changes(original={},new={}):
     return changed
 
 
+
 client = discord.Client()
 client.queued_actions = []
+client.database = sql.Database(url=DATABASE_URL)
 
 @asyncio.coroutine
 def autoshop(): # add fnbr not accessable fallback
     yield from client.wait_until_ready()
     while not client.is_closed:
-        settings = readJson(SETTINGSLOC)
         shopdata = None
-        for serverid in settings['servers']:
-            server = settings['servers'][serverid]
-            if 'autoshop' in server['channels'] and server['channels']['autoshop'] != '':
+        for serverid in client.database.servers():
+            server = client.database.server_info(server_id,backgrounds=True,channels=True)
+            if 'autoshop' in server['channels']:
                 now = time.time()
                 nextshop = time.mktime(datetime.now().utctimetuple())
                 if 'nextshop' in server:
@@ -175,9 +123,8 @@ def autoshop(): # add fnbr not accessable fallback
                         file = shop.generate(shopdata,server['backgrounds'])
                     content = "Data from <https://fnbr.co/>"
                     yield from client.send_file(discord.Object(server['channels']['autoshop']),file,content=content)
-                    settings['servers'][serverid]['nextshop'] = time.mktime(rawtime.utctimetuple()) + (60*60*24)
-                    settings['latest_shop'] = file
-                    settings = save(SETTINGSLOC,settings)
+                    nextshoptime = round(time.mktime(rawtime.utctimetuple()) + (60*60*24))
+                    client.database.set_server_info(serverid,nextshop=nextshoptime,latest_shop=file)
         print("Autoshop now:{0} next:{1}".format(now,nextshop))
         yield from asyncio.sleep(60*15)
 
@@ -185,16 +132,14 @@ def autoshop(): # add fnbr not accessable fallback
 def autostatus():
     yield from client.wait_until_ready()
     while not client.is_closed:
-        settings = readJson(SETTINGSLOC)
-        try:
-            cache = settings['status_cache']
-        except KeyError:
+        cache_raw = client.database.get_cache("status",once=True)
+        if 'status' in cache_raw:
+            cache = json.loads(cache_raw['status'])
+        else:
             cache = {}
         data = meta.getStatus()
         changed = changes(cache,data)
-        cache = data
-        settings['status_cache'] = cache
-        settings = save(SETTINGSLOC,settings)
+        client.database.set_cache("status",json.dumps(data),once=True)
         servicechange = []
         for s in changed['services']:
             if changed['services'][s] == True:
@@ -207,9 +152,9 @@ def autostatus():
         elif changed['online'] == True or changed['message'] == True:
             embed = fortnite.StatusEmbed(data['online'],data['message'])
         if embed != None:
-            for serverid in settings['servers']:
-                server = settings['servers'][serverid]
-                if server['channels']['autostatus'] != '':
+            for serverid in client.database.servers():
+                server = client.database.server_info(serverid,channels=True)
+                if 'autostatus' in server['channels']:
                     yield from client.send_message(discord.Object(server['channels']['autostatus']),embed=embed)
         yield from asyncio.sleep(60*2)
 
@@ -217,10 +162,8 @@ def autostatus():
 def autonews():
     yield from client.wait_until_ready()
     while not client.is_closed:
-        settings = readJson(SETTINGSLOC)
-        try:
-            cache = settings['news_cache']
-        except KeyError:
+        cache = client.database.get_cache("news",once=False)
+        if cache == None:
             cache = []
         data = meta.getNews('en')
         used = []
@@ -228,14 +171,12 @@ def autonews():
         for msg in data['messages']:
             if not msg['title'] in cache:
                 embeds.append(fortnite.NewsEmbed(msg,data['updated']))
-        settings['news_cache'] = cache
-        settings = save(SETTINGSLOC,settings)
-        for serverid in settings['servers']:
-            server = settings['servers'][serverid]
+                database.set_cache("news",msg['title'],once=False)
+        for serverid in client.database.servers():
+            server = client.database.server_info(serverid,channels=True)
             if 'autonews' in server['channels']:
-                if server['channels']['autonews'] != '':
-                    for embed in embeds:
-                        yield from client.send_message(discord.Object(server['channels']['autonews']),embed=embed)
+                for embed in embeds:
+                    yield from client.send_message(discord.Object(server['channels']['autonews']),embed=embed)
         yield from asyncio.sleep(60*10)
 
 @asyncio.coroutine
@@ -256,34 +197,48 @@ def handle_queue():
 @asyncio.coroutine
 def on_ready():
     print("--Logged in--\n{0}\n{1}\n--End login info--".format(client.user.name,client.user.id))
-    yield from client.edit_profile(username="FortniteData")
+    yield from client.edit_profile(username=BOT_NAME)
     yield from client.change_presence(game=discord.Game(name="Serving you since 2018 (!help)",type=0),status="online",afk=False)
 
 
 @client.event
 @asyncio.coroutine
+def on_server_join(server):
+    client.database.set_server_info(server.id,server_name=server.name)
+
+
+@client.event
+@asyncio.coroutine
+def on_server_update(before,after):
+    client.database.set_server_info(after.id,server_name=after.name)
+
+
+@client.event
+@asyncio.coroutine
 def on_message(msg):
-    settings = readJson(SETTINGSLOC)
-    if not msg.author.bot and msg.content.startswith(settings['prefix']):
-        command = msg.content[len(settings['prefix']):]
+    settings = client.database.server_info(msg.server.id)
+    prefix = settings['prefix']
+    if prefix == None:
+        prefix = "!"
+    if not msg.author.bot and msg.content.startswith(prefix):
+        command = msg.content[len(prefix):]
         yield from commandHandler(command,msg)
 @client.event
 @asyncio.coroutine
 def on_message_edit(before,msg):
-    settings = readJson(SETTINGSLOC)
-    if not msg.author.bot and msg.content.startswith(settings['prefix']):
-        command = msg.content[len(settings['prefix']):]
+    settings = client.database.server_info(msg.server.id)
+    prefix = settings['prefix']
+    if prefix == None:
+        prefix = "!"
+    if not msg.author.bot and msg.content.startswith(prefix):
+        command = msg.content[len(prefix):]
         yield from commandHandler(command,msg)
 
 @asyncio.coroutine
 def commandHandler(command,msg):
     command = command.lower()
-    settings = readJson(SETTINGSLOC)
     serverid = msg.server.id
-    settings,change = defaults(settings,serverid,msg,defaultmodule.types)
-    if change:
-        settings = save(SETTINGSLOC,settings)
-    serversettings = settings['servers'][serverid]
+    serversettings = client.database.server_info(serverid,channels=True)
     output = Command()
     admin = msg.author.server_permissions.administrator
     if command.startswith("setpresence"):
@@ -299,14 +254,13 @@ def commandHandler(command,msg):
         else:
             yield from noPermission(msg,None,settings)
     elif command.startswith("help"):
-        if 'last_help' in serversettings and serversettings['last_help'] != {}:
-            if 'msg' in serversettings['last_help'] and 'channel' in serversettings['last_help'] and serversettings['last_help']['msg'] != '' and serversettings['last_help']['channel'] != '':
-                object = discord.Object(serversettings['last_help']['msg'])
-                object.channel = discord.Object(serversettings['last_help']['channel'])
-                try:
-                    yield from client.delete_message(object)
-                except:
-                    pass
+        if 'last_help_msg' in serversettings and 'last_help_channel' in serversettings:
+            object = discord.Object(serversettings['last_help_msg'])
+            object.channel = discord.Object(serversettings['last_help_channel'])
+            try:
+                yield from client.delete_message(object)
+            except:
+                pass
         if admin:
             output = defaultmodule.commands['adminhelp']
             output.run(msg,settings)
@@ -317,11 +271,20 @@ def commandHandler(command,msg):
         output = defaultmodule.run(output,command,msg,settings)
         if output.content == None and output.embed == None and output.embeds == None:
             for i in range(0,len(cmodules)):
-                output = cmodules[i]._run(output,command,msg,settings)
+                output = cmodules[i]._run(output,command,msg,serversettings)
         if len(output.queue) > 0:
             client.queued_actions += output.queue
             print('Added queued action')
-    settings = save(SETTINGSLOC,output.changeSettings(settings))
+    if output.settings != None:
+        if 'channels' in output.settings:
+            for type in output.settings['channels']:
+                client.database.set_server_channel(serverid,type,output.settings['channels'][type])
+            output.settings.pop('channels')
+        if 'backgrounds' in output.settings:
+            client.database.set_server_backgrounds(serverid,backgrounds=output.settings.get('backgrounds'))
+            output.settings.pop('backgrounds')
+        client.database.set_server_info(serverid,*output.settings)
+
     if output.typing == True:
         yield from client.send_typing(msg.channel)
     if output.noPermission != None:
@@ -343,8 +306,7 @@ def commandHandler(command,msg):
             response = yield from client.send_message(msg.channel,content='Sorry there was an error sending response')
         yield from client.delete_message(msg)
     if isinstance(output,default.Help) or isinstance(output,default.AdminHelp):
-        settings['servers'][serverid]['last_help'] = {'msg':response.id,'channel':response.channel.id}
-        settings = save(SETTINGSLOC,settings)
+        client.database.set_server_info(serverid,last_help_msg=response.id,last_help_channel=response.channel.id)
     if output.shutdown == True:
         yield from client.close()
 @asyncio.coroutine
@@ -365,13 +327,10 @@ def commandStatus(msg,settings):
     '<@!{0}> bot v{1} is online!'.format(msg.author.id,VERSION)
 
 
-settingsDefaults()
-settings = readJson(SETTINGSLOC)
-
 cmodules = [fortnite.FortniteModule(),moderation.ModerationModule()]
 defaultmodule = default.DefaultModule(cmodules,VERSION)
 client.loop.create_task(autoshop())
 client.loop.create_task(autostatus())
 client.loop.create_task(autonews())
 client.loop.create_task(handle_queue())
-client.run(settings['bot_token'])
+client.run(KEY_DISCORD)

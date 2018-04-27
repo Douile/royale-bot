@@ -41,8 +41,7 @@ class Shop(Command):
                 self.typing = True
                 self.file = file
                 self.content = "data from <https://fnbr.co>"
-                self.settings = settings
-                self.settings['latest_shop'] = file
+                self.settings = {'latest_shop': file}
             else:
                 self.content = "Sorry there was an api error: {0}. All data from <https://fnbr.co>".format(shopdata.status)
                 if 'latest_shop' in settings and settings['latest_shop'] != '':
@@ -87,8 +86,7 @@ class SetBackgrounds(Command):
             backgrounds = []
         else:
             backgrounds = urls[1:]
-        self.settings = settings
-        self.settings['servers'][msg.server.id]['backgrounds'] = backgrounds
+        self.settings = {'backgrounds': backgrounds}
         self.content = 'set'
 class News(Command):
     def __init__(self):
