@@ -8,9 +8,10 @@ class Table:
     def add_column(self, name, type='int', unique=False, not_null=False, primary_key=False):
         self.columns.append(Column(name,type,unique,not_null,primary_key))
     def __str__(self):
-        string = "CREATE TABLE %s" % self.name
+        string = "CREATE TABLE"
         if self.if_not_exists:
             string += " IF NOT EXISTS"
+        string += " "+self.name
         if len(self.columns) > 0:
             string += " ("
             for column in self.columns:
