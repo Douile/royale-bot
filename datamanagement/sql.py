@@ -95,16 +95,14 @@ class Database(Postgres):
         if backgrounds:
             backgrounds_data = self.all("SELECT * FROM server_backgrounds WHERE server_id=%(id)s",
             parameters={'id':serverid},
-            back_as=dict,
-            default=None)
+            back_as=dict)
             info['backgrounds'] = []
             for background in backgrounds_data:
                 info['backgrounds'].append(background['background_url'])
         if channels:
             channels_data = self.all("SELECT * FROM server_channels WHERE server_id=%(id)s",
             parameters={'id':serverid},
-            back_as=dict,
-            default=None)
+            back_as=dict)
             info['channels'] = {}
             for channel in channels_data:
                 info['channels'][channel['channel_type']] = channel['channel_id']
@@ -170,7 +168,7 @@ class Database(Postgres):
 
     # cache data
     def get_cache(self,type,once=False):
-        info = self.all("SELECT value FROM cache_data WHERE type=%(type)s",parameters={'type':type},default=None,back_as=dict)
+        info = self.all("SELECT value FROM cache_data WHERE type=%(type)s",parameters={'type':type},back_as=dict)
         if once:
             cache = {}
             if info != None:
