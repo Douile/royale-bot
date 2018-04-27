@@ -9,7 +9,7 @@ class Table:
         self.columns.append(Column(name,type,unique,not_null,primary_key))
     def __str__(self):
         if len(self.columns) > 0:
-            string += " ("
+            string = " ("
             for column in self.columns:
                 string += str(column) + ","
             if string.endswith(","):
