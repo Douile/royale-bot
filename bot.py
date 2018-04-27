@@ -171,7 +171,7 @@ def autonews():
         for msg in data['messages']:
             if not msg['title'] in cache:
                 embeds.append(fortnite.NewsEmbed(msg,data['updated']))
-                database.set_cache("news",msg['title'],once=False)
+                client.database.set_cache("news",msg['title'],once=False)
         for serverid in client.database.servers():
             server = client.database.server_info(serverid,channels=True)
             if 'autonews' in server['channels']:

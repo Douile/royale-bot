@@ -190,4 +190,4 @@ class Database(Postgres):
         else:
             self.run("INSERT INTO cache_data (type,value) VALUES (%(type)s,%(value)s)",parameters=params)
     def is_cache(self,type):
-        info = self.one("SELECT _id FROM cache_data WHERE type=%(type)s",parameters=params)
+        info = self.one("SELECT _id FROM cache_data WHERE type=%(type)s",parameters={'type':type})
