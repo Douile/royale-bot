@@ -100,8 +100,6 @@ class Database(Postgres):
             info['backgrounds'] = []
             for background in backgrounds_data:
                 info['backgrounds'].append(background['background_url'])
-        else:
-            info['backgrounds'] = None
         if channels:
             channels_data = self.all("SELECT * FROM server_channels WHERE server_id=%(id)s",
             parameters={'id':serverid},
@@ -110,8 +108,6 @@ class Database(Postgres):
             info['channels'] = {}
             for channel in channels_data:
                 info['channels'][channel['channel_type']] = channel['channel_id']
-        else:
-            info['channels'] = None
         return info
     def set_server_info(self,server_id,server_name=None,last_help_msg=None,last_help_channel=None,next_shop=None,latest_shop=None,prefix=None):
         if not self.is_server(server_id):
