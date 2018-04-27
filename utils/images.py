@@ -1,4 +1,3 @@
-from PIL import Image
 import math
 
 def radial_gradient(draw,width,height,color_inner,color_outer): # will overite everything in image

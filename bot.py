@@ -11,7 +11,7 @@ from modules.data import shop, meta
 
 #constants
 SETTINGSLOC = "settings.json"
-VERSION = "0.0.5"
+VERSION = "0.0.6"
 
 # file handlng
 def readJson(fname):
@@ -71,6 +71,8 @@ def defaults(settings,serverid,msg,types=[]):
         change = True
     if not 'channels' in settings['servers'][serverid]:
         settings['servers'][serverid]['channels'] = {}
+        for type in types:
+            settings['servers'][serverid]['channels'][type] = ''
         change = True
     for type in types:
         if not type in settings['servers'][serverid]['channels']:
@@ -278,7 +280,7 @@ def commandHandler(command,msg):
     command = command.lower()
     settings = readJson(SETTINGSLOC)
     serverid = msg.server.id
-    settings,change = defaults(settings,serverid,msg)
+    settings,change = defaults(settings,serverid,msg,defaultmodule.types)
     if change:
         settings = save(SETTINGSLOC,settings)
     serversettings = settings['servers'][serverid]

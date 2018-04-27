@@ -1,4 +1,5 @@
 import requests
+from utils import strings
 
 BASEURL = "https://api.fortnitetracker.com/v1"
 
@@ -13,7 +14,7 @@ class APIRequest():
     def parseArguments(self):
         args = ""
         for a in self.arguments:
-            args += uriencode(a) + "=" + uriencode(self.arguments[a]) + "&"
+            args += strings.uriencode(a) + "=" + strings.uriencode(self.arguments[a]) + "&"
         if len(args) > 0:
             args = "?" + args
         return args
