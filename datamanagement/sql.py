@@ -26,13 +26,14 @@ class Table:
     def alter(self):
         string = "ALTER TABLE IF EXISTS "+self.name
         for column in self.columns:
-            string += " ALTER COLUMN IF EXISTS "
-            string += column.name + " SET DATA TYPE"
-            string += str(column)
-            string += ","
             string += " ADD COLUMN IF NOT EXISTS "
             string += column.named()
             string += ","
+            string += " ALTER COLUMN "
+            string += column.name + " SET DATA TYPE"
+            string += str(column)
+            string += ","
+
         if string.endswith(","):
             string = string[0:-1]
         return string
