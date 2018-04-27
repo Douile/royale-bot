@@ -16,6 +16,8 @@ class Table:
             string += " ("
             for column in self.columns:
                 string += str(column) + ","
+            if string.endsWith(","):
+                string = string[0:-1]
             string += ")"
         return string
 
