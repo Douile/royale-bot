@@ -8,15 +8,15 @@ class Table:
     def add_column(self, name, type='int', unique=False, not_null=False, primary_key=False):
         self.columns.append(Column(name,type,unique,not_null,primary_key))
     def __str__(self):
-        str = "CREATE TABLE %s" % self.name
+        string = "CREATE TABLE %s" % self.name
         if self.if_not_exists:
-            str += " IF NOT EXISTS"
+            string += " IF NOT EXISTS"
         if len(self.columns) > 0:
-            str += " ("
+            string += " ("
             for column in self.columns:
-                str += str(column) + ","
-            str += ")"
-        return str
+                string += str(column) + ","
+            string += ")"
+        return string
 
 class Column:
     def __init__(self, name, type='int', unique=False, not_null=False, primary_key=False):
@@ -26,14 +26,14 @@ class Column:
         self.not_null = not_null
         self.primary_key = primary_key
     def __str__(self):
-        str = "%s %s" % (self.name, self.type)
+        string = "%s %s" % (self.name, self.type)
         if self.unique:
-            str += " UNIQUE"
+            string += " UNIQUE"
         if self.not_null:
-            str += " NOT NULL"
+            string += " NOT NULL"
         if self.primary_key:
-            str += " PRIMARY KEY"
-        return str
+            string += " PRIMARY KEY"
+        return string
 
 class ServerData(Table):
     def __init__(self):
