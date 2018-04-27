@@ -11,7 +11,7 @@ class Table:
         if len(self.columns) > 0:
             string = " ("
             for column in self.columns:
-                string += str(column) + ","
+                string += column.named() + ","
             if string.endswith(","):
                 string = string[0:-1]
             string += ")"
@@ -24,10 +24,17 @@ class Table:
         string += str(self)
         return string
     def alter(self):
-        string = "ALTER TABLE IF EXISTS"
-        string += " "+self.name
-        string += " SET SCHEMA"
-        string += str(self)
+        string = "ALTER TABLE IF EXISTS "+self.name
+        for column in columns:
+            string += " ALTER COLUMN IF EXISTS "
+            string += column.name + " SET DATA TYPE"
+            string += str(column)
+            string += ","
+            string += " ADD COLUMN IF NOT EXISTS "
+            string += column.named()
+            string += ","
+        if string.endswith(","):
+            string = string[0:-1]
         return string
 
 
@@ -39,7 +46,7 @@ class Column:
         self.not_null = not_null
         self.primary_key = primary_key
     def __str__(self):
-        string = "%s %s" % (self.name, self.type)
+        string = " "+self.type
         if self.unique:
             string += " UNIQUE"
         if self.not_null:
@@ -47,6 +54,8 @@ class Column:
         if self.primary_key:
             string += " PRIMARY KEY"
         return string
+    def named(self):
+        return self.name+str(self)
 
 class ServerData(Table):
     def __init__(self):
