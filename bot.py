@@ -1,8 +1,8 @@
 import discord
 import asyncio
 import json
+import os
 import os.path
-import os.environ
 from datetime import datetime
 import time
 import traceback
