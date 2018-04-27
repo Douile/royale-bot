@@ -8,10 +8,6 @@ class Table:
     def add_column(self, name, type='int', unique=False, not_null=False, primary_key=False):
         self.columns.append(Column(name,type,unique,not_null,primary_key))
     def __str__(self):
-        string = "CREATE TABLE"
-        if self.if_not_exists:
-            string += " IF NOT EXISTS"
-        string += " "+self.name
         if len(self.columns) > 0:
             string += " ("
             for column in self.columns:
@@ -20,6 +16,20 @@ class Table:
                 string = string[0:-1]
             string += ")"
         return string
+    def create(self):
+        string = "CREATE TABLE"
+        if self.if_not_exists:
+            string += " IF NOT EXISTS"
+        string += " "+self.name
+        string += str(self)
+        return string
+    def alter(self):
+        string = "ALTER TABLE IF EXISTS"
+        string += " "+self.name
+        string += " SET SCHEMA"
+        string += str(self)
+        return string
+
 
 class Column:
     def __init__(self, name, type='int', unique=False, not_null=False, primary_key=False):
@@ -74,10 +84,14 @@ class Database(Postgres):
         super().__init__(url)
         self.setup_defaults()
     def setup_defaults(self):
-        self.run(str(ServerData()))
-        self.run(str(ServerBackgrounds()))
-        self.run(str(ServerChannels()))
-        self.run(str(Cache()))
+        self.run(ServerData().create())
+        self.run(ServerData().alter())
+        self.run(ServerBackgrounds().create())
+        self.run(ServerBackgrounds().alter())
+        self.run(ServerChannels().create())
+        self.run(ServerChannels().alter())
+        self.run(Cache().create())
+        self.run(Cache().alter())
 
     # server info
     def servers(self):
