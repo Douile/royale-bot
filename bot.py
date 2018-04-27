@@ -217,7 +217,7 @@ def on_server_update(before,after):
 @asyncio.coroutine
 def on_message(msg):
     settings = client.database.server_info(msg.server.id)
-    prefix = settings['prefix']
+    prefix = settings.get("prefix")
     if prefix == None:
         prefix = "!"
     if not msg.author.bot and msg.content.startswith(prefix):
