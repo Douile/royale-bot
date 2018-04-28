@@ -274,7 +274,7 @@ def commandHandler(command,msg):
             output = defaultmodule.commands['help']
             output.run(msg,settings)
     else:
-        output = defaultmodule.run(output,command,msg,settings)
+        output = defaultmodule.run(output,command,msg,serversettings)
         if output.content == None and output.embed == None and output.embeds == None:
             for i in range(0,len(cmodules)):
                 output = cmodules[i]._run(output,command,msg,serversettings)
