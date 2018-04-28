@@ -202,7 +202,7 @@ class HelpEmbed(discord.Embed):
             is_commands = True
         if self.category == None:
             categories = {}
-            for module in self.modules:
+            for module in modules:
                 if module.category != None:
                     categories[module.category] = module.description
             for category in categories:
