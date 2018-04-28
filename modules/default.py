@@ -160,7 +160,7 @@ class SetPrefix(Command):
         try:
             prefix = msg.content.split(" ")[1]
             try:
-                if msg.content.split(" ")[2] = '':
+                if msg.content.split(" ")[2] == '':
                     prefix += ' '
             except IndexError:
                 pass
