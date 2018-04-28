@@ -197,7 +197,7 @@ class HelpEmbed(discord.Embed):
         is_commands = False
         for command in commands:
             description = commands[command]
-            cmd = "{0}{1}".format(prefix,command)
+            cmd = "{0}{1}".format(self.prefix,command)
             self.add_field(name=cmd,value=description,inline=False)
             is_commands = True
         if category == None:
