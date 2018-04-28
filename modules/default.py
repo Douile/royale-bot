@@ -152,7 +152,7 @@ class Channels(Command):
     def run(self,msg,settings):
         self.reset()
         serverid = msg.server.id
-        name = '{0}\'s channels'.format(server['name'])
+        name = '{0}\'s channels'.format(settings.get('name',''))
         self.embed = discord.Embed(title=name)
         self.embed.set_thumbnail(url=msg.server.icon_url)
         for channeltype in self.types:
