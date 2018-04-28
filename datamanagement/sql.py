@@ -71,7 +71,7 @@ class Column:
 class ServerData(Table):
     def __init__(self):
         super().__init__("server_data",True)
-        self.add_column("_id",primary_key=True,generate=True)
+        self.add_column("_id",type="BIGSERIAL",primary_key=True)
         self.add_column("server_id",type="text",unique=True,not_null=True)
         self.add_column("server_name",type="text")
         self.add_column("last_help_msg",type="text")
@@ -82,20 +82,20 @@ class ServerData(Table):
 class ServerBackgrounds(Table):
     def __init__(self):
         super().__init__("server_backgrounds",True)
-        self.add_column("_id",primary_key=True,generate=True)
+        self.add_column("_id",type="BIGSERIAL",primary_key=True)
         self.add_column("server_id",type="text",not_null=True)
         self.add_column("background_url",type="text")
 class ServerChannels(Table):
     def __init__(self):
         super().__init__("server_channels",True)
-        self.add_column("_id",primary_key=True,generate=True)
+        self.add_column("_id",type="BIGSERIAL",primary_key=True)
         self.add_column("server_id",type="text",not_null=True)
         self.add_column("channel_type",type="text",not_null=True)
         self.add_column("channel_id",type="text")
 class Cache(Table):
     def __init__(self):
         super().__init__("cache_data",True)
-        self.add_column("_id",primary_key=True,generate=True)
+        self.add_column("_id",type="BIGSERIAL",primary_key=True)
         self.add_column("type",type="text",not_null=True)
         self.add_column("value",type="text")
 
