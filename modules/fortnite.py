@@ -35,6 +35,8 @@ class Shop(Command):
                 if now > tommorow or not os.path.isfile(shop.filename(rawtime)):
                     if 'backgrounds' in settings:
                         backgrounds = settings['backgrounds']
+                    else:
+                        backgrounds = []
                     file = shop.generate(shopdata,backgrounds,msg.server.id)
                 else:
                     file = shop.filename(rawtime)
