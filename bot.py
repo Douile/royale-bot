@@ -271,10 +271,10 @@ def commandHandler(command,msg):
                 pass
         if admin:
             output = defaultmodule.commands['adminhelp']
-            output.run(msg,serversettings)
+            output.run(msg[len(settings.get('prefix','!')):],msg,serversettings)
         else:
             output = defaultmodule.commands['help']
-            output.run(msg,serversettings)
+            output.run(msg[len(settings.get('prefix','!')):],msg,serversettings)
     else:
         output = defaultmodule.run(output,command,msg,serversettings)
         if output.content == None and output.embed == None and output.embeds == None:
