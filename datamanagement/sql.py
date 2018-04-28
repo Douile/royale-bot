@@ -218,7 +218,7 @@ class Database(Postgres):
             cache = []
             if info != None:
                 for data in info:
-                    cache.append(data['value'])
+                    cache.append(data)
         return cache
     def set_cache(self,type,value,once=False):
         params = {'value':value,'type':type}
