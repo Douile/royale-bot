@@ -7,10 +7,10 @@ import os.path
 import discord
 
 class FortniteModule(Module):
-    def __init__(self,fnbr_key='',tn_key=''):
+    def __init__(self,fnbr_key='',tn_key='',loop=None):
         super().__init__(name="Fortnite",description="Commands related to fortnite",category="fortnite")
         self.commands = {
-            'shop': Shop(fnbr_key),
+            'shop': Shop(fnbr_key,loop),
             'stats': Stats(tn_key),
             'setbackground': SetBackgrounds(),
             'news': News(),
@@ -19,10 +19,11 @@ class FortniteModule(Module):
         }
         self.types = ['stats','shop','news','status','autoshop','autostatus','autonews']
 class Shop(Command):
-    def __init__(self,fnbr_key):
+    def __init__(self,fnbr_key,loop):
         super().__init__(name="shop",description='Print an image of today\'s fortnite shop. `!shop`')
         self.permission = 'shop'
         self.fnbr_key = fnbr_key
+        self.loop = loop
     def run(self,command,msg,settings):
         self.reset()
         try:
@@ -37,7 +38,8 @@ class Shop(Command):
                         backgrounds = settings['backgrounds']
                     else:
                         backgrounds = []
-                    file = yield from shop.generate(shopdata,backgrounds,msg.server.id)
+                    print('Generating shop')
+                    file = self.loop.run_until_complete(shop.generate(shopdata,backgrounds,msg.server.id))
                 else:
                     file = shop.filename(rawtime)
                 self.typing = True
