@@ -104,21 +104,40 @@ class AdminHelp(Command):
         prefix = settings.get('prefix','!')
         if prefix == None:
             prefix = "!"
+        try:
+            category = msg.content.split(" ")[1].lower()
+        except IndexError:
+            category = None
         commands = {}
         for module in self.modules:
-            for command in module.commands:
-                cmd = module.commands[command]
-                if cmd.name != '':
-                    if cmd.description != '':
-                        commands[command] = cmd.description
-                    else:
-                        commands[command] = 'Description not set'
+            if module.category == category:
+                for command in module.commands:
+                    cmd = module.commands[command]
+                    if cmd.name != '':
+                        if cmd.description != '':
+                            commands[command] = cmd.description
+                        else:
+                            commands[command] = 'Description not set'
         self.embed = discord.Embed(title="Help",type="rich",color=0x2ede2e)
         self.embed.set_thumbnail(url=msg.server.icon_url)
+        is_commands = False
         for command in commands:
             description = commands[command]
             cmd = "{0}{1}".format(prefix,command)
             self.embed.add_field(name=cmd,value=description,inline=False)
+            is_commands = True
+        if category == None:
+            categories = {}
+            for module in self.modules:
+                if module.category != None:
+                    categories[module.category] = module.description
+            for category in categories:
+                title = "{0}help {1}".format(prefix,category)
+                description = categories[category]
+                self.embed.add_field(name=title,value=description,inline=False)
+        if category != None and is_commands == False:
+            description = "You can find categories using {0}help".format(prefix)
+            self.embed.add_field(name="No commands in this category",value=description,inline=False)
 class SetChannel(Command):
     def __init__(self,types=[]):
         self.types = types
