@@ -166,5 +166,5 @@ class Channels(Command):
                 else:
                     value = '<#{0}>'.format(settings['channels'][channeltype])
             else:
-                value = 'Not set (error)'
+                value = 'Not set'
             self.embed.add_field(name=channeltype,value=value,inline=False)
