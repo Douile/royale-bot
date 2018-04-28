@@ -112,7 +112,7 @@ class Database(Postgres):
         self.run_unsafe(ServerChannels().alter())
         self.run_unsafe(Cache().create())
         self.run_unsafe(Cache().alter())
-    def run_unsafe(*args):
+    def run_unsafe(self,*args):
         try:
             self.run(*args)
         except:
