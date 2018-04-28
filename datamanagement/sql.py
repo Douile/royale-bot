@@ -1,12 +1,13 @@
 from postgres import Postgres
+import traceback
 
 class Table:
     def __init__(self,name,if_not_exists=False):
         self.name = name
         self.if_not_exists = if_not_exists
         self.columns = []
-    def add_column(self, name, type='int', unique=False, not_null=False, primary_key=False):
-        self.columns.append(Column(name,type,unique,not_null,primary_key))
+    def add_column(self, name, type='int', unique=False, not_null=False, primary_key=False,generate=False):
+        self.columns.append(Column(name,type,unique,not_null,primary_key,generate))
     def __str__(self):
         if len(self.columns) > 0:
             string = " ("
@@ -111,6 +112,11 @@ class Database(Postgres):
         self.run(ServerChannels().alter())
         self.run(Cache().create())
         self.run(Cache().alter())
+    def run_unsafe(*args):
+        try:
+            self.run(*args)
+        except:
+            traceback.print_exc()
 
     # server info
     def servers(self):
