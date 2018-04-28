@@ -39,7 +39,7 @@ class Shop(Command):
                     else:
                         backgrounds = []
                     print('Generating shop')
-                    file = self.loop.run_until_complete(shop.generate(shopdata,backgrounds,msg.server.id))
+                    file = self.loop.ensure_future(shop.generate(shopdata,backgrounds,msg.server.id))
                 else:
                     file = shop.filename(rawtime)
                 self.typing = True
