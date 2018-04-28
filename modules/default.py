@@ -1,4 +1,4 @@
-from .module import Module, Command, checkPermissions, QueueAction
+from .module import Module, Command, checkPermissions, QueueAction, get_prefix
 import discord
 
 class DefaultModule(Module):
@@ -28,7 +28,7 @@ class DefaultModule(Module):
                 self.commands['help'].run(msg,settings)
                 output = self.commands['help']
         else:
-            curcommand = msg.content[len(settings.get('prefix','!')):]
+            curcommand = msg.content[len(get_prefix('settings')):]
             for cmd in self.commands:
                 if command.startswith(cmd) and isinstance(self.commands[cmd],Command) and cmd != 'help':
                     if self.commands[cmd].permission != None:
