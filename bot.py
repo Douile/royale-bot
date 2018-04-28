@@ -346,8 +346,9 @@ cmodules = [fortnite.FortniteModule(KEY_FNBR,KEY_TRACKERNETWORK),moderation.Mode
 defaultmodule = default.DefaultModule(cmodules,VERSION)
 
 def sigterm(a,b):
-    client.close()
-    return True
+    future = asyncio.run_coroutine_threadsafe(client.logout(), client.loop)
+    future.result()
+    client.loop.call_soon_threadsafe(client.loop.close)
 signal.signal(signal.SIGTERM,lambda a,b: client.close())
 client.loop.create_task(autoshop(KEY_FNBR))
 client.loop.create_task(autostatus())
