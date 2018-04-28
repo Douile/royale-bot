@@ -3,6 +3,7 @@ import asyncio
 import json
 import os
 import os.path
+import signal
 from datetime import datetime
 import time
 import traceback
@@ -342,6 +343,8 @@ def commandStatus(msg,settings):
 
 cmodules = [fortnite.FortniteModule(KEY_FNBR,KEY_TRACKERNETWORK),moderation.ModerationModule()]
 defaultmodule = default.DefaultModule(cmodules,VERSION)
+
+signal.signal(signal.SIGTERM,client.close)
 client.loop.create_task(autoshop(KEY_FNBR))
 client.loop.create_task(autostatus())
 client.loop.create_task(autonews())
