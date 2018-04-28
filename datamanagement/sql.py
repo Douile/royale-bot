@@ -120,7 +120,7 @@ class Database(Postgres):
 
     # server info
     def servers(self):
-        info = self.all("SELECT server_id FROM server_info",back_as=dict)
+        info = self.all("SELECT server_id FROM server_data",back_as=dict)
         server_ids = []
         for server in info:
             if 'server_id' in server:
