@@ -33,9 +33,8 @@ class Shop(Command):
                 now = time.mktime(datetime.utcnow().utctimetuple())
                 tommorow = rtime + (60*60*24)
                 if now > tommorow or not os.path.isfile(shop.filename(rawtime)):
-                    serversettings = settings['servers'][msg.server.id]
-                    if 'backgrounds' in serversettings:
-                        backgrounds = serversettings['backgrounds']
+                    if 'backgrounds' in settings:
+                        backgrounds = settings['backgrounds']
                     file = shop.generate(shopdata,backgrounds,msg.server.id)
                 else:
                     file = shop.filename(rawtime)
