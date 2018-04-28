@@ -15,7 +15,8 @@ class DefaultModule(Module):
             'adminhelp': AdminHelp(self.modules),
             'setchannel': SetChannel(self.types),
             'resetchannels': ResetChannels(self.types),
-            'channels': Channels(self.types)
+            'channels': Channels(self.types),
+            'setprefix': SetPrefix()
         }
     def run(self,empty,command,msg,settings):
         output = empty
@@ -183,4 +184,3 @@ class SetPrefix(Command):
             self.settings = {'prefix':prefix}
         else:
             self.content = '<@!{0}> Please enter a valid prefix'.format(msg.author.id)
-            
