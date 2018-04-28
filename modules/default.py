@@ -206,9 +206,9 @@ class HelpEmbed(discord.Embed):
                 if module.category != None:
                     categories[module.category] = module.description
             for category in categories:
-                title = "{0}help {1}".format(prefix,category)
+                title = "{0}help {1}".format(self.prefix,category)
                 description = categories[category]
                 self.add_field(name=title,value=description,inline=False)
         if category != None and is_commands == False:
-            description = "You can find categories using {0}help".format(prefix)
+            description = "You can find categories using {0}help".format(self.prefix)
             self.add_field(name="No commands in this category",value=description,inline=False)
