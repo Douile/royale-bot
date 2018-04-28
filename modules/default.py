@@ -65,36 +65,8 @@ class Help(Command):
             category = msg.content.split(" ")[1].lower()
         except IndexError:
             category = None
-        commands = {}
-        for module in self.modules:
-            if module.category == category:
-                for command in module.commands:
-                    cmd = module.commands[command]
-                    if cmd.name != '' and cmd.permission != 'admin':
-                        if cmd.description != '':
-                            commands[command] = cmd.description
-                        else:
-                            commands[command] = 'Description not set'
-        self.embed = discord.Embed(title="Help",type="rich",color=0x2ede2e)
-        self.embed.set_thumbnail(url=msg.server.icon_url)
-        is_commands = False
-        for command in commands:
-            description = commands[command]
-            cmd = "{0}{1}".format(prefix,command)
-            self.embed.add_field(name=cmd,value=description,inline=False)
-            is_commands = True
-        if category == None:
-            categories = {}
-            for module in self.modules:
-                if module.category != None:
-                    categories[module.category] = module.description
-            for category in categories:
-                title = "{0}help {1}".format(prefix,category)
-                description = categories[category]
-                self.embed.add_field(name=title,value=description,inline=False)
-        if category != None and is_commands == False:
-            description = "You can find categories using {0}help".format(prefix)
-            self.embed.add_field(name="No commands in this category",value=description,inline=False)
+        self.embed = HelpEmbed(prefix=prefix,category=category,icon_url=msg.server.icon_url,admin=False)
+        self.embed.generate(self.modules)
 class AdminHelp(Command):
     def __init__(self,modules):
         super().__init__()
@@ -108,36 +80,8 @@ class AdminHelp(Command):
             category = msg.content.split(" ")[1].lower()
         except IndexError:
             category = None
-        commands = {}
-        for module in self.modules:
-            if module.category == category:
-                for command in module.commands:
-                    cmd = module.commands[command]
-                    if cmd.name != '':
-                        if cmd.description != '':
-                            commands[command] = cmd.description
-                        else:
-                            commands[command] = 'Description not set'
-        self.embed = discord.Embed(title="Help",type="rich",color=0x2ede2e)
-        self.embed.set_thumbnail(url=msg.server.icon_url)
-        is_commands = False
-        for command in commands:
-            description = commands[command]
-            cmd = "{0}{1}".format(prefix,command)
-            self.embed.add_field(name=cmd,value=description,inline=False)
-            is_commands = True
-        if category == None:
-            categories = {}
-            for module in self.modules:
-                if module.category != None:
-                    categories[module.category] = module.description
-            for category in categories:
-                title = "{0}help {1}".format(prefix,category)
-                description = categories[category]
-                self.embed.add_field(name=title,value=description,inline=False)
-        if category != None and is_commands == False:
-            description = "You can find categories using {0}help".format(prefix)
-            self.embed.add_field(name="No commands in this category",value=description,inline=False)
+        self.embed = HelpEmbed(prefix=prefix,category=category,icon_url=msg.server.icon_url,admin=True)
+        self.embed.generate(self.modules)
 class SetChannel(Command):
     def __init__(self,types=[]):
         self.types = types
@@ -222,3 +166,49 @@ class SetPrefix(Command):
             self.settings = {'prefix':prefix}
         else:
             self.content = '<@!{0}> Please enter a valid prefix'.format(msg.author.id)
+
+class HelpEmbed(discord.Embed):
+    def __init__(self,prefix='!',category=None,icon_url=None,admin=False):
+        super().__init__(title="Help",color=0x2ede2e)
+        self.prefix = prefix
+        self.category = category
+        self.admin = admin
+        if icon_url != None:
+            self.set_thumbnail(url=icon_url)
+        if self.category != None:
+            self.title = "Help ({0})".format(self.category)
+    def generate(self,modules):
+        commands = {}
+        for module in self.modules:
+            if module.category == self.category:
+                for command in module.commands:
+                    cmd = module.commands[command]
+                    if cmd.name != '':
+                        if self.admin:
+                            if cmd.description != '':
+                                commands[command] = cmd.description
+                            else:
+                                commands[command] = 'Description not set'
+                        else:
+                            if cmd.description != '' and cmd.permission != 'admin':
+                                commands[command] = cmd.description
+                            else:
+                                commands[command] = 'Description not set'
+        is_commands = False
+        for command in commands:
+            description = commands[command]
+            cmd = "{0}{1}".format(prefix,command)
+            self.add_field(name=cmd,value=description,inline=False)
+            is_commands = True
+        if category == None:
+            categories = {}
+            for module in self.modules:
+                if module.category != None:
+                    categories[module.category] = module.description
+            for category in categories:
+                title = "{0}help {1}".format(prefix,category)
+                description = categories[category]
+                self.add_field(name=title,value=description,inline=False)
+        if category != None and is_commands == False:
+            description = "You can find categories using {0}help".format(prefix)
+            self.add_field(name="No commands in this category",value=description,inline=False)
