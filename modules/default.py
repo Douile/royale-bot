@@ -63,7 +63,7 @@ class Help(Command):
         if prefix == None:
             prefix = "!"
         try:
-            category = command.split(" ")[0].lower()
+            category = command.split(" ")[1].lower()
         except IndexError:
             category = None
         self.embed = HelpEmbed(prefix=prefix,category=category,icon_url=msg.server.icon_url,admin=False)
@@ -78,7 +78,7 @@ class AdminHelp(Command):
         if prefix == None:
             prefix = "!"
         try:
-            category = command.split(" ")[0].lower()
+            category = command.split(" ")[1].lower()
         except IndexError:
             category = None
         self.embed = HelpEmbed(prefix=prefix,category=category,icon_url=msg.server.icon_url,admin=True)
@@ -94,7 +94,7 @@ class SetChannel(Command):
         self.reset()
         channelid = msg.channel.id
         try:
-            type = command.split(" ")[0].lower()
+            type = command.split(" ")[1].lower()
         except IndexError:
             type = ""
         success = False
@@ -163,12 +163,7 @@ class SetPrefix(Command):
             prefix = command[:command.index('"')]
         else:
             try:
-                prefix = command.split(" ")[0]
-                try:
-                    if msg.content.split(" ")[1] == '':
-                        prefix += ' '
-                except IndexError:
-                    pass
+                prefix = command.split(" ")[1]
             except IndexError:
                 prefix = ''
         if prefix != '':
