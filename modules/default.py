@@ -58,6 +58,8 @@ class Help(Command):
     def run(self,msg,settings):
         self.reset()
         prefix = settings.get('prefix','!')
+        if prefix == None:
+            prefix = "!"
         commands = {}
         for module in self.modules:
             for command in module.commands:
@@ -80,6 +82,8 @@ class AdminHelp(Command):
     def run(self,msg,settings):
         self.reset()
         prefix = settings.get('prefix','!')
+        if prefix == None:
+            prefix = "!"
         commands = {}
         for module in self.modules:
             for command in module.commands:
