@@ -39,7 +39,7 @@ class Shop(Command):
                     else:
                         backgrounds = []
                     print('Generating shop')
-                    file = self.loop.ensure_future(shop.generate(shopdata,backgrounds,msg.server.id))
+                    file = asyncio.ensure_future(shop.generate(shopdata,backgrounds,msg.server.id),loop=self.loop)
                 else:
                     file = shop.filename(rawtime)
                 self.typing = True
