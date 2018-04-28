@@ -245,6 +245,8 @@ def commandHandler(command,msg):
     command = command.lower()
     serverid = msg.server.id
     serversettings = client.database.server_info(serverid,channels=True)
+    if serversettings.get("server_name") != msg.server.name:
+        client.database.set_server_info(serverid,server_name=msg.server.name)
     output = Command()
     admin = msg.author.server_permissions.administrator
     if command.startswith("setpresence"):
@@ -289,7 +291,7 @@ def commandHandler(command,msg):
         if 'backgrounds' in output.settings:
             client.database.set_server_backgrounds(serverid,backgrounds=output.settings.get('backgrounds'))
             output.settings.pop('backgrounds')
-        client.database.set_server_info(serverid,*output.settings)
+        client.database.set_server_info(serverid,**output.settings)
 
     if output.typing == True:
         yield from client.send_typing(msg.channel)
