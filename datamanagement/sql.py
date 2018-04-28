@@ -208,7 +208,7 @@ class Database(Postgres):
 
     # cache data
     def get_cache(self,type,once=False):
-        info = self.all("SELECT value FROM cache_data WHERE type=%(type)s",parameters={'type':type},back_as=dict)
+        info = self.all("SELECT type,value FROM cache_data WHERE type=%(type)s",parameters={'type':type},back_as=dict)
         if once:
             cache = {}
             if info != None:
