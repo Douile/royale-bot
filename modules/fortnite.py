@@ -7,10 +7,10 @@ import os.path
 import discord
 
 class FortniteModule(Module):
-    def __init__(self):
+    def __init__(self,fnbr_key=''):
         super().__init__(name="Fortnite")
         self.commands = {
-            'shop': Shop(),
+            'shop': Shop(fnbr_key),
             'stats': Stats(),
             'setbackground': SetBackgrounds(),
             'news': News(),
@@ -19,13 +19,14 @@ class FortniteModule(Module):
         }
         self.types = ['stats','shop','news','status','autoshop','autostatus','autonews']
 class Shop(Command):
-    def __init__(self):
+    def __init__(self,fnbr_key):
         super().__init__(name="shop",description='Print an image of today\'s fortnite shop. `!shop`')
         self.permission = 'shop'
+        self.fnbr_key = fnbr_key
     def run(self,msg,settings):
         self.reset()
         try:
-            shopdata = shop.getShopData(KEY_FNBR)
+            shopdata = shop.getShopData(self.fnbr_key)
             if shopdata.status == 200:
                 rawtime = shop.getTime(shopdata.data.date)
                 rtime = time.mktime(rawtime.utctimetuple())

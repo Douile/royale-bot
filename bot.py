@@ -103,7 +103,7 @@ client.queued_actions = []
 client.database = sql.Database(url=DATABASE_URL)
 
 @asyncio.coroutine
-def autoshop(): # add fnbr not accessable fallback
+def autoshop(fnbr_key): # add fnbr not accessable fallback
     yield from client.wait_until_ready()
     while not client.is_closed:
         shopdata = None
@@ -116,7 +116,7 @@ def autoshop(): # add fnbr not accessable fallback
                     nextshop = server['nextshop']
                 if now >= nextshop:
                     if shopdata == None:
-                        shopdata = shop.getShopData(settings['fnbr_key'])
+                        shopdata = shop.getShopData(fnbr_key)
                     rawtime = shop.getTime(shopdata.data.date)
                     file = shop.filename(rawtime)
                     if not os.path.isfile(file):
@@ -333,9 +333,9 @@ def commandStatus(msg,settings):
     '<@!{0}> bot v{1} is online!'.format(msg.author.id,VERSION)
 
 
-cmodules = [fortnite.FortniteModule(),moderation.ModerationModule()]
+cmodules = [fortnite.FortniteModule(KEY_FNBR),moderation.ModerationModule()]
 defaultmodule = default.DefaultModule(cmodules,VERSION)
-client.loop.create_task(autoshop())
+client.loop.create_task(autoshop(KEY_FNBR))
 client.loop.create_task(autostatus())
 client.loop.create_task(autonews())
 client.loop.create_task(handle_queue())
