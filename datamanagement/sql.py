@@ -167,7 +167,7 @@ class Database(Postgres):
     def set_server_info_int(self,server_id,column,value):
         self.set_server_info_raw(server_id,column,value,"i")
     def set_server_info_raw(self,server_id,column,value,type="s"):
-        self.run("UPDATE server_info SET {}=%(value){} WHERE server_id=%(id)s".format(column,type),parameters={'id':server_id,'value':value})
+        self.run("UPDATE server_data SET {}=%(value){} WHERE server_id=%(id)s".format(column,type),parameters={'id':server_id,'value':value})
     def is_server(self,server_id):
         data = self.one("SELECT _id FROM server_data WHERE server_id=%(id)s",parameters={'id':server_id},default=None)
         exists = False
