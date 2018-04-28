@@ -130,6 +130,8 @@ class Database(Postgres):
             parameters={'id': serverid},
             back_as=dict,
             default=None)
+        if info == None:
+            info = {}
         if backgrounds:
             backgrounds_data = self.all("SELECT * FROM server_backgrounds WHERE server_id=%(id)s",
             parameters={'id':serverid},
