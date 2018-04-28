@@ -168,3 +168,19 @@ class Channels(Command):
             else:
                 value = 'Not set'
             self.embed.add_field(name=channeltype,value=value,inline=False)
+class SetPrefix(Command):
+    def __init__(self):
+        super().__init__(name='setprefix',description='Set the command prefix')
+        self.permission = 'admin'
+    def run(self,msg,settings):
+        self.reset()
+        try:
+            prefix = msg.content.split(" ")[1].lower()
+        except IndexError:
+            prefix = ''
+        if prefix != '':
+            self.content = '<@!{0}> Successfully set the prefix to {1}'.format(msg.author.id,prefix)
+            self.settings = {'prefix':prefix}
+        else:
+            self.content = '<@!{0}> Please enter a valid prefix'.format(msg.author.id)
+            

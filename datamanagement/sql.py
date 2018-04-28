@@ -148,6 +148,7 @@ class Database(Postgres):
                 info['channels'][channel['channel_type']] = channel['channel_id']
         return info
     def set_server_info(self,server_id,server_name=None,last_help_msg=None,last_help_channel=None,next_shop=None,latest_shop=None,prefix=None):
+        print("set_server_info: server_id: {}, server_name: {}, last_help_msg: {}, last_help_channel: {}, next_shop: {}, latest_shop: {}, prefix: {}")
         if not self.is_server(server_id):
             self.run("INSERT INTO server_data (server_id) VALUES (%(id)s)",parameters={'id':server_id})
         if server_name != None:
