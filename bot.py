@@ -37,6 +37,11 @@ def checkPermissions(channel,type,settings):
     except KeyError:
         p = False
     return p
+def get_prefix(settings):
+    prefix = settings.get('prefix','!')
+    if prefix == None:
+        prefix = '!'
+    return prefix
 
 
 class Command():
@@ -271,10 +276,10 @@ def commandHandler(command,msg):
                 pass
         if admin:
             output = defaultmodule.commands['adminhelp']
-            output.run(msg.content[len(serversettings.get('prefix','!') == None ? '!' : serversettings.get('prefix')):],msg,serversettings)
+            output.run(msg.content[len(get_prefix(serversettings)):],msg,serversettings)
         else:
             output = defaultmodule.commands['help']
-            output.run(msg.content[len(serversettings.get('prefix','!') == None ? '!' : serversettings.get('prefix')):],msg,serversettings)
+            output.run(msg.content[len(get_prefix(serversettings)):],msg,serversettings)
     else:
         output = defaultmodule.run(output,command,msg,serversettings)
         if output.content == None and output.embed == None and output.embeds == None:
