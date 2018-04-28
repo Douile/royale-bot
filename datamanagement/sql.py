@@ -149,7 +149,7 @@ class Database(Postgres):
         return info
     def set_server_info(self,server_id,server_name=None,last_help_msg=None,last_help_channel=None,next_shop=None,latest_shop=None,prefix=None):
         if not self.is_server(server_id):
-            self.run("INSERT INTO server_info (server_id) VALUES (%(id)s)",parameters={'id':server_id})
+            self.run("INSERT INTO server_data (server_id) VALUES (%(id)s)",parameters={'id':server_id})
         if server_name != None:
             self.set_server_info_string(server_id,'server_name',server_name)
         if last_help_msg != None:
@@ -169,7 +169,7 @@ class Database(Postgres):
     def set_server_info_raw(self,server_id,column,value,type="s"):
         self.run("UPDATE server_info %(column)s=%(value){} WHERE server_id=%(id)s".format(type),parameters={'id':server_id,'column':column,'value':value})
     def is_server(self,server_id):
-        data = self.one("SELECT _id FROM server_info WHERE server_id=%(id)s",parameters={'id':server_id},default=None)
+        data = self.one("SELECT _id FROM server_data WHERE server_id=%(id)s",parameters={'id':server_id},default=None)
         exists = False
         if data == None:
             exists = False
