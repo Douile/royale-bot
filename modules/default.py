@@ -158,7 +158,7 @@ class SetPrefix(Command):
     def run(self,msg,settings):
         self.reset()
         command= msg.content[len(settings.get('prefix','!')):]
-        if command.startswith('"') and command.count('"') > 1:
+        if command.count('"') > 1:
             command = command[command.index('"')+1:]
             prefix = command[:command.index('"')]
         else:
