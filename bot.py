@@ -345,7 +345,9 @@ def commandStatus(msg,settings):
 cmodules = [fortnite.FortniteModule(KEY_FNBR,KEY_TRACKERNETWORK),moderation.ModerationModule()]
 defaultmodule = default.DefaultModule(cmodules,VERSION)
 
-client.loop.add_signal_handler(signal.SIGTERM,client.close)
+def close():
+    asyncio.ensure_future(client.close())
+client.loop.add_signal_handler(signal.SIGTERM,close)
 client.loop.create_task(autoshop(KEY_FNBR))
 client.loop.create_task(autostatus())
 client.loop.create_task(autonews())
