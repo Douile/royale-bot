@@ -234,4 +234,4 @@ class Database(Postgres):
             exists = True
         else:
             exists = False
-        return exits
+        return exists
