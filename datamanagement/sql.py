@@ -229,4 +229,9 @@ class Database(Postgres):
         else:
             self.run("INSERT INTO cache_data (type,value) VALUES (%(type)s,%(value)s)",parameters=params)
     def is_cache(self,type):
-        info = self.one("SELECT _id FROM cache_data WHERE type=%(type)s",parameters={'type':type})
+        info = self.all("SELECT _id FROM cache_data WHERE type=%(type)s",parameters={'type':type})
+        if len(info) > 0:
+            exists = True
+        else:
+            exists = False
+        return exits

@@ -117,9 +117,10 @@ def autoshop(fnbr_key): # add fnbr not accessable fallback
             server = client.database.server_info(serverid,backgrounds=True,channels=True)
             if 'autoshop' in server['channels']:
                 now = time.time()
-                nextshop = time.mktime(datetime.now().utctimetuple())
                 if 'next_shop' in server:
                     nextshop = server['next_shop']
+                if nextshop == None:
+                    nextshop = time.mktime(datetime.now().utctimetuple())
                 if now >= nextshop:
                     if shopdata == None:
                         shopdata = shop.getShopData(fnbr_key)
