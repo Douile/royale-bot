@@ -7,11 +7,11 @@ import os.path
 import discord
 
 class FortniteModule(Module):
-    def __init__(self,fnbr_key=''):
+    def __init__(self,fnbr_key='',tn_key=''):
         super().__init__(name="Fortnite")
         self.commands = {
             'shop': Shop(fnbr_key),
-            'stats': Stats(),
+            'stats': Stats(tn_key),
             'setbackground': SetBackgrounds(),
             'news': News(),
             'servers': Servers(),
@@ -53,9 +53,10 @@ class Shop(Command):
             print(e)
             traceback.print_exc()
 class Stats(Command):
-    def __init__(self):
+    def __init__(self,tn_key):
         super().__init__(name='stats',description='Gets the fortnite stats of a player. `!stats {playername} {platform}` if you do not set platform it will default to pc')
         self.permission = 'stats'
+        self.tn_key = tn_key
     def run(self,msg,settings):
         self.reset()
         try:
@@ -67,7 +68,7 @@ class Stats(Command):
         except IndexError:
             platform = "pc"
         try:
-            statsdata = stats.getStats(settings['tn_key'],name,platform)
+            statsdata = stats.getStats(self.tn_key,name,platform)
             desc = "{0} player".format(statsdata['platform'])
             self.embed = discord.Embed(title=statsdata['name'],type="rich",description=desc)
             for stat in statsdata['stats']:
