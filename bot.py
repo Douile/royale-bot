@@ -126,7 +126,7 @@ def autoshop(fnbr_key): # add fnbr not accessable fallback
                     rawtime = shop.getTime(shopdata.data.date)
                     file = shop.filename(rawtime)
                     if not os.path.isfile(file):
-                        file = shop.generate(shopdata,server['backgrounds'])
+                        file = yield from shop.generate(shopdata,server['backgrounds'])
                     content = "Data from <https://fnbr.co/>"
                     yield from client.send_file(discord.Object(server['channels']['autoshop']),file,content=content)
                     nextshoptime = round(time.mktime(rawtime.utctimetuple()) + (60*60*24))

@@ -7,6 +7,7 @@ from datetime import datetime
 from random import choice
 from . import fnbr
 from utils import arrays, integers, images
+import asyncio
 
 FONT = "assets/burbank.ttf"
 
@@ -208,6 +209,7 @@ def createImageFromUrl(url):
     return createImageFromContent(resp.content)
 
 # generate
+@asyncio.coroutine
 def generate(shopdata,backgrounds=[],serverid=None):
     print("Generating image")
     featured = []

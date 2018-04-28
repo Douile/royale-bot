@@ -37,7 +37,7 @@ class Shop(Command):
                         backgrounds = settings['backgrounds']
                     else:
                         backgrounds = []
-                    file = shop.generate(shopdata,backgrounds,msg.server.id)
+                    file = yield from shop.generate(shopdata,backgrounds,msg.server.id)
                 else:
                     file = shop.filename(rawtime)
                 self.typing = True
