@@ -123,8 +123,8 @@ class Database(Postgres):
         info = self.all("SELECT server_id FROM server_data",back_as=dict)
         server_ids = []
         for server in info:
-            if 'server_id' in server:
-                server_ids.append(server['server_id'])
+            server_ids.append(server)
+        return server_ids
     def server_info(self,serverid,backgrounds=False,channels=False):
         info = self.one("SELECT * FROM server_data WHERE server_id=%(id)s",
             parameters={'id': serverid},
