@@ -8,7 +8,7 @@ import discord
 
 class FortniteModule(Module):
     def __init__(self,fnbr_key='',tn_key=''):
-        super().__init__(name="Fortnite")
+        super().__init__(name="Fortnite",description="Commands related to fortnite",category="fortnite")
         self.commands = {
             'shop': Shop(fnbr_key),
             'stats': Stats(tn_key),

@@ -1,7 +1,8 @@
 class Module:
-    def __init__(self,name="",description=""):
+    def __init__(self,name="",description="",category=None):
         self.name = name
         self.description = description
+        self.category = category
         self.commands = {}
         self.types = []
     def _run(self,empty,command,msg,settings):
