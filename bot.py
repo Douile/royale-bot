@@ -217,9 +217,12 @@ def on_server_update(before,after):
 @asyncio.coroutine
 def on_message(msg):
     settings = client.database.server_info(msg.server.id)
-    prefix = settings.get("prefix")
-    if prefix == None:
+    if settings == None:
         prefix = "!"
+    else:
+        prefix = settings.get("prefix")
+        if prefix == None:
+            prefix = "!"
     if not msg.author.bot and msg.content.startswith(prefix):
         command = msg.content[len(prefix):]
         yield from commandHandler(command,msg)
@@ -227,9 +230,12 @@ def on_message(msg):
 @asyncio.coroutine
 def on_message_edit(before,msg):
     settings = client.database.server_info(msg.server.id)
-    prefix = settings['prefix']
-    if prefix == None:
+    if settings == None:
         prefix = "!"
+    else:
+        prefix = settings.get("prefix")
+        if prefix == None:
+            prefix = "!"
     if not msg.author.bot and msg.content.startswith(prefix):
         command = msg.content[len(prefix):]
         yield from commandHandler(command,msg)
