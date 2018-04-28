@@ -57,6 +57,7 @@ class Help(Command):
         self.modules = modules
     def run(self,msg,settings):
         self.reset()
+        prefix = settings.get('prefix','!')
         commands = {}
         for module in self.modules:
             for command in module.commands:
@@ -70,7 +71,7 @@ class Help(Command):
         self.embed.set_thumbnail(url=msg.server.icon_url)
         for command in commands:
             description = commands[command]
-            cmd = "{0}{1}".format(settings['prefix'],command)
+            cmd = "{0}{1}".format(prefix,command)
             self.embed.add_field(name=cmd,value=description,inline=False)
 class AdminHelp(Command):
     def __init__(self,modules):
@@ -78,6 +79,7 @@ class AdminHelp(Command):
         self.modules = modules
     def run(self,msg,settings):
         self.reset()
+        prefix = settings.get('prefix','!')
         commands = {}
         for module in self.modules:
             for command in module.commands:
@@ -91,7 +93,7 @@ class AdminHelp(Command):
         self.embed.set_thumbnail(url=msg.server.icon_url)
         for command in commands:
             description = commands[command]
-            cmd = "{0}{1}".format(settings['prefix'],command)
+            cmd = "{0}{1}".format(prefix,command)
             self.embed.add_field(name=cmd,value=description,inline=False)
 class SetChannel(Command):
     def __init__(self,types=[]):
