@@ -158,7 +158,7 @@ class SetPrefix(Command):
     def run(self,msg,settings):
         self.reset()
         try:
-            prefix = msg.content.split(" ")[1].lower()
+            prefix = msg.content.split(" ")[1]
         except IndexError:
             prefix = ''
         if prefix != '':
