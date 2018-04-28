@@ -28,6 +28,7 @@ class DefaultModule(Module):
                 self.commands['help'].run(msg,settings)
                 output = self.commands['help']
         else:
+            curcommand = msg.content[len(settings.get('prefix','!')):]
             for cmd in self.commands:
                 if command.startswith(cmd) and isinstance(self.commands[cmd],Command) and cmd != 'help':
                     if self.commands[cmd].permission != None:
@@ -36,19 +37,19 @@ class DefaultModule(Module):
                         else:
                             pcheck = msg.author.server_permissions.administrator
                         if pcheck:
-                            self.commands[cmd].run(msg,settings)
+                            self.commands[cmd].run(curcommand,msg,settings)
                             output = self.commands[cmd]
                         else:
                             output.noPermission = self.commands[cmd].permission
                     else:
-                        self.commands[cmd].run(msg,settings)
+                        self.commands[cmd].run(curcommand,msg,settings)
                         output = self.commands[cmd]
         return output
 class Status(Command):
     def __init__(self,version):
         super().__init__(name='status',description="Get the status of the bot")
         self.version = version
-    def run(self,msg,settings):
+    def run(self,command,msg,settings):
         self.reset()
         raw = '<@!{0}> bot v{1} is online!'
         self.content = raw.format(msg.author.id,self.version)
@@ -56,13 +57,13 @@ class Help(Command):
     def __init__(self,modules):
         super().__init__(name='help',description='Print out all the commands you can use')
         self.modules = modules
-    def run(self,msg,settings):
+    def run(self,command,msg,settings):
         self.reset()
         prefix = settings.get('prefix','!')
         if prefix == None:
             prefix = "!"
         try:
-            category = msg.content.split(" ")[1].lower()
+            category = command.split(" ")[0].lower()
         except IndexError:
             category = None
         self.embed = HelpEmbed(prefix=prefix,category=category,icon_url=msg.server.icon_url,admin=False)
@@ -71,13 +72,13 @@ class AdminHelp(Command):
     def __init__(self,modules):
         super().__init__()
         self.modules = modules
-    def run(self,msg,settings):
+    def run(self,command,msg,settings):
         self.reset()
         prefix = settings.get('prefix','!')
         if prefix == None:
             prefix = "!"
         try:
-            category = msg.content.split(" ")[1].lower()
+            category = command.split(" ")[0].lower()
         except IndexError:
             category = None
         self.embed = HelpEmbed(prefix=prefix,category=category,icon_url=msg.server.icon_url,admin=True)
@@ -89,11 +90,11 @@ class SetChannel(Command):
         super().__init__(name='setchannel',description='Set the channel to a command type. `!setchannel {arg}`.{arg} must be one of %s or `all`' % typemsg)
         self.permission = 'admin'
         self.types = types
-    def run(self,msg,settings):
+    def run(self,command,msg,settings):
         self.reset()
         channelid = msg.channel.id
         try:
-            type = msg.content.split(" ")[1].lower()
+            type = command.split(" ")[0].lower()
         except IndexError:
             type = ""
         success = False
@@ -124,7 +125,7 @@ class ResetChannels(Command):
         super().__init__(name='resetchannels',description='Reset all set channels for this server. `!resetchannels`')
         self.permission = 'admin'
         self.types = types
-    def run(self,msg,settings):
+    def run(self,command,msg,settings):
         self.reset()
         serverid = msg.server.id
         self.settings = {'channels':{}}
@@ -136,7 +137,7 @@ class Channels(Command):
         super().__init__(name='channels',description='Print set channels for current server. `!channels`')
         self.permission = 'admin'
         self.types = types
-    def run(self,msg,settings):
+    def run(self,command,msg,settings):
         self.reset()
         serverid = msg.server.id
         name = '{0}\'s channels'.format(settings.get('server_name',''))
@@ -155,17 +156,16 @@ class SetPrefix(Command):
     def __init__(self):
         super().__init__(name='setprefix',description='Set the command prefix')
         self.permission = 'admin'
-    def run(self,msg,settings):
+    def run(self,command,msg,settings):
         self.reset()
-        command= msg.content[len(settings.get('prefix','!')):]
         if command.count('"') > 1:
             command = command[command.index('"')+1:]
             prefix = command[:command.index('"')]
         else:
             try:
-                prefix = msg.content.split(" ")[1]
+                prefix = command.split(" ")[0]
                 try:
-                    if msg.content.split(" ")[2] == '':
+                    if msg.content.split(" ")[1] == '':
                         prefix += ' '
                 except IndexError:
                     pass

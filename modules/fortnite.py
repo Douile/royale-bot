@@ -23,7 +23,7 @@ class Shop(Command):
         super().__init__(name="shop",description='Print an image of today\'s fortnite shop. `!shop`')
         self.permission = 'shop'
         self.fnbr_key = fnbr_key
-    def run(self,msg,settings):
+    def run(self,command,msg,settings):
         self.reset()
         try:
             shopdata = shop.getShopData(self.fnbr_key)
@@ -57,7 +57,7 @@ class Stats(Command):
         super().__init__(name='stats',description='Gets the fortnite stats of a player. `!stats {playername} {platform}` if you do not set platform it will default to pc')
         self.permission = 'stats'
         self.tn_key = tn_key
-    def run(self,msg,settings):
+    def run(self,command,msg,settings):
         self.reset()
         try:
             name = msg.content.split(" ")[1]
@@ -82,7 +82,7 @@ class SetBackgrounds(Command):
     def __init__(self):
         super().__init__(name='setbackground',description='Sets the backgrounds for all images generated. Seperate urls with a space. If you want a blank backround don\'t include any urls. `!setbackground(s) {url 1} {url 2} {url 3}...`')
         self.permission = 'admin'
-    def run(self,msg,settings):
+    def run(self,command,msg,settings):
         self.reset()
         urls = msg.content.split(" ")
         if len(urls) < 2:
@@ -95,7 +95,7 @@ class News(Command):
     def __init__(self):
         super().__init__(name='news',description='Output the current news in fortnite')
         self.permission = 'news'
-    def run(self,msg,settings):
+    def run(self,command,msg,settings):
         self.reset()
         news = meta.getNews('en')
         if news['success']:
@@ -109,7 +109,7 @@ class Servers(Command):
     def __init__(self):
         super().__init__(name='servers',description='Get fortnite server status')
         self.permission = 'status'
-    def run(self,msg,settings):
+    def run(self,command,msg,settings):
         self.reset()
         status = meta.getStatus()
         self.content = '<@!{0}>'.format(msg.author.id)
@@ -120,7 +120,7 @@ class PatchNotes(Command):
     def __init__(self):
         super().__init__(name='patchnotes',description="Get the latest patchnotes. `!patchnotes (d, detail)` include `d` or `detail` for a more detailed breakdown of the patchnotes.")
         self.permission = 'news'
-    def run(self,msg,settings):
+    def run(self,command,msg,settings):
         self.reset()
         args = msg.content.split(" ")
         try:

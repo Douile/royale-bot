@@ -13,7 +13,7 @@ class Mute(Command):
     def __init__(self):
         super().__init__(name='mute',description='`!mute @user reason`')
         self.permission = 'admin'
-    def run(self,msg,settings):
+    def run(self,command,msg,settings):
         self.reset()
         not_found = 'Sorry <@!{0}> couldn\'t find that user'.format(msg.author.id)
         args = msg.content.split(' ')

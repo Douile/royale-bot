@@ -10,6 +10,7 @@ class Module:
         try:
             output = self.run(empty,command,msg,settings)
         except Exception as e:
+            curcommand = msg.content[len(settings.get('prefix','!')):]
             for cmd in self.commands:
                 if command.startswith(cmd) and isinstance(self.commands[cmd],Command):
                     if self.commands[cmd].permission != None:
@@ -18,12 +19,12 @@ class Module:
                         else:
                             pcheck = msg.author.server_permissions.administrator
                         if pcheck:
-                            self.commands[cmd].run(msg,settings)
+                            self.commands[cmd].run(curcommand,msg,settings)
                             output = self.commands[cmd]
                         else:
                             output.noPermission = self.commands[cmd].permission
                     else:
-                        self.commands[cmd].run(msg,settings)
+                        self.commands[cmd].run(curcommand,msg,settings)
                         output = self.commands[cmd]
         return output
 class Command:
