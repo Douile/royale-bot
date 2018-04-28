@@ -25,7 +25,7 @@ class Shop(Command):
     def run(self,msg,settings):
         self.reset()
         try:
-            shopdata = shop.getShopData(settings['fnbr_key'])
+            shopdata = shop.getShopData(KEY_FNBR)
             if shopdata.status == 200:
                 rawtime = shop.getTime(shopdata.data.date)
                 rtime = time.mktime(rawtime.utctimetuple())
