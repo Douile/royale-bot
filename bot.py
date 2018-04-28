@@ -335,9 +335,9 @@ def commandStatus(msg,settings):
     '<@!{0}> bot v{1} is online!'.format(msg.author.id,VERSION)
 
 
-cmodules = [fortnite.FortniteModule(KEY_FNBR),moderation.ModerationModule()]
+cmodules = [fortnite.FortniteModule(KEY_FNBR,KEY_TRACKERNETWORK),moderation.ModerationModule()]
 defaultmodule = default.DefaultModule(cmodules,VERSION)
-client.loop.create_task(autoshop(KEY_FNBR,KEY_TRACKERNETWORK))
+client.loop.create_task(autoshop(KEY_FNBR))
 client.loop.create_task(autostatus())
 client.loop.create_task(autonews())
 client.loop.create_task(handle_queue())
