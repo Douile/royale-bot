@@ -223,7 +223,7 @@ class Database(Postgres):
         params = {'value':value,'type':type}
         if once:
             if self.is_cache(type):
-                self.run("UPDATE cache_data value=%(value)s WHERE cache_type=%(type)s",parameters=params)
+                self.run("UPDATE cache_data SET value=%(value)s WHERE cache_type=%(type)s",parameters=params)
             else:
                 self.run("INSERT INTO cache_data (type,value) VALUES (%(type)s,%(value)s)",parameters=params)
         else:
