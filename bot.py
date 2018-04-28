@@ -134,7 +134,7 @@ def autostatus():
     while not client.is_closed:
         cache_raw = client.database.get_cache("status",once=True)
         if cache_raw != None:
-            cache = json.loads(cache_raw['value'])
+            cache = json.loads(cache_raw['status'])
         else:
             cache = {}
         data = meta.getStatus()
