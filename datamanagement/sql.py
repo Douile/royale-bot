@@ -212,14 +212,12 @@ class Database(Postgres):
         info = self.all("SELECT type,value FROM cache_data WHERE type=%(type)s",parameters={'type':type},back_as=dict)
         if once:
             cache = {}
-            if info != None:
-                for data in info:
-                    cache[data['type']] = data['value']
+            for data in info:
+                cache[data['type']] = data['value']
         else:
             cache = []
-            if info != None:
-                for data in info:
-                    cache.append(data)
+            for data in info:
+                cache.append(data['value'])
         return cache
     def set_cache(self,type,value,once=False):
         params = {'value':value,'type':type}
