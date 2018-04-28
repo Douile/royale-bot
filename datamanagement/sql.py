@@ -104,14 +104,14 @@ class Database(Postgres):
         super().__init__(url)
         self.setup_defaults()
     def setup_defaults(self):
-        self.run(ServerData().create())
-        self.run(ServerData().alter())
-        self.run(ServerBackgrounds().create())
-        self.run(ServerBackgrounds().alter())
-        self.run(ServerChannels().create())
-        self.run(ServerChannels().alter())
-        self.run(Cache().create())
-        self.run(Cache().alter())
+        self.run_unsafe(ServerData().create())
+        self.run_unsafe(ServerData().alter())
+        self.run_unsafe(ServerBackgrounds().create())
+        self.run_unsafe(ServerBackgrounds().alter())
+        self.run_unsafe(ServerChannels().create())
+        self.run_unsafe(ServerChannels().alter())
+        self.run_unsafe(Cache().create())
+        self.run_unsafe(Cache().alter())
     def run_unsafe(*args):
         try:
             self.run(*args)
