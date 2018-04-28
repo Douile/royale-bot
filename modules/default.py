@@ -179,7 +179,7 @@ class HelpEmbed(discord.Embed):
             self.title = "Help ({0})".format(self.category)
     def generate(self,modules):
         commands = {}
-        for module in self.modules:
+        for module in modules:
             if module.category == self.category:
                 for command in module.commands:
                     cmd = module.commands[command]
