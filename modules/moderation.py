@@ -4,7 +4,7 @@ import discord
 
 class ModerationModule(Module):
     def __init__(self):
-        super().__init__(name='Moderation')
+        super().__init__(name='Moderation',description='Commands related to moderation',category='moderation')
         self.commands = {
             'mute': Mute()
         }
