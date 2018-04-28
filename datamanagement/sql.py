@@ -120,12 +120,11 @@ class Database(Postgres):
 
     # server info
     def servers(self):
-        info = self.all("SELECT server_id FROM server_info",back_as=dict,default=None)
+        info = self.all("SELECT server_id FROM server_info",back_as=dict)
         server_ids = []
-        if info != None:
-            for server in info:
-                if 'server_id' in server:
-                    server_ids.append(server['server_id'])
+        for server in info:
+            if 'server_id' in server:
+                server_ids.append(server['server_id'])
     def server_info(self,serverid,backgrounds=False,channels=False):
         info = self.one("SELECT * FROM server_data WHERE server_id=%(id)s",
             parameters={'id': serverid},
