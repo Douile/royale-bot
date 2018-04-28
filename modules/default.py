@@ -157,15 +157,20 @@ class SetPrefix(Command):
         self.permission = 'admin'
     def run(self,msg,settings):
         self.reset()
-        try:
-            prefix = msg.content.split(" ")[1]
+        command= msg.content[len(settings.get('prefix','!')):]
+        if command.startswith('"') and command.count('"') > 1:
+            command = command[command.index('"')+1:]
+            prefix = command[:command.index('"')]
+        else:
             try:
-                if msg.content.split(" ")[2] == '':
-                    prefix += ' '
+                prefix = msg.content.split(" ")[1]
+                try:
+                    if msg.content.split(" ")[2] == '':
+                        prefix += ' '
+                except IndexError:
+                    pass
             except IndexError:
-                pass
-        except IndexError:
-            prefix = ''
+                prefix = ''
         if prefix != '':
             self.content = '<@!{0}> Successfully set the prefix to {1}'.format(msg.author.id,prefix)
             self.settings = {'prefix':prefix}
