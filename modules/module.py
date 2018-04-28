@@ -10,7 +10,7 @@ class Module:
         try:
             output = self.run(empty,command,msg,settings)
         except Exception as e:
-            curcommand = msg.content[len(settings.get('prefix','!')):]
+            curcommand = msg.content[len(get_prefix(settings)):]
             for cmd in self.commands:
                 if command.startswith(cmd) and isinstance(self.commands[cmd],Command):
                     if self.commands[cmd].permission != None:
@@ -63,3 +63,10 @@ class QueueAction:
     def __init__(self,function,args=[]):
         self.function = function
         self.args = args
+
+
+def get_prefix(settings):
+    prefix = settings.get('prefix','!')
+    if prefix == None:
+        prefix = '!'
+    return prefix
