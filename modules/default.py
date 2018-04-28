@@ -200,7 +200,7 @@ class HelpEmbed(discord.Embed):
             cmd = "{0}{1}".format(self.prefix,command)
             self.add_field(name=cmd,value=description,inline=False)
             is_commands = True
-        if category == None:
+        if self.category == None:
             categories = {}
             for module in self.modules:
                 if module.category != None:
@@ -209,6 +209,6 @@ class HelpEmbed(discord.Embed):
                 title = "{0}help {1}".format(self.prefix,category)
                 description = categories[category]
                 self.add_field(name=title,value=description,inline=False)
-        if category != None and is_commands == False:
+        if self.category != None and is_commands == False:
             description = "You can find categories using {0}help".format(self.prefix)
             self.add_field(name="No commands in this category",value=description,inline=False)
