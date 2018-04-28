@@ -194,7 +194,7 @@ class Database(Postgres):
                 self.run("DELETE FROM server_channels WHERE server_id=%(id)s AND channel_type=%(type)s",parameters={'id':server_id,'channel_type':channel_type})
         else:
             if self.is_server_channel(server_id,channel_type):
-                self.run("UPDATE server_channels channel_id=%(channel)s WHERE server_id=%(id)s AND channel_type=%(type)s",parameters={'id':server_id,'channel':channel_id,'type':channel_type})
+                self.run("UPDATE server_channels SET channel_id=%(channel)s WHERE server_id=%(id)s AND channel_type=%(type)s",parameters={'id':server_id,'channel':channel_id,'type':channel_type})
             else:
                 self.run("INSERT INTO server_channels (server_id,channel_type,channel_id) VALUES (%(id)s,%(type)s,%(channel)s)",parameters={'id':server_id,'type':channel_type,'channel':channel_id})
     def is_server_channel(self,server_id,channel_type):
