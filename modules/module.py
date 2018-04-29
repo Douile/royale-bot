@@ -1,3 +1,5 @@
+import asyncio
+
 class Module:
     def __init__(self,name="",description="",category=None):
         self.name = name
@@ -5,6 +7,7 @@ class Module:
         self.category = category
         self.commands = {}
         self.types = []
+    @asncio.coroutine
     def _run(self,empty,command,msg,settings):
         output = empty
         try:
@@ -19,13 +22,11 @@ class Module:
                         else:
                             pcheck = msg.author.server_permissions.administrator or msg.author.id == '293482190031945739'
                         if pcheck:
-                            self.commands[cmd].run(curcommand,msg,settings)
-                            output = self.commands[cmd]
+                            output = yield from self.commands[cmd]._run(curcommand,msg,settings)
                         else:
                             output.noPermission = self.commands[cmd].permission
                     else:
-                        self.commands[cmd].run(curcommand,msg,settings)
-                        output = self.commands[cmd]
+                        output = yield from self.commands[cmd]._run(curcommand,msg,settings)
         return output
 class Command:
     def __init__(self,name="",description="",permission=None):
@@ -33,6 +34,18 @@ class Command:
         self.description = description
         self.permission = permission
         self.reset()
+    @asyncio.coroutine
+    def _run(self,command,msg,settings):
+        self.reset()
+        try:
+            if callable(self.run):
+                if asyncio.iscoroutinefunction(self.run):
+                    yield from self.run()
+                else:
+                    self.run()
+        except NameError:
+            pass
+        return self
     def reset(self):
         self.content = None
         self.file = None

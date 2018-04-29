@@ -286,7 +286,7 @@ def commandHandler(command,msg):
         output = defaultmodule.run(output,command,msg,serversettings)
         if output.content == None and output.embed == None and output.embeds == None:
             for i in range(0,len(cmodules)):
-                output = cmodules[i]._run(output,command,msg,serversettings)
+                output = yield from cmodules[i]._run(output,command,msg,serversettings)
         if len(output.queue) > 0:
             client.queued_actions += output.queue
             print('Added queued action')
