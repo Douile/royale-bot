@@ -25,8 +25,8 @@ class Shop(Command):
         self.permission = 'shop'
         self.fnbr_key = fnbr_key
         self.loop = loop
+    @asyncio.coroutine
     def run(self,command,msg,settings):
-        self.reset()
         try:
             shopdata = shop.getShopData(self.fnbr_key)
             if shopdata.status == 200:
@@ -40,8 +40,7 @@ class Shop(Command):
                     else:
                         backgrounds = []
                     print('Generating shop')
-                    task = asyncio.ensure_future(shop.generate(shopdata,backgrounds,msg.server.id),loop=self.loop)
-                    file = task.result()
+                    file = yield from shop.generate(shopdata,backgrounds,msg.server.id)
                 else:
                     file = shop.filename(rawtime)
                 self.typing = True
