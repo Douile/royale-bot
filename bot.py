@@ -328,7 +328,7 @@ def commandHandler(command,msg):
 def noPermission(msg,type,settings):
     serverid = msg.server.id
     if type == 'shop' or type == 'stats':
-        m = '<@!{0}> Please use the set {1} channel <#{2}>'.format(msg.author.id,type,settings['servers'][serverid]['channels']['shop'])
+        m = '<@!{0}> Please use the set {1} channel <#{2}>'.format(msg.author.id,type,settings['channels']['shop'])
     elif type == 'setchannel' or type == 'resetchannels':
         m = '<@!{0}> You must be an administrator to change channel settings'.format(msg.author.id)
     else:
