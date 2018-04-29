@@ -7,7 +7,7 @@ class Module:
         self.category = category
         self.commands = {}
         self.types = []
-    @asncio.coroutine
+    @asyncio.coroutine
     def _run(self,empty,command,msg,settings):
         output = empty
         try:
