@@ -40,9 +40,9 @@ class Command:
         try:
             if callable(self.run):
                 if asyncio.iscoroutinefunction(self.run):
-                    yield from self.run()
+                    yield from self.run(command,msg,settings)
                 else:
-                    self.run()
+                    self.run(command,msg,settings)
         except NameError:
             pass
         return self
