@@ -259,15 +259,15 @@ def commandHandler(command,msg):
     if command.startswith("setpresence"):
         if admin:
             yield from client.send_typing(msg.channel)
-            output = SetPresence(msg,settings)
+            output = SetPresence(msg,serversettings)
             yield from client.change_presence(game=output.game,status='online',afk=False)
         else:
-            yield from noPermission(msg,None,settings)
+            yield from noPermission(msg,None,serversettings)
     elif command.startswith("shutdown"):
         if msg.author.id == '293482190031945739':
-            output = Shutdown(msg,settings)
+            output = Shutdown(msg,serversettings)
         else:
-            yield from noPermission(msg,None,settings)
+            yield from noPermission(msg,None,serversettings)
     elif command.startswith("help"):
         if 'last_help_msg' in serversettings and 'last_help_channel' in serversettings:
             object = discord.Object(serversettings['last_help_msg'])
@@ -303,7 +303,7 @@ def commandHandler(command,msg):
     if output.typing == True:
         yield from client.send_typing(msg.channel)
     if output.noPermission != None:
-        yield from noPermission(msg,output.noPermission,settings)
+        yield from noPermission(msg,output.noPermission,serversettings)
     if output.file != None:
         response = yield from client.send_file(msg.channel,output.file,content=output.content)
         yield from client.delete_message(msg)
