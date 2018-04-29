@@ -47,7 +47,7 @@ class DefaultModule(Module):
         return output
 class Status(Command):
     def __init__(self,version):
-        super().__init__(name='status',description="Get the status of the bot")
+        super().__init__(name='status',description="Print the status of the bot. `{prefix}status`")
         self.version = version
     def run(self,command,msg,settings):
         self.reset()
@@ -55,7 +55,7 @@ class Status(Command):
         self.content = raw.format(msg.author.id,self.version)
 class Help(Command):
     def __init__(self,modules):
-        super().__init__(name='help',description='Print out all the commands you can use')
+        super().__init__(name='help',description='Print out all the commands you can use. `{prefix}help`')
         self.modules = modules
     def run(self,command,msg,settings):
         self.reset()
@@ -87,7 +87,7 @@ class SetChannel(Command):
     def __init__(self,types=[]):
         self.types = types
         typemsg = self.typestring()
-        super().__init__(name='setchannel',description='Set the channel to a command type. `!setchannel {arg}`.{arg} must be one of %s or `all`' % typemsg)
+        super().__init__(name='setchannel',description='Set the channel to a command type. `{prefix}setchannel [arg]`.[arg] must be one of %s or `all`' % typemsg)
         self.permission = 'admin'
         self.types = types
     def run(self,command,msg,settings):
@@ -122,7 +122,7 @@ class SetChannel(Command):
         return typemsg
 class ResetChannels(Command):
     def __init__(self,types=[]):
-        super().__init__(name='resetchannels',description='Reset all set channels for this server. `!resetchannels`')
+        super().__init__(name='resetchannels',description='Reset all set channels for this server. `{prefix}resetchannels`')
         self.permission = 'admin'
         self.types = types
     def run(self,command,msg,settings):
@@ -134,7 +134,7 @@ class ResetChannels(Command):
         self.content = '<@!{0}> Successfully reset all channels'.format(msg.author.id)
 class Channels(Command):
     def __init__(self,types=[]):
-        super().__init__(name='channels',description='Print set channels for current server. `!channels`')
+        super().__init__(name='channels',description='Print set channels for current server. `{prefix}channels`')
         self.permission = 'admin'
         self.types = types
     def run(self,command,msg,settings):
@@ -154,7 +154,7 @@ class Channels(Command):
             self.embed.add_field(name=channeltype,value=value,inline=False)
 class SetPrefix(Command):
     def __init__(self):
-        super().__init__(name='setprefix',description='Set the command prefix')
+        super().__init__(name='setprefix',description='Set the command prefix. `{prefix}setprefix "[prefix]"`')
         self.permission = 'admin'
     def run(self,command,msg,settings):
         self.reset()
@@ -199,6 +199,7 @@ class HelpEmbed(discord.Embed):
                                 commands[command] = cmd.description
                             else:
                                 commands[command] = 'Description not set'
+                        commands[command].format_map({'prefix':self.prefix})
         is_commands = False
         for command in commands:
             description = commands[command]

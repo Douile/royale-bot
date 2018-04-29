@@ -21,7 +21,7 @@ class FortniteModule(Module):
         self.types = ['stats','shop','news','status','autoshop','autostatus','autonews']
 class Shop(Command):
     def __init__(self,fnbr_key,loop):
-        super().__init__(name="shop",description='Print an image of today\'s fortnite shop. `!shop`')
+        super().__init__(name="shop",description='Print an image of today\'s fortnite shop. `{prefix}shop`')
         self.permission = 'shop'
         self.fnbr_key = fnbr_key
         self.loop = loop
@@ -58,7 +58,7 @@ class Shop(Command):
             traceback.print_exc()
 class Stats(Command):
     def __init__(self,tn_key):
-        super().__init__(name='stats',description='Gets the fortnite stats of a player. `!stats {playername} {platform}` if you do not set platform it will default to pc')
+        super().__init__(name='stats',description='Gets the fortnite stats of a player. `{prefix}stats [playername] [platform]` if you do not set platform it will default to pc')
         self.permission = 'stats'
         self.tn_key = tn_key
     def run(self,command,msg,settings):
@@ -84,7 +84,7 @@ class Stats(Command):
             traceback.print_exc()
 class SetBackgrounds(Command):
     def __init__(self):
-        super().__init__(name='setbackground',description='Sets the backgrounds for all images generated. Seperate urls with a space. If you want a blank backround don\'t include any urls. `!setbackground(s) {url 1} {url 2} {url 3}...`')
+        super().__init__(name='setbackground',description='Sets the backgrounds for all images generated. Seperate urls with a space. If you want a blank backround don\'t include any urls. `{prefix}setbackground(s) [url 1] [url 2] [url 3]...`')
         self.permission = 'admin'
     def run(self,command,msg,settings):
         self.reset()
@@ -97,7 +97,7 @@ class SetBackgrounds(Command):
         self.content = 'set'
 class News(Command):
     def __init__(self):
-        super().__init__(name='news',description='Output the current news in fortnite')
+        super().__init__(name='news',description='Print the current news in fortnite battle royale. `{prefix}news`')
         self.permission = 'news'
     def run(self,command,msg,settings):
         self.reset()
@@ -111,7 +111,7 @@ class News(Command):
             self.content = 'Sorry <@!{0}> we were unable to get the news.'
 class Servers(Command):
     def __init__(self):
-        super().__init__(name='servers',description='Get fortnite server status')
+        super().__init__(name='servers',description='Print the fortnite servers status. `{prefix}servers`')
         self.permission = 'status'
     def run(self,command,msg,settings):
         self.reset()
@@ -122,7 +122,7 @@ class Servers(Command):
             self.embed.add_service(name=s,value=status['services'][s])
 class PatchNotes(Command):
     def __init__(self):
-        super().__init__(name='patchnotes',description="Get the latest patchnotes. `!patchnotes (d, detail)` include `d` or `detail` for a more detailed breakdown of the patchnotes.")
+        super().__init__(name='patchnotes',description="Get the latest patchnotes. `{prefix}patchnotes ([d], [detail])` include `d` or `detail` for a more detailed breakdown of the patchnotes.")
         self.permission = 'news'
     def run(self,command,msg,settings):
         self.reset()

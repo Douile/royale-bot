@@ -11,7 +11,7 @@ class ModerationModule(Module):
 
 class Mute(Command):
     def __init__(self):
-        super().__init__(name='mute',description='`!mute @user reason`')
+        super().__init__(name='mute',description='Globally mute a user. `{prefix}mute [@user] [reason]`')
         self.permission = 'admin'
     def run(self,command,msg,settings):
         self.reset()
