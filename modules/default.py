@@ -199,7 +199,6 @@ class HelpEmbed(discord.Embed):
                                 commands[command] = cmd.description
                             else:
                                 commands[command] = 'Description not set'
-                        commands[command].format_map({'prefix':self.prefix})
         is_commands = False
         for command in commands:
             description = commands[command]
@@ -213,7 +212,7 @@ class HelpEmbed(discord.Embed):
                     categories[module.category] = module.description
             for category in categories:
                 title = "{0}help {1}".format(self.prefix,category)
-                description = categories[category]
+                description = categories[category].format_map({'prefix':self.prefix})
                 self.add_field(name=title,value=description,inline=False)
         if self.category != None and is_commands == False:
             description = "You can find categories using {0}help".format(self.prefix)
