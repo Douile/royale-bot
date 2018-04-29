@@ -41,8 +41,6 @@ class Shop(Command):
                         backgrounds = []
                     print('Generating shop')
                     task = asyncio.ensure_future(shop.generate(shopdata,backgrounds,msg.server.id),loop=self.loop)
-                    while not task.done():
-                        asyncio.sleep(0.1,loop=self.loop)
                     file = task.result()
                 else:
                     file = shop.filename(rawtime)
