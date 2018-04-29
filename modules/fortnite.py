@@ -5,6 +5,7 @@ import time
 from datetime import datetime
 import os.path
 import discord
+import asyncio
 
 class FortniteModule(Module):
     def __init__(self,fnbr_key='',tn_key='',loop=None):
