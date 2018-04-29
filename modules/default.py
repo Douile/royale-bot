@@ -201,7 +201,7 @@ class HelpEmbed(discord.Embed):
                                 commands[command] = 'Description not set'
         is_commands = False
         for command in commands:
-            description = commands[command]
+            description = commands[command].format_map({'prefix':self.prefix})
             cmd = "{0}{1}".format(self.prefix,command)
             self.add_field(name=cmd,value=description,inline=False)
             is_commands = True
