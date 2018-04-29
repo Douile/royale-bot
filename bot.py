@@ -3,6 +3,7 @@ import asyncio
 import json
 import os
 import os.path
+import sys
 import signal
 from datetime import datetime
 import time
@@ -28,6 +29,14 @@ KEY_FNBR = getEnv("KEY_FNBR")
 KEY_TRACKERNETWORK = getEnv("KEY_TRACKERNETWORK")
 DATABASE_URL = getEnv("DATABASE_URL")
 BOT_NAME = getEnv("BOT_NAME","FortniteData")
+SHARD_NO = 0
+SHARD_COUNT = 1
+if len(sys.argv) > 2:
+    try:
+        SHARD_NO = int(sys.argv[1])
+        SHARD_COUNT = int(sys.argv[2])
+    except ValueError:
+        pass
 
 def checkPermissions(channel,type,settings):
     try:
@@ -104,7 +113,7 @@ def changes(original={},new={}):
 
 
 
-client = discord.Client()
+client = discord.Client(shard_id=SHARD_NO,shard_count=SHARD_COUNT)
 client.queued_actions = []
 client.database = sql.Database(url=DATABASE_URL)
 
