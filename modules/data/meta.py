@@ -51,7 +51,7 @@ def getNews(language='en'):
     if 'emergencynotice' in data:
         if 'news' in data['emergencynotice']:
             if 'messages' in data['emergencynotice']['news']:
-                output['messages'] += data['emergencynotice']['news']
+                output['messages'] += data['emergencynotice']['news']['messages']
 
 
         output['success'] = True
