@@ -60,8 +60,8 @@ class Stats(Command):
         super().__init__(name='stats',description='Gets the fortnite stats of a player. `{prefix}stats [playername] [platform]` if you do not set platform it will default to pc')
         self.permission = 'stats'
         self.tn_key = tn_key
+    @asyncio.coroutine
     def run(self,command,msg,settings):
-        self.reset()
         try:
             name = msg.content.split(" ")[1]
         except IndexError:
@@ -71,12 +71,8 @@ class Stats(Command):
         except IndexError:
             platform = "pc"
         try:
-            statsdata = stats.getStats(self.tn_key,name,platform)
-            desc = "{0} player".format(statsdata['platform'])
-            self.embed = discord.Embed(title=statsdata['name'],type="rich",description=desc)
-            for stat in statsdata['stats']:
-                value = statsdata['stats'][stat]
-                self.embed.add_field(name=stat,value=value,inline=False)
+            statsdata = yield from stats.stats(self.tn_key,name,platform)
+            self.embed = StatsEmbed(statsdata)
         except Exception as e:
             self.content = "Error getting stats"
             print(e)
@@ -210,3 +206,14 @@ class PatchNotesEmbed(discord.Embed):
                 self.add_field(name=extra['title'],value=extra['value'],inline=False)
             if note['simple']['video'] != None:
                 self.set_video(url=note['simple']['video'])
+class StatsEmbed(discord.Embed):
+    def __init__(self, data):
+        name = data.get('epicUserHandle','Not found')
+        desc = "{0} player".format(data.get('platformNameLong','UNKNOWN'))
+        super().__init__(title=name,description=desc)
+        lifetime = data.get('lifeTimeStats',None)
+        if lifetime != None:
+            for stat in lifetime:
+                key = stat.get('key')
+                value = stat.get('value')
+                self.add_field(name=key,value=value,inline=False)

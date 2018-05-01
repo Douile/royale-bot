@@ -1,4 +1,26 @@
 from . import trackernetwork
+import asyncio
+import aiohttp
+
+@asyncio.coroutine
+def fetch(session, url):
+    response = yield from session.get(url)
+    return response
+
+@asyncio.coroutine
+def apiSession(apikey):
+    headers = {'TRN-Api-Key':apikey}
+    return aiohttp.ClientSession(headers=headers)
+
+@asyncio.coroutine
+def stats(key, player,platform='pc'):
+    url = 'https://api.fortnitetracker.com/v1/profile/{1}/{0}'.format(player,platform)
+    session = yield from apiSession(key)
+    response = yield from fetch(session, url)
+    json = yield from response.json()
+    yield from session.close()
+    return json
+
 
 def getStats(key,name,platform):
     response = trackernetwork.StatsRequest(key,name,platform).send()
