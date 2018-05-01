@@ -75,6 +75,9 @@ class Stats(Command):
             print('Name: '+name)
             print('Platform: '+platform)
             statsdata = yield from stats.stats(self.tn_key,player=name,platform=platform)
+            if statsdata['code'] == 500:
+                statsdata['code'] = platform
+                statsdata['error'] = 'player {0} not found'.format(name)
             self.embed = StatsEmbed(statsdata)
         except Exception as e:
             self.content = "Error getting stats"
