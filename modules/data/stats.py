@@ -17,8 +17,8 @@ def stats(key, player,platform='pc'):
     url = 'https://api.fortnitetracker.com/v1/profile/{1}/{0}'.format(player,platform)
     session = yield from apiSession(key)
     response = yield from fetch(session, url)
-    json = yield from response.json()
     yield from session.close()
+    json = yield from response.json()
     return json
 
 
