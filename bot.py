@@ -351,7 +351,7 @@ def commandStatus(msg,settings):
     '<@!{0}> bot v{1} is online!'.format(msg.author.id,VERSION)
 
 
-cmodules = [fortnite.FortniteModule(KEY_FNBR,KEY_TRACKERNETWORK,client.loop),moderation.ModerationModule()]
+cmodules = [fortnite.FortniteModule(KEY_FNBR,KEY_TRACKERNETWORK),moderation.ModerationModule()]
 defaultmodule = default.DefaultModule(cmodules,VERSION)
 
 def close():

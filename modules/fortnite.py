@@ -8,10 +8,10 @@ import discord
 import asyncio
 
 class FortniteModule(Module):
-    def __init__(self,fnbr_key='',tn_key='',loop=None):
+    def __init__(self,fnbr_key='',tn_key=''):
         super().__init__(name="Fortnite",description="Commands related to fortnite",category="fortnite")
         self.commands = {
-            'shop': Shop(fnbr_key,loop),
+            'shop': Shop(fnbr_key),
             'stats': Stats(tn_key),
             'setbackground': SetBackgrounds(),
             'news': News(),
@@ -20,11 +20,10 @@ class FortniteModule(Module):
         }
         self.types = ['stats','shop','news','status','autoshop','autostatus','autonews']
 class Shop(Command):
-    def __init__(self,fnbr_key,loop):
+    def __init__(self,fnbr_key):
         super().__init__(name="shop",description='Print an image of today\'s fortnite shop. `{prefix}shop`')
         self.permission = 'shop'
         self.fnbr_key = fnbr_key
-        self.loop = loop
     @asyncio.coroutine
     def run(self,command,msg,settings):
         try:
