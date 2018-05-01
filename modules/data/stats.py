@@ -3,10 +3,10 @@ from . import trackernetwork
 def getStats(key,name,platform):
     response = trackernetwork.StatsRequest(key,name,platform).send()
     stats = {}
-    stats['kdr'] = response.data.lifetimestats.kdr
-    stats['kills'] = response.data.lifetimestats.kills
-    stats['wins'] = response.data.lifetimestats.wins
-    stats['win%'] = response.data.lifetimestats.winpercent
-    stats['games'] = response.data.lifetimestats.matchesplayed
+    stats['kdr'] = response.data.lifetimestats.stat('kdr')
+    stats['kills'] = response.data.lifetimestats.stat('kills')
+    stats['wins'] = response.data.lifetimestats.stat('wins')
+    stats['win%'] = response.data.lifetimestats.stat('winpercent')
+    stats['games'] = response.data.lifetimestats.stat("matchesplayed")
     data = {'name':response.data.epicUserHandle, 'platform': response.data.platformNameLong, 'stats':stats}
     return data

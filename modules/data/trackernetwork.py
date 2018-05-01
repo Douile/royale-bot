@@ -83,6 +83,8 @@ class StatItem():
                 self.percentile = value
             elif type == 'displayValue':
                 self.displayValue = value
+    def stat(self,name):
+        return getattr(self,name,None)
 class LifetimeStats():
     def __init__(self,json=[]):
         for i in range(0,len(json)):
@@ -118,3 +120,5 @@ class LifetimeStats():
             	self.timeplayed = value
             elif stat == 'Avg Survival Time':
             	self.avgsurvivaltime = value
+    def stat(self,name):
+        return getattr(self,name,None)
