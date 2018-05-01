@@ -4,3 +4,4 @@ beautifulsoup4
 html2text
 Pillow
 postgres
+aiohttp
