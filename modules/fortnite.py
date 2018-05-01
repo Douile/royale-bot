@@ -70,6 +70,8 @@ class Stats(Command):
         except IndexError:
             platform = "pc"
         try:
+            print('Name: '+name)
+            print('Platform: '+platform)
             statsdata = yield from stats.stats(self.tn_key,player=name,platform=platform)
             self.embed = StatsEmbed(statsdata)
         except Exception as e:
