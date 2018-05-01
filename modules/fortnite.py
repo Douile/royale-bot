@@ -62,11 +62,11 @@ class Stats(Command):
     @asyncio.coroutine
     def run(self,command,msg,settings):
         try:
-            name = command.content.split(" ")[1]
+            name = command.split(" ")[1]
         except IndexError:
             name = ""
         try:
-            platform = command.content.split(" ")[2].lower()
+            platform = command.split(" ")[2].lower()
             if not platform in ['pc','xb1','psn']:
                 platform = 'pc'
         except IndexError:
