@@ -70,7 +70,7 @@ class Stats(Command):
         except IndexError:
             platform = "pc"
         try:
-            statsdata = yield from stats.stats(self.tn_key,name,platform)
+            statsdata = yield from stats.stats(self.tn_key,name=name,platform=platform)
             self.embed = StatsEmbed(statsdata)
         except Exception as e:
             self.content = "Error getting stats"
