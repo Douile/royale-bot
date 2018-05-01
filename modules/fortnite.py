@@ -66,7 +66,9 @@ class Stats(Command):
         except IndexError:
             name = ""
         try:
-            platform = command.content.split(" ")[2]
+            platform = command.content.split(" ")[2].lower()
+            if not platform in ['pc','xb1','psn']:
+                platform = 'pc'
         except IndexError:
             platform = "pc"
         try:
