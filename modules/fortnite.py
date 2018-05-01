@@ -208,9 +208,15 @@ class PatchNotesEmbed(discord.Embed):
                 self.set_video(url=note['simple']['video'])
 class StatsEmbed(discord.Embed):
     def __init__(self, data):
-        name = data.get('epicUserHandle','Not found')
-        desc = "{0} player".format(data.get('platformNameLong','UNKNOWN'))
-        super().__init__(title=name,description=desc)
+        if data.get('status') == 200:
+            name = data.get('epicUserHandle','Not found')
+            desc = "{0} player".format(data.get('platformNameLong','UNKNOWN'))
+            color = 0x00ff00
+        else:
+            name = 'Network error'
+            desc = '{0} {1}'.format(data.get('status'),data.get('error'))
+            color = 0xff0000
+        super().__init__(title=name,description=desc,color=color)
         lifetime = data.get('lifeTimeStats',None)
         if lifetime != None:
             for stat in lifetime:

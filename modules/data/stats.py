@@ -18,7 +18,11 @@ def stats(key, player,platform='pc'):
     session = yield from apiSession(key)
     response = yield from fetch(session, url)
     yield from session.close()
-    json = yield from response.json()
+    if response.status == 200:
+        json = yield from response.json()
+        json['status'] = response.status
+    else:
+        json = {'status':response.status,'error':response.reason}
     return json
 
 
