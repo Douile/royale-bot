@@ -13,7 +13,7 @@ def apiSession(apikey):
     return aiohttp.ClientSession(headers=headers)
 
 @asyncio.coroutine
-def stats(key, player,platform='pc'):
+def stats(key,player='',platform='pc'):
     url = 'https://api.fortnitetracker.com/v1/profile/{1}/{0}'.format(player,platform)
     print(url)
     session = yield from apiSession(key)
