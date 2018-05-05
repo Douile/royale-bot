@@ -135,7 +135,7 @@ class Performance:
     def generate(self,matches):
         image = PIL.Image.new('RGBA',self.size,self.color)
         draw = PIL.ImageDraw.Draw(image)
-        font = PIL.ImageFont.truetype(DEFAULT_FONT,size=self.padding/2)
+        font = PIL.ImageFont.truetype(DEFAULT_FONT,size=round(self.padding/2))
         fg = (255,255,255,255)
         draw.line([(self.padding,self.padding),(self.padding,self.size[1]-self.padding)],fill=fg,width=2)
         draw.line([(self.padding,self.size[1]-self.padding),(self.size[0]-self.padding,self.size[1]-self.padding)],fill=fg,width=2)
