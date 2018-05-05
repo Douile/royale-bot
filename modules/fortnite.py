@@ -78,6 +78,7 @@ class Stats(Command):
             if statsimages == None:
                 self.content = '<@!{author}> User not found'
             else:
+                self.typing = True
                 statsimage.save('generatedstats.png')
                 self.file = 'generatedstats.png'
         except Exception as e:
