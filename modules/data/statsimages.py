@@ -152,7 +152,7 @@ class Performance:
             height = self.size[1]-self.padding*2
             last_pos = None
             for match in matches:
-                size_y = ((match.kd-lowest)*range)*(range/height)
+                size_y = (match.kd-lowest)*(height/range)
                 pos = (left,round(bottom-size_y))
                 tl = (pos[0]-2,pos[1]-2)
                 br = (pos[0]+2,pos[1]+2)
