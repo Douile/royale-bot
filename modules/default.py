@@ -195,10 +195,11 @@ class HelpEmbed(discord.Embed):
                             else:
                                 commands[command] = 'Description not set'
                         else:
-                            if cmd.description != '' and cmd.permission != 'admin':
-                                commands[command] = cmd.description
-                            else:
-                                commands[command] = 'Description not set'
+                            if cmd.permission != 'admin':
+                                if cmd.description != '':
+                                    commands[command] = cmd.description
+                                else:
+                                    commands[command] = 'Description not set'
         is_commands = False
         for command in commands:
             description = commands[command].format_map({'prefix':self.prefix})
