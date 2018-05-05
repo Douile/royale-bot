@@ -213,7 +213,7 @@ class Main:
             for row in rows:
                 stat = getattr(stats,row.lower(),None)
                 if stat != None:
-                    value = getattr(stat,column.lower(),None)
+                    value = getattr(stat,c,None)
                     if value != None:
                         textsize = font.getsize(value)
                         rleft = round(left + ((columnsize-textsize[0])/2))
