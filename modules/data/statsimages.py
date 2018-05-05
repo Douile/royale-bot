@@ -205,7 +205,7 @@ class Main:
             top = round((rowsize-textsize[1])/2)
             rleft = round(left + ((columnsize-textsize[0])/2))
             draw.text((rleft,top),column,fill=fg,font=font)
-            for row in row:
+            for row in rows:
                 stat = getattr(stats,row.lower(),None)
                 c = column.lower()
                 if c == 'win%':
