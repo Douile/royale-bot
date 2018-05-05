@@ -117,7 +117,7 @@ class Overview:
         draw.text((self.padding,fontsize+self.padding*3),statstext,fill=(255,255,255,255),font=font)
         extra = 'MATCHES {matches} WIN% {win_percent}\nSCORE {score}'.format_map(lifetime)
         extrasize = font_small.getsize(extra)
-        extrasize[1] = extrasize[1]*2 + 5
+        extrasize = (extrasize[0],extrasize[1]*2 + 5)
         extraleft = self.size[0]-(extrasize[0]+self.padding)
         extratop = self.size[1]-(extrasize[1]+self.padding)
         draw.multiline_text((extraleft,extratop),extra,fill=(255,255,255,255),font=font_small,spacing=5)
