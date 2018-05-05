@@ -44,10 +44,10 @@ class Command:
                     yield from self.run(command,msg,settings)
                 else:
                     self.run(command,msg,settings)
-                if self.content != None:
-                    self.content.format_map({'author':msg.author.id,'channel':msg.channel.id,'server':msg.server.id})
         except NameError:
             pass
+        if self.content != None:
+            self.content.format_map({'author':msg.author.id,'channel':msg.channel.id,'server':msg.server.id})
         return self
     def reset(self):
         self.content = None
