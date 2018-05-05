@@ -184,7 +184,7 @@ class Database(Postgres):
     def reset_server_backgrounds(self,server_id):
         self.run("DELETE FROM server_backgrounds WHERE server_id=%(id)s",parameters={'id':server_id})
     def set_server_backgrounds(self,server_id,backgrounds=[]):
-        self.reset_server_backgrounds(server_info)
+        self.reset_server_backgrounds(server_id)
         for background in backgrounds:
             self.add_server_background(sever_id,background)
 
