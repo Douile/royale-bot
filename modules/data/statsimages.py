@@ -259,7 +259,7 @@ class StatsData:
                     if self.matches == self.wins:
                         self.kd = self.kills
                     else:
-                        self.kd = match.kills/(match.matches-match.wins)
+                        self.kd = self.kills/(self.matches-self.wins)
     class Stats:
         def __init__(self,data):
             solo = data.get('p2',None)
