@@ -94,7 +94,7 @@ class Overlay:
         image.paste(overview_image,(padding_x,padding_y),overview_image)
         performance = Performance((size_x_small,size_y_small))
         performance_image = yield from performance.generate(data.matches)
-        image.paste(peformance_image,(padding_x*2+size_x_large,padding_y),performance_image)
+        image.paste(performance_image,(padding_x*2+size_x_large,padding_y),performance_image)
         draw.rectangle([(padding_x,padding_y*2+size_y_small),(padding_x*2+size_x_large+size_x_small,padding_y*2+size_y_small+size_y_large)],fill=self.color)
         return image
 
