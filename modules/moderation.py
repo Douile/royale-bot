@@ -89,6 +89,8 @@ class Kick(Command):
             user_ob = parse_user_at(user,msg.server.id)
             member = msg.server.get_member(user_ob.id)
             kicker = msg.author.nick
+            if kicker == None:
+                kicker = msg.author.display_name
             self.content = '<@!{0}> kicked {1}'.format('{author}',user)
             self.queue = [QueueAction(kick_user,[member,kicker,reason])]
         else:
