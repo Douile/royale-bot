@@ -118,7 +118,7 @@ class Overview:
         extrasize = font.getsize(extra)
         extraleft = self.size[0]-(extrasize[0]+self.padding)
         extratop = self.size[1]-(extrasize[1]+self.padding)
-        draw.multiline_text((extraleft,extratop),extra,fill=(255,255,255,255),font=font,spacing=5,direction='rtl')
+        draw.multiline_text((extraleft,extratop),extra,fill=(255,255,255,255),font=font,spacing=5)
         return image
 
 
