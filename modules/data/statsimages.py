@@ -82,12 +82,12 @@ class Overlay:
     def generate(self,data):
         image = PIL.Image.new('RGBA',self.size,(0,0,0,0))
         draw = PIL.ImageDraw.Draw(image)
-        padding_x = round(self.size[0]/10)
-        padding_y = round(self.size[1]/10)
-        size_x_small = padding_x*2
-        size_x_large = padding_x*5
-        size_y_small = padding_y*2
-        size_y_large = padding_y*5
+        padding_x = round(self.size[0]/20)
+        padding_y = round(self.size[1]/20)
+        size_x_small = padding_x*5
+        size_x_large = padding_x*12
+        size_y_small = padding_y*5
+        size_y_large = padding_y*12
         overview = Overview((size_x_large,size_y_small))
         overview_image = yield from overview.generate(data.userdata,data.lifetime)
         image.paste(overview_image,(padding_x,padding_y),overview_image)
