@@ -191,7 +191,7 @@ class Main:
         rowsize = round(self.size[1]/4)
         rows = ['SOLO','DUO','SUAD']
         columns = ['KD','WINS','KILLS','WIN%','MATCHES','RATING']
-        for i in range(2,5):
+        for i in range(1,4):
             row = rows[i-2]
             width = font.getsize(row)[0]
             height = font.getsize(row)[1]
