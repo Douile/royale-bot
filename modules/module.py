@@ -44,8 +44,8 @@ class Command:
                     yield from self.run(command,msg,settings)
                 else:
                     self.run(command,msg,settings)
-                    if self.content != None:
-                        self.content.format_map({'author':msg.author.id,'channel':msg.channel.id,'server':msg.server.id})
+                if self.content != None:
+                    self.content.format_map({'author':msg.author.id,'channel':msg.channel.id,'server':msg.server.id})
         except NameError:
             pass
         return self
