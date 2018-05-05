@@ -5,6 +5,7 @@ import PIL.ImageDraw
 import PIL.ImageFont
 import asyncio
 import aiohttp
+import random
 from io import BytesIO
 
 DEFAULT_SIZE = (1000,600)
