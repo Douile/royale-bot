@@ -8,7 +8,7 @@ from io import BytesIO
 
 DEFAULT_SIZE = (1000,600)
 DEFAULT_FONT = 'assets/burbank.ttf'
-DEFAULT_COLOR = (100,100,100,150)
+DEFAULT_COLOR = (255,255,255,150)
 
 class Background:
     def __init__(self,color=None,url=None):
