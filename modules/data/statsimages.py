@@ -1,5 +1,5 @@
 from . import stats
-from utils import integers
+from utils import integers, times
 import PIL.Image
 import PIL.ImageDraw
 import PIL.ImageFont
@@ -82,7 +82,6 @@ class Overlay:
     @asyncio.coroutine
     def generate(self,data):
         image = PIL.Image.new('RGBA',self.size,(0,0,0,0))
-        draw = PIL.ImageDraw.Draw(image)
         padding_x = round(self.size[0]/20)
         padding_y = round(self.size[1]/20)
         size_x_small = padding_x*5
@@ -95,7 +94,9 @@ class Overlay:
         performance = Performance((size_x_small,size_y_small))
         performance_image = yield from performance.generate(data.matches)
         image.paste(performance_image,(padding_x*2+size_x_large,padding_y),performance_image)
-        draw.rectangle([(padding_x,padding_y*2+size_y_small),(padding_x*2+size_x_large+size_x_small,padding_y*2+size_y_small+size_y_large)],fill=self.color)
+        main = Main((size_x_small+size_x_large+padding_x,size_y_large))
+        main_image = yield from main.generate(data.stats)
+        image.paste(main_image,(padding_x,padding_y*2+size_y_small),main_image)
         return image
 
 class Overview:
@@ -129,11 +130,12 @@ class Performance:
     def __init__(self,size):
         self.size = size
         self.color = DEFAULT_COLOR
-        self.padding = 15
+        self.padding = 20
     @asyncio.coroutine
     def generate(self,matches):
         image = PIL.Image.new('RGBA',self.size,self.color)
         draw = PIL.ImageDraw.Draw(image)
+        font = PIL.ImageFont.truetype(DEFAULT_FONT,size=self.padding/2)
         fg = (255,255,255,255)
         draw.line([(self.padding,self.padding),(self.padding,self.size[1]-self.padding)],fill=fg,width=2)
         draw.line([(self.padding,self.size[1]-self.padding),(self.size[0]-self.padding,self.size[1]-self.padding)],fill=fg,width=2)
@@ -149,8 +151,10 @@ class Performance:
             interval_size = round(total_size/(intervals+1))
             left = self.padding+interval_size
             bottom = self.size[1]-self.padding-5
-            height = self.size[1]-self.padding*2
+            height = self.size[1]-self.padding*2-5
+            text_top = round(self.size[1]-self.padding/4)
             last_pos = None
+            now = times.epoch_now()/60
             for match in matches:
                 size_y = (match.kd-lowest)*(height/range)
                 pos = (left,round(bottom-size_y))
@@ -159,12 +163,23 @@ class Performance:
                 draw.ellipse([tl,br],fill=fg)
                 if last_pos != None:
                     draw.line([last_pos,pos],fill=fg,width=2)
+                time = times.isotime(match.time).timestamp()
+                mins = '-'+str(round(now-(time/60),1))
+                width = font.getsize(mins)[0]
+                draw.text((round(left-width/2),text_top),mins,fill=fg,font=font)
                 last_pos = pos
                 left += interval_size
         return image
 
-
-
+class Main:
+    def __init__(self,size):
+        self.size = size:
+        self.color = DEFAULT_COLOR
+        self.padding = 15
+    @asyncio.coroutine
+    def generate(self,stats):
+        image = PIL.Image.new('RGBA',self.size,self.color)
+        draw = PIL.ImageDraw.Draw(image)
 
 class Stats:
     def __init__(self):
