@@ -205,12 +205,12 @@ class Main:
             top = round((rowsize-textsize[1])/2)
             rleft = round(left + ((columnsize-textsize[0])/2))
             draw.text((rleft,top),column,fill=fg,font=font)
+            top = rowsize
             for row in rows:
                 stat = getattr(stats,row.lower(),None)
                 c = column.lower()
                 if c == 'win%':
                     c = 'win_percent'
-                top = rowsize
                 if stat != None:
                     value = getattr(stat,column.lower(),None)
                     if value != None:
@@ -218,7 +218,7 @@ class Main:
                         rleft = round(left + ((columnsize-textsize[0])/2))
                         rtop = round(top+ ((rowsize-textsize[1])/2))
                         draw.text((rleft,rtop),value,fill=fg,font=font)
-                    top += rowsize
+                top += rowsize
             left += columnsize
         return image
 class Stats:
