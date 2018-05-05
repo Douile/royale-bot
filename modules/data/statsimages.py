@@ -92,7 +92,9 @@ class Overlay:
         overview = Overview((size_x_large,size_y_small))
         overview_image = yield from overview.generate(data.userdata,data.lifetime)
         image.paste(overview_image,(padding_x,padding_y),overview_image)
-        draw.rectangle([(padding_x*2+size_x_large,padding_y),(padding_x*2+size_x_large+size_x_small,padding_y+size_y_small)],fill=self.color)
+        performance = Performance((size_x_small,size_y_small))
+        performance_image = yield from performance.generate(data.matches)
+        image.paste(peformance_image,(padding_x*2+size_x_large,padding_y),performance_image)
         draw.rectangle([(padding_x,padding_y*2+size_y_small),(padding_x*2+size_x_large+size_x_small,padding_y*2+size_y_small+size_y_large)],fill=self.color)
         return image
 
@@ -122,6 +124,42 @@ class Overview:
         extratop = self.size[1]-(extrasize[1]+self.padding)
         draw.multiline_text((extraleft,extratop),extra,fill=(255,255,255,255),font=font_small,spacing=5)
         return image
+
+class Performance:
+    def __init__(self,size):
+        self.size = size
+        self.color = DEFAULT_COLOR
+        self.padding = 15
+    @asyncio.coroutine
+    def generate(self,matches):
+        image = PIL.Image.new('RGBA',self.size,self.color)
+        draw = PIL.ImageDraw.Draw(image)
+        fg = (255,255,255,255)
+        draw.line([(self.padding,self.padding),(self.padding,self.size[1]-self.padding)],fill=fg,width=2)
+        draw.line([(self.padding,self.size[1]-self.padding),(self.size[0]-self.padding,self.size[1]-self.padding)],fill=fg,width=2)
+        intervals = len(matches)
+        if intervals > 0:
+            total_size = self.size[0]-self.padding*2
+            interval_size = round(total_size/(intervals+1))
+            left = self.padding+interval_size
+            bottom = self.size[1]-self.padding
+            height = self.size[1]-self.padding*2
+            last_pos = None
+            for match in matches:
+                if match.matches == match.wins:
+                    kd = 1
+                else:
+                    kd = match.kills/(match.matches-match.wins)
+                pos = (left,round(height*kd))
+                tl = (pos[0]-1,pos[1]-1)
+                br = (pos[0]+1,pos[1]+1)
+                draw.ellipse([tl,br],fill=fg)
+                if last_pos != None:
+                    draw.line([last_pos,pos],fill=fg,width=1)
+                last_pos = pos
+                left += interval_size
+        return image
+
 
 
 
@@ -213,6 +251,7 @@ class StatsData:
                 self.score = data.get('score',0)
                 self.platform = data.get('platform',0)
                 self.time = data.get('dateCollected','')
+                self.wins = data.get('top1',0)
     class Stats:
         def __init__(self,data):
             solo = data.get('p2',None)
