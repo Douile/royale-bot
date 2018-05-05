@@ -166,7 +166,7 @@ class Performance:
                 time = times.isotime(match.time).timestamp()
                 mins = '-'+str(round(now-(time/60),1))
                 width = font.getsize(mins)[0]
-                draw.text((round(left-width/2),text_top),mins,fill=fg,font=font)
+                draw.text((round(left-width/2),round(text_top-font.getsize(mins)[1])),mins,fill=fg,font=font)
                 last_pos = pos
                 left += interval_size
         return image
