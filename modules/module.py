@@ -1,4 +1,5 @@
 import asyncio
+from discord import Object
 
 class Module:
     def __init__(self,name="",description="",category=None):
@@ -83,3 +84,17 @@ def get_prefix(settings):
     if prefix == None:
         prefix = '!'
     return prefix
+
+
+def parse_user_at(text,serverid):
+    if text.statswith('<@!'):
+        id = text[3:-1]
+    elif text.statswith('<@'):
+        id = text[2:-1]
+    elif text.startswith('<'):
+        id = text[1:-1]
+    else:
+        raise RuntimeError('No user found')
+    user = Object(id)
+    user.server = Object(serverid)
+    return user
