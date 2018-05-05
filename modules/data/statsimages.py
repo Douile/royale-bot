@@ -314,6 +314,7 @@ class Map(dict):
 
 @asyncio.coroutine
 def generate(KEY_TN,player,platform,backgrounds=[]):
+    print(backgrounds)
     stats_data = yield from stats.stats(KEY_TN,player,platform)
     if stats_data['status'] == 200:
         stat_data = StatsData(stats_data)
