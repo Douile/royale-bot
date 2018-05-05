@@ -173,7 +173,7 @@ class Performance:
 
 class Main:
     def __init__(self,size):
-        self.size = size:
+        self.size = size
         self.color = DEFAULT_COLOR
         self.padding = 15
     @asyncio.coroutine
