@@ -152,8 +152,8 @@ class Performance:
             height = self.size[1]-self.padding*2
             last_pos = None
             for match in matches:
-                size_y = round(bottom-(((match.kd-lowest)*range)*(height/range)))
-                pos = (left,round(height*kd))
+                size_y = ((match.kd-lowest)*range)*(height/range)
+                pos = (left,round(bottom-size_y))
                 tl = (pos[0]-2,pos[1]-2)
                 br = (pos[0]+2,pos[1]+2)
                 draw.ellipse([tl,br],fill=fg)
