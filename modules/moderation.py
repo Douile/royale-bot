@@ -101,7 +101,8 @@ def kick_user(client,user,kicker,reason):
 
 class TestMe(Command):
     def __init__(self):
-        super().__init__(permission='admin')
+        super().__init__()
+        self.permission = 'admin'
     @asyncio.coroutine
     def run(self,command,msg,settings):
         self.content = '<@!{author}> sending'
