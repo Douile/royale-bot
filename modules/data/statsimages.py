@@ -86,8 +86,8 @@ class Overlay:
         padding_y = round(self.size[1]/10)
         size_x_small = padding_x*2
         size_x_large = padding_x*5
-        size_y_small = padding_y*3
-        size_y_large = padding_y*4
+        size_y_small = padding_y*2
+        size_y_large = padding_y*5
         overview = Overview((size_x_large,size_y_small))
         overview_image = yield from overview.generate(data.userdata,data.lifetime)
         image.paste(overview_image,(padding_x,padding_y),overview_image)
@@ -99,7 +99,7 @@ class Overview:
     def __init__(self,size):
         self.size = size
         self.color = DEFAULT_COLOR
-        self.padding = 25
+        self.padding = 15
     @asyncio.coroutine
     def generate(self,userdata,lifetimestats):
         lifetime = dict(lifetimestats)
