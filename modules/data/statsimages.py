@@ -192,10 +192,10 @@ class Main:
         rows = ['SOLO','DUO','SUAD']
         columns = ['KD','WINS','KILLS','WIN%','MATCHES','RATING']
         for i in range(2,5):
+            row = rows[i-2]
             width = font.getsize(row)[0]
             height = font.getsize(row)[1]
             top = round((rowsize*i)+((rowsize-height)/2))
-            row = rows[i-2]
             left = round((rowsize-width)/2)
             draw.text((left,top),row,fill=fg,font=font)
         left = rowsize
