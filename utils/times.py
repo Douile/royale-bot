@@ -3,4 +3,4 @@ from datetime import datetime
 def isotime(string):
     return datetime.strptime(string, "%Y-%m-%dT%H:%M:%S.%fZ")
 def epoch_now():
-    return datetime.utc_now().timestamp()
+    return datetime.utcnow().timestamp()
