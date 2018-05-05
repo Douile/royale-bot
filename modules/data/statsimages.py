@@ -54,7 +54,7 @@ class Background:
         return image
     @staticmethod
     @asyncio.coroutine
-    def reCropImage(self,image,size):
+    def reCropImage(image,size):
         if image.height / size[1] > image.width / size[0]:
             width = size[0]
             height = size[1] / image.width * image.height
