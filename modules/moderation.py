@@ -98,6 +98,7 @@ class Kick(Command):
 def kick_user(client,user,kicker,reason):
     yield from client.kick(user)
     kickmsg = '<@!{0}> You were kicked by @{1} for: {2}'.format(user.id,kicker,reason)
+    print(kickmsg)
     yield from client.send_message(user,content=kickmsg)
 
 class TestMe(Command):
