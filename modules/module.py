@@ -89,9 +89,9 @@ def get_prefix(settings):
 
 
 def parse_user_at(text,serverid):
-    if text.statswith('<@!'):
+    if text.startswith('<@!'):
         id = text[3:-1]
-    elif text.statswith('<@'):
+    elif text.startswith('<@'):
         id = text[2:-1]
     elif text.startswith('<'):
         id = text[1:-1]
