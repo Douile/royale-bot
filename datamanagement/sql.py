@@ -186,7 +186,7 @@ class Database(Postgres):
     def set_server_backgrounds(self,server_id,backgrounds=[]):
         self.reset_server_backgrounds(server_id)
         for background in backgrounds:
-            self.add_server_background(sever_id,background)
+            self.add_server_background(server_id,background)
 
     # server channels
     def set_server_channel(self,server_id,channel_type,channel_id=None):
