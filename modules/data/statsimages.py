@@ -190,7 +190,7 @@ class StatsData:
                         self.kd = value
         def __iter__(self):
             yield 'score', self.score
-            yield 'matches_player', self.matches_played
+            yield 'matches', self.matches
             yield 'wins', self.wins
             yield 'kills', self.kills
             yield 'kd', self.kd
