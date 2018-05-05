@@ -86,11 +86,14 @@ class Kick(Command):
             reason = data[s+1:]
             print('Kick {0} : {1}'.format(user,reason))
             user_ob = parse_user_at(user,msg.server.id)
-            self.content = '<@!{0}> Kicked {1}'.format('{author}',user)
-            self.queue = [QueueAction(kick_user,[user_ob])]
+            kicker = msg.author.nick
+            self.content = '<@!{0}> kicked {1}'.format('{author}',user)
+            self.queue = [QueueAction(kick_user,[user_ob,kicker,reason])]
         else:
             self.content = '<@!{author}> Invalid arguments'
 
 @asyncio.coroutine
-def kick_user(client,user):
+def kick_user(client,user,kicker,reason):
     yield from client.kick(user)
+    kickmsg = '<@!{0}> You were kicked by @{1} for: {2}'.format(user.id,kicker,reason)
+    yield from client.send_message(user,content=kickmsg)
