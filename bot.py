@@ -260,7 +260,7 @@ def on_message_edit(before,msg):
 def commandHandler(command,msg):
     command = command.lower()
     serverid = msg.server.id
-    serversettings = client.database.server_info(serverid,channels=True)
+    serversettings = client.database.server_info(serverid,channels=True,backgrounds=True)
     if serversettings.get("server_name") != msg.server.name:
         client.database.set_server_info(serverid,server_name=msg.server.name)
     output = Command()
