@@ -246,8 +246,8 @@ def generate(KEY_TN,player,platform):
     stats_data = yield from stats.stats(KEY_TN,player,platform)
     if stats_data['status'] == 200:
         stat_data = StatsData(stats_data)
-        stats = Stats()
-        image = yield from stats.generate(stat_data)
+        statsimage = Stats()
+        image = yield from statsimage.generate(stat_data)
     else:
         image == None
     return image
