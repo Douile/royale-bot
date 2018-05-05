@@ -148,7 +148,7 @@ class Performance:
             total_size = self.size[0]-self.padding*2
             interval_size = round(total_size/(intervals+1))
             left = self.padding+interval_size
-            bottom = self.size[1]-self.padding
+            bottom = self.size[1]-self.padding-5
             height = self.size[1]-self.padding*2
             last_pos = None
             for match in matches:
