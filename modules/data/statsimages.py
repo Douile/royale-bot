@@ -219,6 +219,8 @@ class Main:
                         rleft = round(left + ((columnsize-textsize[0])/2))
                         rtop = round(top+ ((rowsize-textsize[1])/2))
                         draw.text((rleft,rtop),value,fill=fg,font=font)
+                    else:
+                        print('{0} not found'.format(c))
                 top += rowsize
             left += columnsize
         return image
@@ -337,6 +339,7 @@ class StatsData:
                 self.kills_per_game = self.getStat(data,'kpg')
                 self.score_per_match = self.getStat(data,'scorePerMatch')
                 self.wins = self.getStat(data,'top1')
+                self.rating = self.getStat(data,'trnRating')
             @staticmethod
             def getStat(data,key):
                 d = data.get(key,None)
