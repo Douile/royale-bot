@@ -180,7 +180,7 @@ class Main:
     def generate(self,stats):
         image = PIL.Image.new('RGBA',self.size,self.color)
         draw = PIL.ImageDraw.Draw(image)
-
+        return image
 class Stats:
     def __init__(self):
         self.background = Background(color=(0,0,0,0))
