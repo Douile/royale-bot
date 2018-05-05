@@ -67,7 +67,9 @@ class Stats(Command):
             name = ""
         try:
             platform = command.split(" ")[2].lower()
-            if not platform in ['pc','xb1','psn']:
+            if platform == 'ps4':
+                platform = 'psn'
+            elif not platform in ['pc','xb1','psn']:
                 platform = 'pc'
         except IndexError:
             platform = "pc"
