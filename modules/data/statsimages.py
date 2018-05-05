@@ -185,6 +185,26 @@ class Main:
     def generate(self,stats):
         image = PIL.Image.new('RGBA',self.size,self.color)
         draw = PIL.ImageDraw.Draw(image)
+        font = PIL.ImageFont.truetype(DEFAULT_FONT)
+        fg = (255,255,255,255)
+        columnsize = round(self.size[0]/7)
+        rowsize = round(self.size[1]/4)
+        rows = ['SOLO','DUO','SUAD']
+        columns = ['KD','WINS','KILLS','WIN%','MATCHES','RATING']
+        for i in range(2,5):
+            width = font.getsize(row)[0]
+            height = font.getsize(row)[1]
+            top = round((rowsize*i)+((rowsize-height)/2))
+            row = rows[i-2]
+            left = round((rowsize-width)/2)
+            draw.text((left,top),row,fill=fg,font=font)
+        left = rowsize
+        for column in columns:
+            draw.line([(left,0),(left,self.size[1])],fill=fg,width=2)
+            textsize = font.getsize(column)
+            top = round((rowsize-textsize[1])/2)
+            rleft = round(left + ((columnsize-textsize[0])/2))
+            draw.text((rleft,top),column,fill=fg,font=font)
         return image
 class Stats:
     def __init__(self):
