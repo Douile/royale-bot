@@ -103,7 +103,7 @@ class Overview:
         self.padding = 15
     @asyncio.coroutine
     def generate(self,userdata,lifetimestats):
-        lifetime = dict(lifetimestats)
+        lifetime = Map(lifetimestats)
         image = PIL.Image.new('RGBA',self.size,self.color)
         draw = PIL.ImageDraw.Draw(image)
         fontsize = round(self.size[1]/2)-self.padding*2
@@ -236,6 +236,10 @@ class StatsData:
                 else:
                     o = ''
                 return o
+
+class Map(dict):
+    def __missing__(self, key):
+        return key
 
 @asyncio.coroutine
 def generate(KEY_TN,player,platform):
