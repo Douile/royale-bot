@@ -44,7 +44,7 @@ class Shop(Command):
                     file = shop.filename(rawtime)
                 self.typing = True
                 self.file = file
-                self.content = "data from <https://fnbr.co>"
+                self.content = "Data from <https://fnbr.co>"
                 self.settings = {'latest_shop': file}
             else:
                 self.content = "Sorry there was an api error: {0}. All data from <https://fnbr.co>".format(shopdata.status)
@@ -82,6 +82,7 @@ class Stats(Command):
             else:
                 self.typing = True
                 statsimage.save('generatedstats.png')
+                self.content = '<@!{author}>'
                 self.file = 'generatedstats.png'
         except Exception as e:
             self.content = "Error getting stats"
@@ -146,7 +147,7 @@ class PatchNotes(Command):
             if notes['notes'][0]['simple'] != None:
                 self.content = notes['notes'][0]['simple']['video']
         else:
-            self.content = 'Sorry <@!{0}> we were unable to get the patch notes'.format(msg.author.id)
+            self.content = 'Sorry <@!{author}> we were unable to get the patch notes'
 
 class StatusEmbed(discord.Embed):
     def __init__(self,online=False,message=''):
