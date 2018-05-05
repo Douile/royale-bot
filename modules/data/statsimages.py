@@ -138,8 +138,7 @@ class Stats:
     @asyncio.coroutine
     def generate(self,data):
         background = yield from self.background.generate()
-        overlay = yield from self.overlay.generate()
-        text = yield from self.text.generate(data)
+        overlay = yield from self.overlay.generate(data)
         background.paste(overlay,(0,0),overlay)
         return background
 
