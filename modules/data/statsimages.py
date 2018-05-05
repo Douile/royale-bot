@@ -108,6 +108,7 @@ class Overview:
         draw = PIL.ImageDraw.Draw(image)
         fontsize = round(self.size[1]/2)-self.padding*2
         font = PIL.ImageFont.truetype(DEFAULT_FONT,size=fontsize)
+        font_small = PIL.ImageFont.truetype(DEFAULT_FONT,size=round(fontsize/2))
         draw.text((self.padding,self.padding),userdata.name,fill=(255,255,255,255),font=font)
         platformsize = font.getsize(userdata.platform)[0]
         platformleft = self.size[0]-(self.padding+platformsize)
@@ -116,6 +117,7 @@ class Overview:
         draw.text((self.padding,fontsize+self.padding*3),statstext,fill=(255,255,255,255),font=font)
         extra = 'MATCHES {matches} WIN% {win_percent}\nSCORE {score}'.format_map(lifetime)
         extrasize = font.getsize(extra)
+        extrasize[1] = extrasize[1]*2 + 5
         extraleft = self.size[0]-(extrasize[0]+self.padding)
         extratop = self.size[1]-(extrasize[1]+self.padding)
         draw.multiline_text((extraleft,extratop),extra,fill=(255,255,255,255),font=font,spacing=5)
