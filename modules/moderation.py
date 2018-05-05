@@ -87,6 +87,10 @@ class Kick(Command):
             print('Kick {0} : {1}'.format(user,reason))
             user_ob = parse_user_at(user,msg.server.id)
             self.content = '<@!{0}> Kicked {1}'.format('{author}',user)
-            yield from client.kick(user_ob)
+            self.queue = [QueueAction(kick_user,[user_ob])]
         else:
             self.content = '<@!{author}> Invalid arguments'
+
+@asyncio.coroutine
+def kick_user(client,user):
+    yield from client.kick(user)
