@@ -87,9 +87,10 @@ class Kick(Command):
             reason = data[s+1:]
             print('Kick {0} : {1}'.format(user,reason))
             user_ob = parse_user_at(user,msg.server.id)
+            member = msg.server.get_member(user_ob.id)
             kicker = msg.author.nick
             self.content = '<@!{0}> kicked {1}'.format('{author}',user)
-            self.queue = [QueueAction(kick_user,[user_ob,kicker,reason])]
+            self.queue = [QueueAction(kick_user,[member,kicker,reason])]
         else:
             self.content = '<@!{author}> Invalid arguments'
 
