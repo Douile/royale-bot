@@ -99,16 +99,17 @@ class Overview:
     def __init__(self,size):
         self.size = size
         self.color = DEFAULT_COLOR
+        self.padding = 25
     @asyncio.coroutine
     def generate(self,userdata,lifetimestats):
         lifetime = dict(lifetimestats)
         image = PIL.Image.new('RGBA',self.size,self.color)
         draw = PIL.ImageDraw.Draw(image)
-        fontsize = round(self.size[1]/2)-2
+        fontsize = round(self.size[1]/2)-self.padding*2
         font = PIL.ImageFont.truetype(DEFAULT_FONT,size=fontsize)
-        draw.text((10,10),userdata.name,fill=(255,255,255,255),font=font)
+        draw.text((self.padding,self.padding),userdata.name,fill=(255,255,255,255),font=font)
         statstext = 'KD {kd} WINS {wins}'.format_map(lifetime)
-        draw.text((10,fontsize+20),statstext,fill=(255,255,255,255),font=font)
+        draw.text((self.padding,fontsize+self.padding*3),statstext,fill=(255,255,255,255),font=font)
         return image
 
 
