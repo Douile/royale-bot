@@ -1,5 +1,5 @@
 from .module import Module, Command
-from .data import shop,stats,meta
+from .data import shop,statsimages,meta
 import traceback
 import time
 from datetime import datetime
@@ -74,11 +74,12 @@ class Stats(Command):
         try:
             print('Name: '+name)
             print('Platform: '+platform)
-            statsdata = yield from stats.stats(self.tn_key,player=name,platform=platform)
-            if statsdata['status'] == 500:
-                statsdata['status'] = platform
-                statsdata['error'] = 'player {0} not found'.format(name)
-            self.embed = StatsEmbed(statsdata)
+            statsimage = yield from statsimages.generate(self.tn_key,name,platform)
+            if statsimages == None:
+                self.content = '<@!{author}> User not found'>
+            else:
+                statsimage.save('generatedstats.png')
+                self.file = 'generatedstats.png'
         except Exception as e:
             self.content = "Error getting stats"
             print(e)
