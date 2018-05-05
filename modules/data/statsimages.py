@@ -104,26 +104,14 @@ class Overview:
         lifetime = dict(lifetimestats)
         image = PIL.Image.new('RGBA',self.size,self.color)
         draw = PIL.ImageDraw.Draw(image)
-        font = PIL.ImageFont.truetype(DEFAULT_FONT,size=24)
+        fontsize = round(self.size/2)-2
+        font = PIL.ImageFont.truetype(DEFAULT_FONT,size=fontsize)
         draw.text((10,10),userdata.name,fill=(255,255,255,255),font=font)
         statstext = 'KD {kd} WINS {wins}'.format_map(lifetime)
-        draw.text((10,40),statstext,fill=(255,255,255,255),font=font)
+        draw.text((10,fontsize+20),statstext,fill=(255,255,255,255),font=font)
         return image
 
 
-class Text:
-    def __init__(self):
-        self.size = DEFAULT_SIZE
-        self.font = DEFAULT_FONT
-    @asyncio.coroutine
-    def generate(self,data):
-        image = PIL.Image.new('RGBA',self.size,(0,0,0,0))
-        draw = PIL.ImageDraw.Draw(image)
-        stats_data = yield from self.parse_data(data)
-
-    @asyncio.coroutine
-    def parse_data(self,data):
-        return StatsData(data)
 
 class Stats:
     def __init__(self):
