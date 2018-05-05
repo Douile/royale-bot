@@ -74,7 +74,7 @@ class Stats(Command):
         try:
             print('Name: '+name)
             print('Platform: '+platform)
-            statsimage = yield from statsimages.generate(self.tn_key,name,platform)
+            statsimage = yield from statsimages.generate(self.tn_key,name,platform,settings['backgrounds'])
             if statsimages == None:
                 self.content = '<@!{author}> User not found'
             else:

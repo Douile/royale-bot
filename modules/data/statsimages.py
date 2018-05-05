@@ -313,11 +313,14 @@ class Map(dict):
         return key
 
 @asyncio.coroutine
-def generate(KEY_TN,player,platform):
+def generate(KEY_TN,player,platform,backgrounds=[]):
     stats_data = yield from stats.stats(KEY_TN,player,platform)
     if stats_data['status'] == 200:
         stat_data = StatsData(stats_data)
         statsimage = Stats()
+        if len(backgrounds) > 0:
+            url = random.choice(backgrounds)
+            statsimage.url = url
         image = yield from statsimage.generate(stat_data)
     else:
         image == None
