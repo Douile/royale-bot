@@ -8,7 +8,7 @@ from io import BytesIO
 
 DEFAULT_SIZE = (1000,600)
 DEFAULT_FONT = 'assets/burbank.ttf'
-DEFAULT_COLOR = (255,255,255,230)
+DEFAULT_COLOR = (255,255,255,170)
 
 class Background:
     def __init__(self,color=None,url=None):
@@ -75,7 +75,7 @@ class Overlay:
     def __init__(self,color=None):
         self.size = DEFAULT_SIZE
         if color == None:
-            self.color = (0,0,0,50)
+            self.color = DEFAULT_COLOR
         else:
             self.color = color
     @asyncio.coroutine
@@ -108,7 +108,10 @@ class Overview:
         fontsize = round(self.size[1]/2)-self.padding*2
         font = PIL.ImageFont.truetype(DEFAULT_FONT,size=fontsize)
         draw.text((self.padding,self.padding),userdata.name,fill=(255,255,255,255),font=font)
-        statstext = 'KD {kd} WINS {wins}'.format_map(lifetime)
+        platformsize = font.getsize(userdata.platform)[0]
+        platformleft = self.size[0]-(self.padding+platformsize)
+        draw.text((platformleft,self.padding),userdata.platform,fill=(255,255,255,255),font=font)
+        statstext = 'KD {kd} WINS {wins} '.format_map(lifetime)
         draw.text((self.padding,fontsize+self.padding*3),statstext,fill=(255,255,255,255),font=font)
         return image
 
