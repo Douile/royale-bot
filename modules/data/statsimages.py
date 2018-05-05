@@ -181,7 +181,7 @@ class StatsData:
                     elif key == 'Score':
                         self.score = value
                     elif key == 'Matches Played':
-                        self.matches_played = value
+                        self.matches = value
                     elif key == 'Wins':
                         self.wins = value
                     elif key == 'Kills':
