@@ -208,6 +208,7 @@ class Main:
             c = column.lower()
             if c == 'win%':
                 c = 'win_percent'
+            print(c)
             top = rowsize
             for row in rows:
                 stat = getattr(stats,row.lower(),None)
