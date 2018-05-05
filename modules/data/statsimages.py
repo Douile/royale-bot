@@ -323,7 +323,7 @@ def generate(KEY_TN,player,platform,backgrounds=[]):
         if len(backgrounds) > 0:
             url = random.choice(backgrounds)
             print(url)
-            statsimage.url = url
+            statsimage.background.url = url
         image = yield from statsimage.generate(stat_data)
     else:
         image == None
