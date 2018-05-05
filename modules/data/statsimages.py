@@ -190,12 +190,15 @@ class StatsData:
                         self.kills = value
                     elif key == 'K/d':
                         self.kd = value
+            if self.matches != None and self.wins != None:
+                self.win_percent = round((self.wins/self.matches)*100,2)
         def __iter__(self):
             yield 'score', self.score
             yield 'matches', self.matches
             yield 'wins', self.wins
             yield 'kills', self.kills
             yield 'kd', self.kd
+            yield 'win_percent', self.win_percent
     class Matches(list):
         def __init__(self,data):
             if type(data) is list:
