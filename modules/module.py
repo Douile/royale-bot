@@ -87,7 +87,6 @@ def get_prefix(settings):
         prefix = '!'
     return prefix
 
-
 def parse_user_at(text,serverid):
     if text.startswith('<@!'):
         id = text[3:-1]

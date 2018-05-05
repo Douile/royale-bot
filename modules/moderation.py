@@ -77,10 +77,14 @@ class Kick(Command):
     def run(self,command,msg,settings):
         l = len('kick ')
         data = command[l:]
-        s = data.index(' ')
+        try:
+            s = data.index(' ')
+        except ValueError:
+            s = -1
         if s > -1:
             user = data[:s]
             reason = data[s+1:]
+            print('Kick {0} : {1}'.format(user,reason))
             user_ob = parse_user_at(user,msg.server.id)
             yield from client.kick(user_ob)
             self.content = '<@!{author}> Kicked {0}'.format(user)
