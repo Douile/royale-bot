@@ -185,7 +185,7 @@ class Main:
     def generate(self,stats):
         image = PIL.Image.new('RGBA',self.size,self.color)
         draw = PIL.ImageDraw.Draw(image)
-        font = PIL.ImageFont.truetype(DEFAULT_FONT)
+        font = PIL.ImageFont.truetype(DEFAULT_FONT,size=24)
         fg = (255,255,255,255)
         columnsize = round(self.size[0]/7)
         rowsize = round(self.size[1]/4)
@@ -198,13 +198,28 @@ class Main:
             top = round((rowsize*i)+((rowsize-height)/2))
             left = round((rowsize-width)/2)
             draw.text((left,top),row,fill=fg,font=font)
-        left = rowsize
+        left = columnsize
         for column in columns:
             draw.line([(left,0),(left,self.size[1])],fill=fg,width=2)
             textsize = font.getsize(column)
             top = round((rowsize-textsize[1])/2)
             rleft = round(left + ((columnsize-textsize[0])/2))
             draw.text((rleft,top),column,fill=fg,font=font)
+            for row in row:
+                stat = getattr(stats,row.lower(),None)
+                c = column.lower()
+                if c == 'win%':
+                    c = 'win_percent'
+                top = rowsize
+                if stat != None:
+                    value = getattr(stat,column.lower(),None)
+                    if value != None:
+                        textsize = font.getsize(value)
+                        rleft = round(left + ((columnsize-textsize[0])/2))
+                        rtop = round(top+ ((rowsize-textsize[1])/2))
+                        draw.text((rleft,rtop),value,fill=fg,font=font)
+                    top += rowsize
+            left += columnsize
         return image
 class Stats:
     def __init__(self):
