@@ -189,10 +189,10 @@ class Main:
         fg = (255,255,255,255)
         columnsize = round(self.size[0]/7)
         rowsize = round(self.size[1]/4)
-        rows = ['SOLO','DUO','SUAD']
+        rows = ['SOLO','DUO','SQUAD']
         columns = ['KD','WINS','KILLS','WIN%','MATCHES','RATING']
         for i in range(1,4):
-            row = rows[i-2]
+            row = rows[i-1]
             width = font.getsize(row)[0]
             height = font.getsize(row)[1]
             top = round((rowsize*i)+((rowsize-height)/2))
