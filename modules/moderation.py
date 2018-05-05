@@ -105,6 +105,7 @@ class TestMe(Command):
         self.permission = 'admin'
     @asyncio.coroutine
     def run(self,command,msg,settings):
+        print('testing pm')
         self.content = '<@!{author}> sending'
         self.queue = [QueueAction(test_msg,[msg.author])]
 
