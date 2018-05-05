@@ -205,12 +205,12 @@ class Main:
             top = round((rowsize-textsize[1])/2)
             rleft = round(left + ((columnsize-textsize[0])/2))
             draw.text((rleft,top),column,fill=fg,font=font)
+            c = column.lower()
+            if c == 'win%':
+                c = 'win_percent'
             top = rowsize
             for row in rows:
                 stat = getattr(stats,row.lower(),None)
-                c = column.lower()
-                if c == 'win%':
-                    c = 'win_percent'
                 if stat != None:
                     value = getattr(stat,column.lower(),None)
                     if value != None:
@@ -335,6 +335,7 @@ class StatsData:
                 self.kills = self.getStat(data,'kills')
                 self.kills_per_game = self.getStat(data,'kpg')
                 self.score_per_match = self.getStat(data,'scorePerMatch')
+                self.wins = self.getStat(data,'top1')
             @staticmethod
             def getStat(data,key):
                 d = data.get(key,None)
