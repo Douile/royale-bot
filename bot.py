@@ -308,7 +308,6 @@ def commandHandler(command,msg):
             client.database.set_server_backgrounds(serverid,backgrounds=output.settings.get('backgrounds'))
             output.settings.pop('backgrounds')
         client.database.set_server_info(serverid,**output.settings)
-
     if output.typing == True:
         yield from client.send_typing(msg.channel)
     if output.noPermission != None:

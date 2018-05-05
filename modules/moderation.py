@@ -68,3 +68,17 @@ def mute_role(client,server_id):
     else:
         value = None
     return value
+
+class Kick(Command):
+    def __init__(self):
+        super().__init__(name='kick',description='Kick a user from the server.`{prefix}kick @user reason...`',permission='admin')
+    @asyncio.coroutine
+    def run(self,command,msg,settings):
+        l = len('kick ')
+        data = command[l:]
+        s = data.index(' ')
+        if s > -1:
+            user = data[:s]
+            reason = data[s+1:]
+        else:
+            self.content = '<@!{0}> Invalid arguments'.format(msg.author.id)

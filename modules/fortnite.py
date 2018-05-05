@@ -91,7 +91,7 @@ class SetBackgrounds(Command):
         self.permission = 'admin'
     def run(self,command,msg,settings):
         self.reset()
-        urls = msg.content.split(" ")
+        urls = command.split(" ")
         if len(urls) < 2:
             backgrounds = []
         else:
@@ -111,7 +111,7 @@ class News(Command):
                 embed = NewsEmbed(msg,news['updated'])
                 self.embeds.append(embed)
         else:
-            self.content = 'Sorry <@!{0}> we were unable to get the news.'
+            self.content = 'Sorry <@!{author}> we were unable to get the news.'
 class Servers(Command):
     def __init__(self):
         super().__init__(name='servers',description='Print the fortnite servers status. `{prefix}servers`')
