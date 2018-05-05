@@ -7,7 +7,7 @@ class ModerationModule(Module):
         super().__init__(name='Moderation',description='Commands related to moderation',category='moderation')
         self.commands = {
             'mute': Mute(),
-            'kick', Kick()
+            'kick': Kick()
         }
 
 class Mute(Command):
