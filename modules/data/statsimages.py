@@ -55,14 +55,14 @@ class Background:
     @staticmethod
     @asyncio.coroutine
     def reCropImage(image,size):
-        if image.height / size[1] > image.width / size[0]:
+        if image.height / size[1] < image.width / size[0]:
             width = size[0]
             height = round(size[1] / image.width * image.height)
             image = image.resise((width,height))
             top = (size[1] - height)/2
             bottom = top + height
             image = image.crop((0,top,width,bottom))
-        elif image.width / size[0] > image.height / size[1]:
+        elif image.width / size[0] < image.height / size[1]:
             height = size[1]
             width = round(size[0] / image.height * image.width)
             image = image.resize((width,height))
