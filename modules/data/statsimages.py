@@ -139,6 +139,12 @@ class Performance:
         draw.line([(self.padding,self.size[1]-self.padding),(self.size[0]-self.padding,self.size[1]-self.padding)],fill=fg,width=2)
         intervals = len(matches)
         if intervals > 0:
+            kds = []
+            for match in matches:
+                kds.append(match.kd)
+            lowest = integers.lowest(*kds)
+            highest = integers.highest(*kds)
+            range = highest-lowest
             total_size = self.size[0]-self.padding*2
             interval_size = round(total_size/(intervals+1))
             left = self.padding+interval_size
@@ -146,16 +152,13 @@ class Performance:
             height = self.size[1]-self.padding*2
             last_pos = None
             for match in matches:
-                if match.matches == match.wins:
-                    kd = 1
-                else:
-                    kd = match.kills/(match.matches-match.wins)
+                size_y = round(bottom-(((match.kd-lowest)*range)*(height/range)))
                 pos = (left,round(height*kd))
-                tl = (pos[0]-1,pos[1]-1)
-                br = (pos[0]+1,pos[1]+1)
+                tl = (pos[0]-2,pos[1]-2)
+                br = (pos[0]+2,pos[1]+2)
                 draw.ellipse([tl,br],fill=fg)
                 if last_pos != None:
-                    draw.line([last_pos,pos],fill=fg,width=1)
+                    draw.line([last_pos,pos],fill=fg,width=2)
                 last_pos = pos
                 left += interval_size
         return image
@@ -252,6 +255,11 @@ class StatsData:
                 self.platform = data.get('platform',0)
                 self.time = data.get('dateCollected','')
                 self.wins = data.get('top1',0)
+                if self.matches != None and self.kills != None and self.wins != None:
+                    if self.matches == self.wins:
+                        self.kd = self.kills
+                    else:
+                        self.kd = match.kills/(match.matches-match.wins)
     class Stats:
         def __init__(self,data):
             solo = data.get('p2',None)

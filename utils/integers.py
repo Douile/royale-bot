@@ -12,11 +12,18 @@ def bounds(value,min,max):
     elif value > max:
         value = max
     return value
-def highest(value_a,value_b):
-    if value_a > value_b:
-        value = value_a
-    elif value_b > value_a:
-        value = value_b
-    else:
-        value = value_a
+def highest(*args):
+    value = None
+    for a in args:
+        if value == None:
+            value = a
+        elif a > value:
+            value = a
     return value
+def lowest(*args):
+    value = None
+    for a in args:
+        if value == None:
+            value = a
+        elif a < value:
+            value = a
