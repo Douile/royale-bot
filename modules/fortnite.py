@@ -97,7 +97,7 @@ class SetBackgrounds(Command):
         else:
             backgrounds = urls[1:]
         self.settings = {'backgrounds': backgrounds}
-        self.content = 'set'
+        self.content = '<@!{author}> Set backgrounds'
 class News(Command):
     def __init__(self):
         super().__init__(name='news',description='Print the current news in fortnite battle royale. `{prefix}news`')
