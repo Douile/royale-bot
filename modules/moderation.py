@@ -1,4 +1,4 @@
-from .module import Module, Command, QueueAction
+from .module import Module, Command, QueueAction, parse_user_at
 import asyncio
 import discord
 
@@ -15,7 +15,7 @@ class Mute(Command):
         self.permission = 'admin'
     def run(self,command,msg,settings):
         self.reset()
-        not_found = 'Sorry <@!{0}> couldn\'t find that user'.format(msg.author.id)
+        not_found = 'Sorry <@!{author}> couldn\'t find that user'
         args = msg.content.split(' ')
         success = True
         try:
@@ -26,11 +26,11 @@ class Mute(Command):
         if success:
             if user_raw.startswith('<@!'):
                 user_id = user_raw[3:-1]
-                self.content = '<@!{0}> muting <@!{1}>'.format(msg.author.id,user_id)
+                self.content = '<@!{author}> muting <@!{0}>'.format(user_id)
                 self.queue = [QueueAction(mute_member,[user_id,msg.server.id])]
             elif user_raw.startswith('<@'):
                 user_id = user_raw[2:-1]
-                self.content = '<@!{0}> muting <@!{1}>'.format(msg.author.id,user_id)
+                self.content = '<@!{author}> muting <@!{0}>'.format(user_id)
                 self.queue = [QueueAction(mute_member,[user_id,msg.server.id])]
             else:
                 self.content = not_found
@@ -80,5 +80,8 @@ class Kick(Command):
         if s > -1:
             user = data[:s]
             reason = data[s+1:]
+            user_ob = parse_user_at(user,msg.server.id)
+            yield from client.kick(user_ob)
+            self.content = '<@!{author}> Kicked {0}'.format(user)
         else:
-            self.content = '<@!{0}> Invalid arguments'.format(msg.author.id)
+            self.content = '<@!{author}> Invalid arguments'
