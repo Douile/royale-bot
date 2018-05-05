@@ -23,7 +23,7 @@ def getEnv(name,default=None):
     return value
 
 #constants
-VERSION = "0.0.8"
+VERSION = "0.0.89"
 KEY_DISCORD = getEnv("KEY_DISCORD")
 KEY_FNBR = getEnv("KEY_FNBR")
 KEY_TRACKERNETWORK = getEnv("KEY_TRACKERNETWORK")
