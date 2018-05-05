@@ -59,8 +59,8 @@ class Background:
             width = size[0]
             height = round(size[1] / image.width * image.height)
             image = image.resize((width,height))
-            top = (size[1] - height)/2
-            bottom = top + height
+            top = (height - size[1])/2
+            bottom = height - top
             image = image.crop((0,top,width,bottom))
         elif image.width / size[0] > image.height / size[1]:
             height = size[1]
