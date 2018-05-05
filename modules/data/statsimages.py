@@ -155,6 +155,7 @@ class Performance:
             text_top = round(self.size[1]-self.padding/4)
             last_pos = None
             now = times.epoch_now()/60
+            count = 1
             for match in matches:
                 size_y = (match.kd-lowest)*(height/range)
                 pos = (left,round(bottom-size_y))
@@ -164,11 +165,13 @@ class Performance:
                 if last_pos != None:
                     draw.line([last_pos,pos],fill=fg,width=2)
                 time = times.isotime(match.time).timestamp()
-                mins = '-'+str(round(now-(time/60),1))
+                mins = '-'+str(round(now-(time/60)))
                 width = font.getsize(mins)[0]
-                draw.text((round(left-width/2),round(text_top-font.getsize(mins)[1])),mins,fill=fg,font=font)
+                if count == 1 or count == intervals:
+                    draw.text((round(left-width/2),round(text_top-font.getsize('0')[1])),mins,fill=fg,font=font)
                 last_pos = pos
                 left += interval_size
+                count += 1
         return image
 
 class Main:
