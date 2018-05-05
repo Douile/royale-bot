@@ -117,7 +117,6 @@ class Stats:
     def __init__(self):
         self.background = Background(color=(0,0,0,0))
         self.overlay = Overlay()
-        self.text = Text()
     def setBackground(color=None,url=None):
         if url != None:
             self.background.url = url
