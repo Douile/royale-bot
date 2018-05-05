@@ -27,3 +27,4 @@ def lowest(*args):
             value = a
         elif a < value:
             value = a
+    return value
