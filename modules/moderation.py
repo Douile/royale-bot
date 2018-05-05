@@ -86,7 +86,7 @@ class Kick(Command):
             reason = data[s+1:]
             print('Kick {0} : {1}'.format(user,reason))
             user_ob = parse_user_at(user,msg.server.id)
-            yield from client.kick(user_ob)
             self.content = '<@!{author}> Kicked {0}'.format(user)
+            yield from client.kick(user_ob)
         else:
             self.content = '<@!{author}> Invalid arguments'
