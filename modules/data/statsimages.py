@@ -144,6 +144,7 @@ class Performance:
             kds = []
             for match in matches:
                 kds.append(match.kd)
+            matches.reverse()
             lowest = integers.lowest(*kds)
             highest = integers.highest(*kds)
             range = highest-lowest
