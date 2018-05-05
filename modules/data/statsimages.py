@@ -1,4 +1,5 @@
 from . import stats
+from utils import integers
 import PIL.Image
 import PIL.ImageDraw
 import PIL.ImageFont
@@ -113,6 +114,11 @@ class Overview:
         draw.text((platformleft,self.padding),userdata.platform,fill=(255,255,255,255),font=font)
         statstext = 'KD {kd} WINS {wins} '.format_map(lifetime)
         draw.text((self.padding,fontsize+self.padding*3),statstext,fill=(255,255,255,255),font=font)
+        extra = 'MATCHES {matches} WIN% {win_percent}\nSCORE {score}'.format_map(lifetime)
+        extrasize = font.getsize(extra)
+        extraleft = self.size[0]-(extrasize[0]+self.padding)
+        extratop = self.size[1]-(extrasize[1]+self.padding)
+        draw.multiline_text((extraleft,extratop),extra,fill=(255,255,255,255),font=font,spacing=5,direction='rtl')
         return image
 
 
