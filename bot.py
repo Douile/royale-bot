@@ -143,7 +143,7 @@ def autoshop(fnbr_key): # add fnbr not accessable fallback
                         nextshoptime = round(time.mktime(rawtime.utctimetuple()) + (60*60*24))
                         client.database.set_server_info(serverid,next_shop=nextshoptime,latest_shop=file)
                     else:
-                        print('Error getting shop data {0}: {1}'.format(shopdata.errors,shopdata.json))
+                        print('Error getting shop data {0}: {1}'.format(shopdata.error,shopdata.json))
                         shopdata = None
         print("Autoshop now:{0} next:{1}".format(now,nextshop))
         yield from asyncio.sleep(60*15)
