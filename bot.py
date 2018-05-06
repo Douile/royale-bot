@@ -215,7 +215,7 @@ def handle_queue():
 
 @asyncio.coroutine
 def ticker_test():
-    ticker_text = ['Est. 2018 @mention for help','Donate here','Testing','You\'re gay']
+    ticker_text = ['Est. 2018 @mention for help','Still under development']
     yield from client.wait_until_ready()
     while not client.is_closed:
         for ticker in ticker_text:
