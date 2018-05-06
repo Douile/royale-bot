@@ -44,7 +44,7 @@ class DefaultModule(Module):
     #                 else:
     #                     self.commands[cmd].run(curcommand,msg,settings)
     #                     output = self.commands[cmd]
-        return output
+    #     return output
 class Status(Command):
     def __init__(self,version):
         super().__init__(name='status',description="Print the status of the bot. `{prefix}status`")
