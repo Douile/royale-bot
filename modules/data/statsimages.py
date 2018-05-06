@@ -177,7 +177,7 @@ class Performance:
                 left += interval_size
                 count += 1
         return image
-    def centeredText(draw,font,text,horizontal=True,vertical=True,**textargs):
+    def centeredText(draw,font,text,horizontal=True,vertical=True,*textargs):
         if horizontal == True:
             left = round((self.size[0]-font.getsize(text)[0])/2)
         else:
