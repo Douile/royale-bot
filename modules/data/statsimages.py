@@ -138,12 +138,12 @@ class Performance:
     def generate(self,matches):
         image = PIL.Image.new('RGBA',self.size,self.color)
         draw = PIL.ImageDraw.Draw(image)
-        font = PIL.ImageFont.truetype(DEFAULT_FONT,size=round(self.padding/2))
+        font = PIL.ImageFont.truetype(DEFAULT_FONT,size=self.padding)
         fg = (255,255,255,255)
         draw.line([(self.padding,self.padding),(self.padding,self.size[1]-self.padding)],fill=fg,width=2)
         draw.line([(self.padding,self.size[1]-self.padding),(self.size[0]-self.padding,self.size[1]-self.padding)],fill=fg,width=2)
-        self.centeredText(draw,font,'Mins since recorded',horizontal=True,vertical=round(self.size[1]-(self.padding/2)),fill=fg)
-        self.centeredText(draw,font,'KD',horizontal=0,vertical=True,fill=fg)
+        self.centeredText(draw,font,'Mins since recorded',horizontal=True,vertical=round(self.size[1]-((self.padding-font.getsize('Mins')[1])/2)),fill=fg)
+        self.centeredText(draw,font,'KD',horizontal=round((self.padding-font.getsize('KD')[0])/2),vertical=True,fill=fg)
         intervals = len(matches)
         if intervals > 0:
             kds = []
@@ -178,6 +178,12 @@ class Performance:
                 last_pos = pos
                 left += interval_size
                 count += 1
+            left = round((self.padding-font.getsize(str(lowest)))/2)
+            top = round(self.height[1]-self.padding-5-(font.getsize(str(lowest))/2))
+            draw.text((left,top),str(lowest),font=font,fill=fg)
+            left = round((self.padding-font.getsize(str(highest)))/2)
+            top = round(self.padding-(font.getsize(str(highest))/2))
+            draw.text((left,top),str(highest),font=font,fill=fg)
         return image
     def centeredText(self,draw,font,text,horizontal=True,vertical=True,**textargs):
         if horizontal == True:
