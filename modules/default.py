@@ -79,7 +79,7 @@ def remove_help(client,msg):
     try:
         yield from client.delete_message(msg)
     except:
-        pass
+        traceback.print_exc()
 class AdminHelp(Command):
     def __init__(self,modules):
         super().__init__()
