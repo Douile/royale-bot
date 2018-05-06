@@ -140,6 +140,8 @@ class Performance:
         fg = (255,255,255,255)
         draw.line([(self.padding,self.padding),(self.padding,self.size[1]-self.padding)],fill=fg,width=2)
         draw.line([(self.padding,self.size[1]-self.padding),(self.size[0]-self.padding,self.size[1]-self.padding)],fill=fg,width=2)
+        self.centeredText(draw,font,'Mins since recorded',horizontal=True,vertical=round((self.size[1]-self.padding)/2),fill=fg)
+        self.centeredText(draw,font,'KD',horizontal=0,vertical=True,fill=fg)
         intervals = len(matches)
         if intervals > 0:
             kds = []
@@ -167,7 +169,7 @@ class Performance:
                 if last_pos != None:
                     draw.line([last_pos,pos],fill=fg,width=2)
                 time = times.isotime(match.time).timestamp()
-                mins = '-'+str(round(now-(time/60)))
+                mins = str(round(now-(time/60)))
                 width = font.getsize(mins)[0]
                 if count == 1 or count == intervals:
                     draw.text((round(left-width/2),round(text_top-font.getsize('0')[1])),mins,fill=fg,font=font)
@@ -175,6 +177,16 @@ class Performance:
                 left += interval_size
                 count += 1
         return image
+    def centeredText(draw,font,text,horizontal=True,vertical=True,**textargs):
+        if horizontal == True:
+            left = round((self.size[0]-font.getsize(text)[0])/2)
+        else:
+            left = horizontal
+        if vertical == True:
+            top = round((self.size[1]-font.getsize(text)[1])/2)
+        else:
+            top = vertical
+        draw.text((left,top),text,font=font,**textargs)
 
 class Main:
     def __init__(self,size):
