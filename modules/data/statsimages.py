@@ -141,7 +141,7 @@ class Performance:
         fg = (255,255,255,255)
         draw.line([(self.padding,self.padding),(self.padding,self.size[1]-self.padding)],fill=fg,width=2)
         draw.line([(self.padding,self.size[1]-self.padding),(self.size[0]-self.padding,self.size[1]-self.padding)],fill=fg,width=2)
-        self.centeredText(draw,font,'Mins since recorded',horizontal=True,vertical=round((self.size[1]-self.padding)/2),fill=fg)
+        self.centeredText(draw,font,'Mins since recorded',horizontal=True,vertical=round(self.size[1]-(self.padding/2)),fill=fg)
         self.centeredText(draw,font,'KD',horizontal=0,vertical=True,fill=fg)
         intervals = len(matches)
         if intervals > 0:
@@ -379,5 +379,5 @@ def generate(KEY_TN,player,platform,backgrounds=[]):
             statsimage.background.url = url
         image = yield from statsimage.generate(stat_data)
     else:
-        image == None
+        image = None
     return image
