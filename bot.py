@@ -213,6 +213,26 @@ def handle_queue():
             print('Handled queue action {0} ({1}), {2} remain'.format(str(queue_item.function),str(args),len(client.queued_actions)))
         yield from asyncio.sleep(0.5)
 
+@asyncio.coroutine
+def ticker_test():
+    ticker_text = 'Est. 2018 | @mention for help | this is a test | '
+    ticker_size = 27
+    ticker_pos = 0
+    yield from client.wait_until_ready()
+    while not client.is_closed:
+        ticker = ''
+        for i in range(ticker_pos,ticker_pos+ticker_size):
+            if i < len(ticker_text):
+                ticker += ticker_text[i]
+            else:
+                ticker += ticker_text[i-len(ticker_text)+1]
+        ticker_pos += 1
+        if ticker_pos >= len(ticker_text):
+            ticker_pos = 0
+        game = discord.Game(name=ticker,type=0)
+        yield from client.change_presence(game=game)
+        yield from asyncio.sleep(1.5)
+
 @client.event
 @asyncio.coroutine
 def on_ready():
@@ -343,4 +363,5 @@ client.loop.create_task(autoshop(KEY_FNBR))
 client.loop.create_task(autostatus())
 client.loop.create_task(autonews())
 client.loop.create_task(handle_queue())
+client.loop.create_task(ticker_test())
 client.run(KEY_DISCORD)
