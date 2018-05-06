@@ -66,7 +66,7 @@ class Help(Command):
             category = command.split(" ")[1].lower()
         except IndexError:
             category = None
-        admin = msg.author.server_permission.administrator
+        admin = msg.author.server_permissions.administrator
         self.embed = HelpEmbed(prefix=prefix,category=category,icon_url=msg.server.icon_url,admin=admin)
         self.embed.generate(self.modules)
         last_help_msg = settings.get('last_help_msg',None)
