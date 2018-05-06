@@ -1,7 +1,7 @@
-requests
-discord.py
-beautifulsoup4
-html2text
-Pillow
-postgres
-aiohttp
+requests==2.17.4
+discord.py==0.16.12
+beautifulsoup4==4.6.0
+html2text==2018.1.9
+Pillow==5.1.0
+postgres==2.2.1
+aiohttp==3.1.3
