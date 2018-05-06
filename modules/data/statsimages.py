@@ -51,6 +51,7 @@ class Background:
         response = yield from session.get(url)
         content = yield from response.read()
         response.close()
+        yield from session.close()
         image = PIL.Image.open(BytesIO(content)).convert('RGBA')
         return image
     @staticmethod
