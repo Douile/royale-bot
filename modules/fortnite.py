@@ -56,23 +56,23 @@ class Shop(Command):
             traceback.print_exc()
 class Stats(Command):
     def __init__(self,tn_key):
-        super().__init__(name='stats',description='Gets the fortnite stats of a player. `{prefix}stats [playername] [platform]` if you do not set platform it will default to pc')
+        super().__init__(name='stats',description='Gets the fortnite stats of a player. `{prefix}stats [platform] [player]` if you do not set platform it will default to pc')
         self.permission = 'stats'
         self.tn_key = tn_key
     @asyncio.coroutine
     def run(self,command,msg,settings):
+        args = command[len('stats'):].strip()
         try:
-            name = command.split(" ")[1]
-        except IndexError:
-            name = ""
-        try:
-            platform = command.split(" ")[2].lower()
+            s = args.index(' ')
+            platform = args[:s]
+            name = args[s+1:]
             if platform == 'ps4':
                 platform = 'psn'
             elif not platform in ['pc','xb1','psn']:
                 platform = 'pc'
-        except IndexError:
-            platform = "pc"
+        except ValueError:
+            platform = 'pc'
+            name = args
         try:
             print('Name: '+name)
             print('Platform: '+platform)
