@@ -178,11 +178,11 @@ class Performance:
                 last_pos = pos
                 left += interval_size
                 count += 1
-            left = round((self.padding-font.getsize(str(lowest)))/2)
-            top = round(self.height[1]-self.padding-5-(font.getsize(str(lowest))/2))
+            left = round((self.padding-font.getsize(str(lowest))[0])/2)
+            top = round(self.height[1]-self.padding-5-(font.getsize(str(lowest))[1]/2))
             draw.text((left,top),str(lowest),font=font,fill=fg)
-            left = round((self.padding-font.getsize(str(highest)))/2)
-            top = round(self.padding-(font.getsize(str(highest))/2))
+            left = round((self.padding-font.getsize(str(highest))[0])/2)
+            top = round(self.padding-(font.getsize(str(highest))[1]/2))
             draw.text((left,top),str(highest),font=font,fill=fg)
         return image
     def centeredText(self,draw,font,text,horizontal=True,vertical=True,**textargs):
