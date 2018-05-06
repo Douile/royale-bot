@@ -70,6 +70,7 @@ class Stats(Command):
                 platform = 'psn'
             elif not platform in ['pc','xb1','psn']:
                 platform = 'pc'
+                name = args
         except ValueError:
             platform = 'pc'
             name = args
