@@ -12,38 +12,37 @@ class DefaultModule(Module):
         self.commands = {
             'status': Status(version),
             'help': Help(self.modules),
-            'adminhelp': AdminHelp(self.modules),
             'setchannel': SetChannel(self.types),
             'resetchannels': ResetChannels(self.types),
             'channels': Channels(self.types),
             'setprefix': SetPrefix()
         }
-    def run(self,empty,command,msg,settings):
-        output = empty
-        if command.startswith('help'):
-            if msg.author.server_permissions.administrator:
-                self.commands['adminhelp'].run(msg,settings)
-                output = self.commands['adminhelp']
-            else:
-                self.commands['help'].run(msg,settings)
-                output = self.commands['help']
-        else:
-            curcommand = msg.content[len(get_prefix(settings)):]
-            for cmd in self.commands:
-                if command.startswith(cmd) and isinstance(self.commands[cmd],Command) and cmd != 'help':
-                    if self.commands[cmd].permission != None:
-                        if self.commands[cmd].permission != 'admin':
-                            pcheck = checkPermissions(msg.channel.id,self.commands[cmd].permission,settings)
-                        else:
-                            pcheck = msg.author.server_permissions.administrator or msg.author.id == '293482190031945739'
-                        if pcheck:
-                            self.commands[cmd].run(curcommand,msg,settings)
-                            output = self.commands[cmd]
-                        else:
-                            output.noPermission = self.commands[cmd].permission
-                    else:
-                        self.commands[cmd].run(curcommand,msg,settings)
-                        output = self.commands[cmd]
+    # def run(self,empty,command,msg,settings):
+    #     output = empty
+    #     if command.startswith('help'):
+    #         if msg.author.server_permissions.administrator:
+    #             self.commands['adminhelp'].run(msg,settings)
+    #             output = self.commands['adminhelp']
+    #         else:
+    #             self.commands['help'].run(msg,settings)
+    #             output = self.commands['help']
+    #     else:
+    #         curcommand = msg.content[len(get_prefix(settings)):]
+    #         for cmd in self.commands:
+    #             if command.startswith(cmd) and isinstance(self.commands[cmd],Command) and cmd != 'help':
+    #                 if self.commands[cmd].permission != None:
+    #                     if self.commands[cmd].permission != 'admin':
+    #                         pcheck = checkPermissions(msg.channel.id,self.commands[cmd].permission,settings)
+    #                     else:
+    #                         pcheck = msg.author.server_permissions.administrator or msg.author.id == '293482190031945739'
+    #                     if pcheck:
+    #                         self.commands[cmd].run(curcommand,msg,settings)
+    #                         output = self.commands[cmd]
+    #                     else:
+    #                         output.noPermission = self.commands[cmd].permission
+    #                 else:
+    #                     self.commands[cmd].run(curcommand,msg,settings)
+    #                     output = self.commands[cmd]
         return output
 class Status(Command):
     def __init__(self,version):
@@ -66,8 +65,20 @@ class Help(Command):
             category = command.split(" ")[1].lower()
         except IndexError:
             category = None
-        self.embed = HelpEmbed(prefix=prefix,category=category,icon_url=msg.server.icon_url,admin=False)
+        admin = msg.author.server_permission.administrator
+        self.embed = HelpEmbed(prefix=prefix,category=category,icon_url=msg.server.icon_url,admin=admin)
         self.embed.generate(self.modules)
+        last_help_msg = settings.get('last_help_msg',None)
+        if last_help_msg != None:
+            last_help = discord.Object(last_help_msg)
+            last_help.channel = discord.Object('last_help_channel')
+            self.queue = [QueueAction(remove_help,[last_help])]
+@asyncio.coroutine
+def remove_help(client,msg):
+    try:
+        yield from client.delete_message(msg)
+    except:
+        pass
 class AdminHelp(Command):
     def __init__(self,modules):
         super().__init__()

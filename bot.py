@@ -277,20 +277,6 @@ def commandHandler(command,msg):
             output = Shutdown(msg,serversettings)
         else:
             yield from noPermission(msg,None,serversettings)
-    elif command.startswith("help"):
-        if 'last_help_msg' in serversettings and 'last_help_channel' in serversettings:
-            object = discord.Object(serversettings['last_help_msg'])
-            object.channel = discord.Object(serversettings['last_help_channel'])
-            try:
-                yield from client.delete_message(object)
-            except:
-                pass
-        if admin:
-            output = defaultmodule.commands['adminhelp']
-            output.run(msg.content[len(get_prefix(serversettings)):],msg,serversettings)
-        else:
-            output = defaultmodule.commands['help']
-            output.run(msg.content[len(get_prefix(serversettings)):],msg,serversettings)
     else:
         output = defaultmodule.run(output,command,msg,serversettings)
         if output.content == None and output.embed == None and output.embeds == None:
