@@ -218,7 +218,7 @@ def handle_queue():
 def on_ready():
     print("--Logged in--\n{0}\n{1}\n--End login info--".format(client.user.name,client.user.id))
     yield from client.edit_profile(username=BOT_NAME)
-    yield from client.change_presence(game=discord.Game(name="Serving you since 2018 (!help)",type=0),status="online",afk=False)
+    yield from client.change_presence(game=discord.Game(name="Est. 2018 @mention for help",type=0),status="online",afk=False)
 
 
 @client.event
