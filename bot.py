@@ -269,14 +269,7 @@ def commandHandler(command,msg):
         client.database.set_server_info(serverid,server_name=msg.server.name)
     output = Command()
     admin = msg.author.server_permissions.administrator or msg.author.id == '293482190031945739'
-    if command.startswith("setpresence"):
-        if admin:
-            yield from client.send_typing(msg.channel)
-            output = SetPresence(msg,serversettings)
-            yield from client.change_presence(game=output.game,status='online',afk=False)
-        else:
-            yield from noPermission(msg,None,serversettings)
-    elif command.startswith("shutdown"):
+    if command.startswith("shutdown"):
         if msg.author.id == '293482190031945739':
             output = Shutdown(msg,serversettings)
         else:
