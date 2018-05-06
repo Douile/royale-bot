@@ -302,7 +302,7 @@ class StatsData:
                         self.kills = value
                     elif key == 'K/d':
                         self.kd = value
-            if self.matches != None and self.wins != None:
+            if getattr(self,'matches',None) != None and getattr(self,'wins',None) != None:
                 self.win_percent = round((int(self.wins)/int(self.matches))*100,2)
         def __iter__(self):
             yield 'score', self.score
