@@ -256,10 +256,12 @@ class Stats:
 class StatsData:
     def __init__(self,data):
         if type(data) is dict:
-            self.userdata = self.UserData(data)
-            self.lifetime = self.LifetimeStats(data.get('lifeTimeStats',[]))
-            self.matches = self.Matches(data.get('recentMatches',[]))
-            self.stats = self.Stats(data.get('stats',{}))
+            self.error = data.get('error',None)
+            if self.error == None:
+                self.userdata = self.UserData(data)
+                self.lifetime = self.LifetimeStats(data.get('lifeTimeStats',[]))
+                self.matches = self.Matches(data.get('recentMatches',[]))
+                self.stats = self.Stats(data.get('stats',{}))
             # p2 solo p10 duo p9 squads
         else:
             raise RuntimeError('You must pass a dict argument')
@@ -372,12 +374,15 @@ def generate(KEY_TN,player,platform,backgrounds=[]):
     stats_data = yield from stats.stats(KEY_TN,player,platform)
     if stats_data['status'] == 200:
         stat_data = StatsData(stats_data)
-        statsimage = Stats()
-        if len(backgrounds) > 0:
-            url = random.choice(backgrounds)
-            print(url)
-            statsimage.background.url = url
-        image = yield from statsimage.generate(stat_data)
+        if stat_data.error == None:
+            statsimage = Stats()
+            if len(backgrounds) > 0:
+                url = random.choice(backgrounds)
+                print(url)
+                statsimage.background.url = url
+            image = yield from statsimage.generate(stat_data)
+        else:
+            image = None
     else:
         image = None
     return image
