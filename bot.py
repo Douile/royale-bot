@@ -282,7 +282,7 @@ def commandHandler(command,msg):
         else:
             yield from noPermission(msg,None,serversettings)
     else:
-        output = defaultmodule._run(output,command,msg,serversettings)
+        output = yield from defaultmodule._run(output,command,msg,serversettings)
         if output.content == None and output.embed == None and output.embeds == None:
             for i in range(0,len(cmodules)):
                 output = yield from cmodules[i]._run(output,command,msg,serversettings)
