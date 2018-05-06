@@ -24,7 +24,7 @@ def strDec(dec):
     try:
         i = string.index('.')
         for i in range(1,len(string)-i):
-            a = len(string)-a
+            a = len(string)-i
             if string[a] == '0':
                 string = string[:a]
             else:
