@@ -143,7 +143,8 @@ class Performance:
         fg = (255,255,255,255)
         draw.line([(self.padding,self.padding),(self.padding,self.size[1]-self.padding)],fill=fg,width=2)
         draw.line([(self.padding,self.size[1]-self.padding),(self.size[0]-self.padding,self.size[1]-self.padding)],fill=fg,width=2)
-        self.centeredText(draw,font,'Mins since recorded',horizontal=True,vertical=round(self.size[1]-self.padding-((self.padding-font.getsize('Mins')[1])/2)),fill=fg)
+        text_top = round(self.size[1]-self.padding/4)
+        self.centeredText(draw,font,'Mins since recorded',horizontal=True,vertical=round(text_top-self.padding-font.getsize('Mins')[1]),fill=fg)
         self.centeredText(draw,font,'KD',horizontal=round((self.padding-font.getsize('KD')[0])/2),vertical=True,fill=fg)
         intervals = len(matches)
         if intervals > 0:
@@ -159,7 +160,6 @@ class Performance:
             left = self.padding+interval_size
             bottom = self.size[1]-self.padding-5
             height = self.size[1]-self.padding*2-5
-            text_top = round(self.size[1]-self.padding/4)
             last_pos = None
             now = times.epoch_now()/60
             count = 1
