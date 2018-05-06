@@ -1,6 +1,7 @@
 from .module import Module, Command, checkPermissions, QueueAction, get_prefix
 import discord
 import asyncio
+import traceback
 
 class DefaultModule(Module):
     def __init__(self,modules=[],version=''):
@@ -72,7 +73,7 @@ class Help(Command):
         last_help_msg = settings.get('last_help_msg',None)
         if last_help_msg != None:
             last_help = discord.Object(last_help_msg)
-            last_help.channel = discord.Object('last_help_channel')
+            last_help.channel = discord.Object(settings.get('last_help_channel'))
             self.queue = [QueueAction(remove_help,[last_help])]
 @asyncio.coroutine
 def remove_help(client,msg):
