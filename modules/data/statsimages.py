@@ -138,11 +138,12 @@ class Performance:
     def generate(self,matches):
         image = PIL.Image.new('RGBA',self.size,self.color)
         draw = PIL.ImageDraw.Draw(image)
-        font = PIL.ImageFont.truetype(DEFAULT_FONT,size=self.padding)
+        fontsize = round(self.padding/3*2)
+        font = PIL.ImageFont.truetype(DEFAULT_FONT,size=fontsize)
         fg = (255,255,255,255)
         draw.line([(self.padding,self.padding),(self.padding,self.size[1]-self.padding)],fill=fg,width=2)
         draw.line([(self.padding,self.size[1]-self.padding),(self.size[0]-self.padding,self.size[1]-self.padding)],fill=fg,width=2)
-        self.centeredText(draw,font,'Mins since recorded',horizontal=True,vertical=round(self.size[1]-((self.padding-font.getsize('Mins')[1])/2)),fill=fg)
+        self.centeredText(draw,font,'Mins since recorded',horizontal=True,vertical=round(self.size[1]-self.padding-((self.padding-font.getsize('Mins')[1])/2)),fill=fg)
         self.centeredText(draw,font,'KD',horizontal=round((self.padding-font.getsize('KD')[0])/2),vertical=True,fill=fg)
         intervals = len(matches)
         if intervals > 0:
