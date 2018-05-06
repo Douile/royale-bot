@@ -94,7 +94,7 @@ class Link(Command):
         super().__init__(name='link',description='Link you fortnite account for easy stats retrieval.')
     @asyncio.coroutine
     def run(self,command,msg,settings):
-
+        pass
 class SetBackgrounds(Command):
     def __init__(self):
         super().__init__(name='setbackground',description='Sets the backgrounds for all images generated. Seperate urls with a space. If you want a blank backround don\'t include any urls. `{prefix}setbackground(s) [url 1] [url 2] [url 3]...`')
