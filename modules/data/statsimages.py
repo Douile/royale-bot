@@ -144,7 +144,7 @@ class Performance:
         draw.line([(self.padding,self.padding),(self.padding,self.size[1]-self.padding)],fill=fg,width=2)
         draw.line([(self.padding,self.size[1]-self.padding),(self.size[0]-self.padding,self.size[1]-self.padding)],fill=fg,width=2)
         text_top = round(self.size[1]-self.padding/4)
-        self.centeredText(draw,font,'Mins since recorded',horizontal=True,vertical=round(text_top-self.padding-font.getsize('Mins')[1]),fill=fg)
+        self.centeredText(draw,font,'Mins since recorded',horizontal=True,vertical=round(text_top-font.getsize('Mins')[1]),fill=fg)
         self.centeredText(draw,font,'KD',horizontal=round((self.padding-font.getsize('KD')[0])/2),vertical=True,fill=fg)
         intervals = len(matches)
         if intervals > 0:
