@@ -89,6 +89,12 @@ class Stats(Command):
             self.content = "Error getting stats"
             print(e)
             traceback.print_exc()
+class Link(Command):
+    def __init__(self):
+        super().__init__(name='link',description='Link you fortnite account for easy stats retrieval.')
+    @asyncio.coroutine
+    def run(self,command,msg,settings):
+
 class SetBackgrounds(Command):
     def __init__(self):
         super().__init__(name='setbackground',description='Sets the backgrounds for all images generated. Seperate urls with a space. If you want a blank backround don\'t include any urls. `{prefix}setbackground(s) [url 1] [url 2] [url 3]...`')

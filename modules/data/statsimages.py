@@ -1,5 +1,5 @@
 from . import stats
-from utils import integers, times
+from utils import integers, times, strings
 import PIL.Image
 import PIL.ImageDraw
 import PIL.ImageFont
@@ -109,7 +109,7 @@ class Overview:
         self.padding = 15
     @asyncio.coroutine
     def generate(self,userdata,lifetimestats):
-        lifetime = Map(lifetimestats)
+        lifetime = Map(lifetimestats,True)
         image = PIL.Image.new('RGBA',self.size,self.color)
         draw = PIL.ImageDraw.Draw(image)
         fontsize = round(self.size[1]/2)-self.padding*2
@@ -179,12 +179,14 @@ class Performance:
                 last_pos = pos
                 left += interval_size
                 count += 1
-            left = round((self.padding-font.getsize(str(lowest))[0])/2)
-            top = round(self.size[1]-self.padding-5-(font.getsize(str(lowest))[1]/2))
-            draw.text((left,top),str(lowest),font=font,fill=fg)
-            left = round((self.padding-font.getsize(str(highest))[0])/2)
-            top = round(self.padding-(font.getsize(str(highest))[1]/2))
-            draw.text((left,top),str(highest),font=font,fill=fg)
+            lowest = strings.strDec(lowest)
+            highest = string.strDec(highest)
+            left = round((self.padding-font.getsize(lowest)[0])/2)
+            top = round(self.size[1]-self.padding-5-(font.getsize(lowest)[1]/2))
+            draw.text((left,top),lowest,font=font,fill=fg)
+            left = round((self.padding-font.getsize(highest)[0])/2)
+            top = round(self.padding-(font.getsize(highest)[1]/2))
+            draw.text((left,top),highest,font=font,fill=fg)
         return image
     def centeredText(self,draw,font,text,horizontal=True,vertical=True,**textargs):
         if horizontal == True:
@@ -373,6 +375,12 @@ class StatsData:
                 return o
 
 class Map(dict):
+    def __init__(self,ob,format_dec=False):
+        if format_dec:
+            for key, value in ob:
+                self[key] = strings.strDec(value)
+        else:
+            super().__init__(ob)
     def __missing__(self, key):
         return key
 
