@@ -231,7 +231,7 @@ def ticker_test():
             ticker_pos = 0
         game = discord.Game(name=ticker,type=0)
         yield from client.change_presence(game=game)
-        yield from asyncio.sleep(1.5)
+        yield from asyncio.sleep(5)
 
 @client.event
 @asyncio.coroutine
