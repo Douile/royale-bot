@@ -47,7 +47,8 @@ class Background:
     @staticmethod
     @asyncio.coroutine
     def collectImage(url):
-        response = yield from aiohttp.get(url)
+        session = aiohttp.ClientSession()
+        response = yield from session.get(url)
         content = yield from response.read()
         response.close()
         image = PIL.Image.open(BytesIO(content)).convert('RGBA')
