@@ -215,23 +215,13 @@ def handle_queue():
 
 @asyncio.coroutine
 def ticker_test():
-    ticker_text = 'Est. 2018 | @mention for help | this is a test | '
-    ticker_size = 27
-    ticker_pos = 0
+    ticker_text = ['Est. 2018 @mention for help','Donate here','Testing','You\'re gay']
     yield from client.wait_until_ready()
     while not client.is_closed:
-        ticker = ''
-        for i in range(ticker_pos,ticker_pos+ticker_size):
-            if i < len(ticker_text):
-                ticker += ticker_text[i]
-            else:
-                ticker += ticker_text[i-len(ticker_text)+1]
-        ticker_pos += 1
-        if ticker_pos >= len(ticker_text):
-            ticker_pos = 0
-        game = discord.Game(name=ticker,type=0)
-        yield from client.change_presence(game=game)
-        yield from asyncio.sleep(5)
+        for ticker in ticker_text:
+            game = discord.Game(name=ticker,type=0)
+            yield from client.change_presence(game=game)
+            yield from asyncio.sleep(20)
 
 @client.event
 @asyncio.coroutine
