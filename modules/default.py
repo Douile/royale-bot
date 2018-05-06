@@ -1,5 +1,6 @@
 from .module import Module, Command, checkPermissions, QueueAction, get_prefix
 import discord
+import asyncio
 
 class DefaultModule(Module):
     def __init__(self,modules=[],version=''):
