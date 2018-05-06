@@ -180,7 +180,7 @@ class Performance:
                 left += interval_size
                 count += 1
             lowest = strings.strDec(lowest)
-            highest = string.strDec(highest)
+            highest = strings.strDec(highest)
             left = round((self.padding-font.getsize(lowest)[0])/2)
             top = round(self.size[1]-self.padding-5-(font.getsize(lowest)[1]/2))
             draw.text((left,top),lowest,font=font,fill=fg)
