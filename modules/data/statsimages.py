@@ -305,12 +305,12 @@ class StatsData:
             if getattr(self,'matches',None) != None and getattr(self,'wins',None) != None:
                 self.win_percent = round((int(self.wins)/int(self.matches))*100,2)
         def __iter__(self):
-            yield 'score', self.score
-            yield 'matches', self.matches
-            yield 'wins', self.wins
-            yield 'kills', self.kills
-            yield 'kd', self.kd
-            yield 'win_percent', self.win_percent
+            yield 'score', getattr(self,'score',None)
+            yield 'matches', getattr(self,'matches',None)
+            yield 'wins', getattr(self,'wins',None)
+            yield 'kills', getattr(self,'kills',None)
+            yield 'kd', getattr(self,'kd',None)
+            yield 'win_percent', getattr(self,'win_percent',None)
     class Matches(list):
         def __init__(self,data):
             if type(data) is list:
