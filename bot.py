@@ -133,14 +133,18 @@ def autoshop(fnbr_key): # add fnbr not accessable fallback
                 if now >= nextshop:
                     if shopdata == None:
                         shopdata = shop.getShopData(fnbr_key)
-                    rawtime = shop.getTime(shopdata.data.date)
-                    file = shop.filename(rawtime)
-                    if not os.path.isfile(file):
-                        file = yield from shop.generate(shopdata,server['backgrounds'])
-                    content = "Data from <https://fnbr.co/>"
-                    yield from client.send_file(discord.Object(server['channels']['autoshop']),file,content=content)
-                    nextshoptime = round(time.mktime(rawtime.utctimetuple()) + (60*60*24))
-                    client.database.set_server_info(serverid,next_shop=nextshoptime,latest_shop=file)
+                    if shopdata.type == 'shop':
+                        rawtime = shop.getTime(shopdata.data.date)
+                        file = shop.filename(rawtime)
+                        if not os.path.isfile(file):
+                            file = yield from shop.generate(shopdata,server['backgrounds'])
+                        content = "Data from <https://fnbr.co/>"
+                        yield from client.send_file(discord.Object(server['channels']['autoshop']),file,content=content)
+                        nextshoptime = round(time.mktime(rawtime.utctimetuple()) + (60*60*24))
+                        client.database.set_server_info(serverid,next_shop=nextshoptime,latest_shop=file)
+                    else:
+                        print('Error getting shop data {0}: {1}'.format(shopdata.errors,shopdata.json))
+                        shopdata = None
         print("Autoshop now:{0} next:{1}".format(now,nextshop))
         yield from asyncio.sleep(60*15)
 
