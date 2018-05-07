@@ -116,17 +116,18 @@ class Overview:
         font = PIL.ImageFont.truetype(DEFAULT_FONT,size=fontsize)
         font_small = PIL.ImageFont.truetype(DEFAULT_FONT,size=round(fontsize/2))
         draw.text((self.padding,self.padding),userdata.name,fill=(255,255,255,255),font=font)
-        platformsize = font.getsize(userdata.platform)[0]
-        platformleft = self.size[0]-(self.padding+platformsize)
-        draw.text((platformleft,self.padding),userdata.platform,fill=(255,255,255,255),font=font)
         statstext = 'KD {kd} WINS {wins} WIN% {win_percent}'.format_map(lifetime)
         draw.text((self.padding,fontsize+self.padding*3),statstext,fill=(255,255,255,255),font=font)
         extra = 'MATCHES {matches}\nSCORE {score}'.format_map(lifetime)
         extrasize = font_small.getsize(extra.split('\n')[0])
-        extrasize = (extrasize[0],extrasize[1]*2 + 5)
+        extrasizewidth = integers.max(extrasize[0],font_small.getsize(extra.split('\n')[1])[0])
+        extrasize = (extrasizewidth,extrasize[1]*2 + 5)
         extraleft = self.size[0]-(extrasize[0]+self.padding)
-        extratop = self.size[1]-(extrasize[1]+self.padding)
+        extratop = self.padding
         draw.multiline_text((extraleft,extratop),extra,fill=(255,255,255,255),font=font_small,spacing=5)
+        platformsize = font.getsize(userdata.platform)[0]
+        platformleft = self.size[0]-(self.padding+platformsize)-extraleft
+        draw.text((platformleft,self.padding),userdata.platform,fill=(255,255,255,255),font=font)
         return image
 
 class Performance:
