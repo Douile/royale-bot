@@ -126,7 +126,7 @@ class Overview:
         extratop = self.padding
         draw.multiline_text((extraleft,extratop),extra,fill=(255,255,255,255),font=font_small,spacing=5)
         platformsize = font.getsize(userdata.platform)[0]
-        platformleft = self.size[0]-(self.padding+platformsize)-extraleft
+        platformleft = extraleft-(self.padding+platformsize)
         draw.text((platformleft,self.padding),userdata.platform,fill=(255,255,255,255),font=font)
         return image
 
