@@ -1,6 +1,7 @@
 import math
 import asyncio
 import aiohttp
+from io import BytesIO
 import PIL.Image
 
 def radial_gradient(draw,width,height,color_inner,color_outer): # will overite everything in image
