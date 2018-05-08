@@ -103,6 +103,7 @@ class ShopImageNew():
             cleft = left
             for image in set:
                 r = image.resize((self.size,self.size))
+                print('Image at ',cleft,ctop)
                 self.background.paste(r,(round(cleft),round(ctop)),r)
                 cleft += self.size + self.padding
             ctop += self.size + self.padding
@@ -162,7 +163,6 @@ class ItemImage():
         imageleft = round((self.size-imagesize)/2)
         item = createImageFromUrl(itemimageurl).resize((self.size,self.size))
         self.background.paste(item,(0,0),item)
-        #draw.rectangle([(0,top),(self.size,self.size)],outline=None,fill=darken((0,0,0,0),205))
         self.darkenRect(draw,(0,top),(self.size,self.size),35)
         self.round(25)
         self.borderedText(draw,(left,top),itemname,largefont,(255,255,255),(0,0,0))
