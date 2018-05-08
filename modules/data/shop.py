@@ -128,7 +128,7 @@ class ShopImageNew():
         yield from self.setFeatured(featured)
         yield from self.setDaily(daily)
         yield from self.drawText()
-        yield from self.background.save(name)
+        self.background.save(name)
         return name
 class ItemImage():
     def __init__(self,itemname,itemprice,itempriceimage,itemrarity,itemimageurl,size):
