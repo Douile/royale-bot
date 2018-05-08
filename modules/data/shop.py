@@ -80,20 +80,21 @@ class ShopImageNew():
             self.rows = self.drows
         self.height = round(self.padding*2 + self.padding*self.rows + self.fheight*2 + self.size*self.rows)
         self.width = round(self.padding*5 + self.size*4)
-        if background == None or not type(background) is str:
-            self.background = PIL.Image.new("RGBA",(self.width,self.height))
-        else:
-            bg = createImageFromUrl(background)
-            self.background = bg.resize((self.width,self.height))
+        self.background_generator = images.Background(color=(0,0,0,0))
+        if type(background) is str:
+            self.background_generator.url = background
         self.datetext = date
+    @asyncio.coroutine
     def setFeatured(self, images):
         top = self.padding*2 + self.fheight*2
         left = self.padding
         self.drawImages(left,top,images)
+    @asyncio.coroutine
     def setDaily(self, images):
         top = self.padding*2 + self.fheight*2
         left = self.padding*3 + self.size*2
         self.drawImages(left,top,images)
+    @asyncio.coroutine
     def drawImages(self,left,top,images):
         sets = arrays.split(images,2)
         ctop = top
@@ -105,6 +106,7 @@ class ShopImageNew():
                 self.background.paste(r,(round(cleft),round(ctop)),r)
                 cleft += self.size + self.padding
             ctop += self.size + self.padding
+    @asyncio.coroutine
     def drawText(self):
         color = (255,255,255,255)
         draw = PIL.ImageDraw.Draw(self.background)
@@ -116,9 +118,18 @@ class ShopImageNew():
         draw.text((left,top),"Featured",font=self.font,fill=color)
         left = round((self.width/2)+(self.width/2-self.font.getsize("Daily")[0])/2)
         draw.text((left,top),"Daily",font=self.font,fill=color)
+    @asyncio.coroutine
     def save(self,name):
         self.drawText()
         self.background.save(name)
+    @asyncio.coroutine
+    def generate(self,featured,daily,name):
+        self.background = yield from self.background_generator.generate()
+        self.setFeatured(featured)
+        self.setDaily(daily)
+        self.drawText()
+        self.background.save(name)
+        return name
 class ItemImage():
     def __init__(self,itemname,itemprice,itempriceimage,itemrarity,itemimageurl,size):
         self.size = size
@@ -255,10 +266,8 @@ def generate(shopdata,backgrounds=[],serverid=None):
     else:
         background = None
     out = ShopImageNew(size=300,padding=40,fontsize=40,rowsize=size,fcount=len(shopdata.data.featured),dcount=len(shopdata.data.daily),date=date,background=background)
-    out.setFeatured(featured)
-    out.setDaily(daily)
-    out.save(fname)
-    return fname
+    output = yield from out.generate(featured,daily,fname)
+    return output
 def getShopData(apikey):
     print("Getting shop data")
     shopdata = fnbr.Shop(apikey).send()
