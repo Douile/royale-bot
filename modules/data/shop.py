@@ -88,12 +88,12 @@ class ShopImageNew():
     def setFeatured(self, images):
         top = self.padding*2 + self.fheight*2
         left = self.padding
-        self.drawImages(left,top,images)
+        yield from self.drawImages(left,top,images)
     @asyncio.coroutine
     def setDaily(self, images):
         top = self.padding*2 + self.fheight*2
         left = self.padding*3 + self.size*2
-        self.drawImages(left,top,images)
+        yield from self.drawImages(left,top,images)
     @asyncio.coroutine
     def drawImages(self,left,top,images):
         sets = arrays.split(images,2)
