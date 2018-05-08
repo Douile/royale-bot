@@ -149,7 +149,7 @@ class ItemImage():
             gradient = ((211,120,65,255),(120,55,29,255))
         self.background = PIL.Image.new("RGBA",(self.size,self.size),color)
         draw = PIL.ImageDraw.Draw(self.background)
-        images.radial_gradient(draw,self.size,self.size,gradient[1],gradient[0])
+        yield from images.radial_gradient(draw,self.size,self.size,gradient[1],gradient[0])
         fontsize = round(self.size/10)
         largefont = PIL.ImageFont.truetype(FONT,fontsize+10)
         smallfont = PIL.ImageFont.truetype(FONT,fontsize-10)

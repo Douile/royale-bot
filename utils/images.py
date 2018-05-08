@@ -4,6 +4,7 @@ import aiohttp
 from io import BytesIO
 import PIL.Image
 
+@asyncio.coroutine
 def radial_gradient(draw,width,height,color_inner,color_outer): # will overite everything in image
     """Creates a radial gradient on an image. Might be slow"""
     alpha = False
