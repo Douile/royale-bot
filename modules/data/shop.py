@@ -80,7 +80,7 @@ class ShopImageNew():
             self.rows = self.drows
         self.height = round(self.padding*2 + self.padding*self.rows + self.fheight*2 + self.size*self.rows)
         self.width = round(self.padding*5 + self.size*4)
-        self.background_generator = images.Background(color=(0,0,0,0))
+        self.background_generator = images.Background((self.width,self.height),color=(0,0,0,0))
         if type(background) is str:
             self.background_generator.url = background
         self.datetext = date

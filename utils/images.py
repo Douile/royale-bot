@@ -24,14 +24,14 @@ def darken(color,alpha):
     """Darkens a color to specified alpha"""
     return (color[0],color[1],color[2],alpha)
 class Background:
-    def __init__(self,color=None,url=None):
+    def __init__(self,size,color=None,url=None):
         if (color == None and url == None) or (color != None and url != None):
             raise RuntimeError('You must specify either color or url not both or neither.')
         if color != None:
             self.color = color
         elif url != None:
             self.url = url
-        self.size = DEFAULT_SIZE
+        self.size = size
     @property
     def color(self):
         return self._color
