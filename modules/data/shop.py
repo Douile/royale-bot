@@ -125,10 +125,10 @@ class ShopImageNew():
     @asyncio.coroutine
     def generate(self,featured,daily,name):
         self.background = yield from self.background_generator.generate()
-        self.setFeatured(featured)
-        self.setDaily(daily)
-        self.drawText()
-        self.background.save(name)
+        yield from self.setFeatured(featured)
+        yield from self.setDaily(daily)
+        yield from self.drawText()
+        yield from self.background.save(name)
         return name
 class ItemImage():
     def __init__(self,itemname,itemprice,itempriceimage,itemrarity,itemimageurl,size):
