@@ -173,12 +173,15 @@ class Performance:
             last_pos = None
             now = times.epoch_now()/60
             count = 1
+            last_no = -1
             for match in matches_real:
                 size_y = (match.kd-lowest)*(height/range_kd)
                 pos = (left,round(bottom-size_y))
                 tl = (pos[0]-2,pos[1]-2)
                 br = (pos[0]+2,pos[1]+2)
-                draw.ellipse([tl,br],fill=fg)
+                if match.kd != last_no:
+                    draw.ellipse([tl,br],fill=fg)
+                last_no = match.kd
                 if last_pos != None:
                     draw.line([last_pos,pos],fill=fg,width=2)
                 match_id = str(match.match)
