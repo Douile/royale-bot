@@ -1,5 +1,4 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
-import SocketServer
 from .web import get, post
 
 class S(BaseHTTPRequestHandler):
