@@ -181,11 +181,10 @@ class Performance:
                 draw.ellipse([tl,br],fill=fg)
                 if last_pos != None:
                     draw.line([last_pos,pos],fill=fg,width=2)
-                time = times.isotime(match.time).timestamp()
-                mins = str(round(now-(time/60)))
-                width = font.getsize(mins)[0]
+                match_id = str(match.match)
+                width = font.getsize(match_id)[0]
                 if count == 1 or count == intervals:
-                    draw.text((round(left-width/2),round(text_top-font.getsize('0')[1])),mins,fill=fg,font=font)
+                    draw.text((round(left-width/2),round(text_top-font.getsize('0')[1])),match_id,fill=fg,font=font)
                 last_pos = pos
                 left += interval_size
                 count += 1
