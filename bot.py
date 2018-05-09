@@ -222,7 +222,7 @@ def ticker_test():
         for ticker in ticker_text:
             game = discord.Game(name=ticker,type=0)
             yield from client.change_presence(game=game)
-            yield from asyncio.sleep(20)
+            yield from asyncio.sleep(TICKER_TIME)
 
 @client.event
 @asyncio.coroutine
@@ -322,7 +322,7 @@ def commandHandler(command,msg):
                 print(json.dumps(output.embed.to_dict()))
             response = yield from client.send_message(msg.channel,content='Sorry there was an error sending response')
         yield from client.delete_message(msg)
-    if isinstance(output,default.Help) or isinstance(output,default.AdminHelp):
+    if isinstance(output,default.Help):
         client.database.set_server_info(serverid,last_help_msg=response.id,last_help_channel=response.channel.id)
     if output.shutdown == True:
         yield from client.close()

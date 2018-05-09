@@ -81,21 +81,6 @@ def remove_help(client,msg):
         yield from client.delete_message(msg)
     except:
         traceback.print_exc()
-class AdminHelp(Command):
-    def __init__(self,modules):
-        super().__init__()
-        self.modules = modules
-    def run(self,command,msg,settings):
-        self.reset()
-        prefix = settings.get('prefix','!')
-        if prefix == None:
-            prefix = "!"
-        try:
-            category = command.split(" ")[1].lower()
-        except IndexError:
-            category = None
-        self.embed = HelpEmbed(prefix=prefix,category=category,icon_url=msg.server.icon_url,admin=True)
-        self.embed.generate(self.modules)
 class SetChannel(Command):
     def __init__(self,types=[]):
         self.types = types
