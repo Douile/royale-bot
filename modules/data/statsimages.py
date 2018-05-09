@@ -148,13 +148,13 @@ class Performance:
         self.centeredText(draw,font,'Mins since recorded',horizontal=True,vertical=round(text_top-font.getsize('Mins')[1]),fill=fg)
         self.centeredText(draw,font,'KD',horizontal=round((self.padding-font.getsize('KD')[0])/2),vertical=True,fill=fg)
         intervals = len(matches)
+        kds = []
+        for match in matches:
+            kds.append(match.kd)
+        lowest = round(integers.lowest(*kds),2)
+        highest = round(integers.highest(*kds),2)
         if intervals > 0:
-            kds = []
-            for match in matches:
-                kds.append(match.kd)
             matches.reverse()
-            lowest = integers.lowest(*kds)
-            highest = integers.highest(*kds)
             range = highest-lowest
             total_size = self.size[0]-self.padding*2
             interval_size = round(total_size/(intervals+1))
