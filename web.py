@@ -1,5 +1,5 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from .web import get, post
+from web import get, post
 
 class S(BaseHTTPRequestHandler):
     def _set_headers(self,code,type):
