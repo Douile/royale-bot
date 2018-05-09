@@ -1,5 +1,15 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from web import get, post
+import os
+
+def getEnv(name,default=None):
+    value = os.environ.get(name,None)
+    if value == None:
+        if default == None:
+            value = input("Env variable not found, please enter {}: ".format(name))
+        else:
+            value = default
+    return value
 
 class S(BaseHTTPRequestHandler):
     def _set_headers(self,code,type):
@@ -28,9 +38,7 @@ def run(server_class=HTTPServer, handler_class=S, port=80):
     print('Starting httpd...')
     httpd.serve_forever()
 
+PORT = getEnv('port',5000)
+
 if __name__ == "__main__":
-    from sys import argv
-    if len(argv) == 2:
-        run(port=int(argv[1]))
-    else:
-        run()
+    run(port=PORT)
