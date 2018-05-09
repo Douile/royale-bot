@@ -164,7 +164,7 @@ class Performance:
                 for i in range(0,match.matches):
                     matches_real.append(MatchEssential(match_id+i,match.kd))
                 match_id += match.matches
-            range = highest-lowest
+            range_kd = highest-lowest
             total_size = self.size[0]-self.padding*2
             interval_size = round(total_size/(match_count+1))
             left = self.padding+interval_size
@@ -174,7 +174,7 @@ class Performance:
             now = times.epoch_now()/60
             count = 1
             for match in matches_real:
-                size_y = (match.kd-lowest)*(height/range)
+                size_y = (match.kd-lowest)*(height/range_kd)
                 pos = (left,round(bottom-size_y))
                 tl = (pos[0]-2,pos[1]-2)
                 br = (pos[0]+2,pos[1]+2)
