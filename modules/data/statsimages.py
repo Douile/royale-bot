@@ -180,8 +180,10 @@ class Performance:
                 last_pos = pos
                 left += interval_size
                 count += 1
+            print(highest,lowest)
             lowest = strings.strDec(lowest)
             highest = strings.strDec(highest)
+            print(highest,lowest)
             left = round((self.padding-font.getsize(lowest)[0])/2)
             top = round(self.size[1]-self.padding-5-(font.getsize(lowest)[1]/2))
             draw.text((left,top),lowest,font=font,fill=fg)
