@@ -38,7 +38,7 @@ def run(server_class=HTTPServer, handler_class=S, port=80):
     print('Starting httpd...')
     httpd.serve_forever()
 
-PORT = getEnv('port',5000)
+PORT = getEnv('PORT',5000)
 
 if __name__ == "__main__":
     run(port=PORT)
