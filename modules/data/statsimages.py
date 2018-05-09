@@ -136,7 +136,7 @@ class Performance:
         self.color = DEFAULT_COLOR
         self.padding = 20
     @asyncio.coroutine
-    def generate(self,matches):
+    def generate(self,matches,lifetime_matches):
         image = PIL.Image.new('RGBA',self.size,self.color)
         draw = PIL.ImageDraw.Draw(image)
         fontsize = round(self.padding/3*2)
@@ -145,16 +145,25 @@ class Performance:
         draw.line([(self.padding,self.padding),(self.padding,self.size[1]-self.padding)],fill=fg,width=2)
         draw.line([(self.padding,self.size[1]-self.padding),(self.size[0]-self.padding,self.size[1]-self.padding)],fill=fg,width=2)
         text_top = round(self.size[1]-self.padding/4)
-        self.centeredText(draw,font,'Mins since recorded',horizontal=True,vertical=round(text_top-font.getsize('Mins')[1]),fill=fg)
+        self.centeredText(draw,font,'Match number',horizontal=True,vertical=round(text_top-font.getsize('Mins')[1]),fill=fg)
         self.centeredText(draw,font,'KD',horizontal=round((self.padding-font.getsize('KD')[0])/2),vertical=True,fill=fg)
         intervals = len(matches)
         kds = []
+        match_count = 0
         for match in matches:
             kds.append(match.kd)
+            match_count += match.matches
+        first_match = lifetime_matches - match_count
         lowest = round(integers.lowest(*kds),2)
         highest = round(integers.highest(*kds),2)
         if intervals > 0:
             matches.reverse()
+            matches_real = []
+            match_id = first_match
+            for match in matches:
+                for i in range(0,match.matches):
+                    matches_real.append(MatchEssential(match_id+i,match.kd))
+                match_id += match.matches
             range = highest-lowest
             total_size = self.size[0]-self.padding*2
             interval_size = round(total_size/(intervals+1))
@@ -164,7 +173,7 @@ class Performance:
             last_pos = None
             now = times.epoch_now()/60
             count = 1
-            for match in matches:
+            for match in matches_real:
                 size_y = (match.kd-lowest)*(height/range)
                 pos = (left,round(bottom-size_y))
                 tl = (pos[0]-2,pos[1]-2)
@@ -386,6 +395,11 @@ class Map(dict):
             super().__init__(ob)
     def __missing__(self, key):
         return key
+
+class MatchEssential:
+    def __init__(self,matchno,kd):
+        self.match = matchno
+        self.kd = kd
 
 @asyncio.coroutine
 def generate(KEY_TN,player,platform,backgrounds=[]):
