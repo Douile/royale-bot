@@ -95,7 +95,7 @@ class Overlay:
         overview_image = yield from overview.generate(data.userdata,data.lifetime)
         image.paste(overview_image,(padding_x,padding_y),overview_image)
         performance = Performance((size_x_small,size_y_small))
-        performance_image = yield from performance.generate(data.matches)
+        performance_image = yield from performance.generate(data.matches,data.lifetime.matches)
         image.paste(performance_image,(padding_x*2+size_x_large,padding_y),performance_image)
         main = Main((size_x_small+size_x_large+padding_x,size_y_large))
         main_image = yield from main.generate(data.stats)
