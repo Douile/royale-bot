@@ -183,7 +183,7 @@ class Performance:
                     draw.line([last_pos,pos],fill=fg,width=2)
                 match_id = str(match.match)
                 width = font.getsize(match_id)[0]
-                if count == 1 or count == intervals:
+                if count == 1 or count == match_count:
                     draw.text((round(left-width/2),round(text_top-font.getsize('0')[1])),match_id,fill=fg,font=font)
                 last_pos = pos
                 left += interval_size
