@@ -9,7 +9,8 @@ import random
 from io import BytesIO
 
 DEFAULT_SIZE = (1000,600)
-DEFAULT_FONT = 'assets/lemon.ttf'
+DEFAULT_FONT = 'assets/burbank.ttf'
+DEFAULT_FONT_NEAT = 'assets/bitstream-bold.ttf'
 DEFAULT_COLOR = (255,255,255,170)
 
 class Background:
@@ -140,7 +141,7 @@ class Performance:
         image = PIL.Image.new('RGBA',self.size,self.color)
         draw = PIL.ImageDraw.Draw(image)
         fontsize = round(self.padding/3*2)
-        font = PIL.ImageFont.truetype(DEFAULT_FONT,size=fontsize)
+        font = PIL.ImageFont.truetype(DEFAULT_FONT_NEAT,size=fontsize)
         fg = (255,255,255,255)
         draw.line([(self.padding,self.padding),(self.padding,self.size[1]-self.padding)],fill=fg,width=2)
         draw.line([(self.padding,self.size[1]-self.padding),(self.size[0]-self.padding,self.size[1]-self.padding)],fill=fg,width=2)
@@ -228,7 +229,7 @@ class Main:
     def generate(self,stats):
         image = PIL.Image.new('RGBA',self.size,self.color)
         draw = PIL.ImageDraw.Draw(image)
-        font = PIL.ImageFont.truetype(DEFAULT_FONT,size=24)
+        font = PIL.ImageFont.truetype(DEFAULT_FONT_NEAT,size=24)
         fg = (255,255,255,255)
         columnsize = round(self.size[0]/7)
         rowsize = round(self.size[1]/4)
