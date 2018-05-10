@@ -116,7 +116,7 @@ class Overview:
         font = PIL.ImageFont.truetype(DEFAULT_FONT,size=fontsize)
         font_small = PIL.ImageFont.truetype(DEFAULT_FONT,size=round(fontsize/2))
         draw.text((self.padding,self.padding),userdata.name,fill=(255,255,255,255),font=font)
-        statstext = 'KD {kd} WINS {wins} WIN% {win_percent}'.format_map(lifetime)
+        statstext = 'KD {kd} | WINS {wins} | WIN% {win_percent}'.format_map(lifetime)
         draw.text((self.padding,fontsize+self.padding*3),statstext,fill=(255,255,255,255),font=font)
         extra = 'MATCHES {matches}\nSCORE {score}'.format_map(lifetime)
         extrasize = font_small.getsize(extra.split('\n')[0])
