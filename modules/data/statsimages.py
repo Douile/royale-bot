@@ -9,7 +9,7 @@ import random
 from io import BytesIO
 
 DEFAULT_SIZE = (1000,600)
-DEFAULT_FONT = 'assets/burbank.ttf'
+DEFAULT_FONT = 'assets/lemon.ttf'
 DEFAULT_COLOR = (255,255,255,170)
 
 class Background:
