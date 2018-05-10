@@ -161,7 +161,7 @@ class Performance:
             matches_real = []
             match_id = first_match
             for match in matches:
-                for i in range(0,match.matches):
+                for i in range(1,match.matches+1):
                     matches_real.append(MatchEssential(match_id+i,match.kd))
                 match_id += match.matches
             range_kd = highest-lowest
