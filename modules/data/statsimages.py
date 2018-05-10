@@ -155,8 +155,8 @@ class Performance:
             match_count += match.matches
         first_match = lifetime_matches - match_count
         self.centeredText(draw,font,'Last {} matches'.format(match_count),horizontal=True,vertical=round(text_top-font.getsize('Mins')[1]),fill=fg)
-        lowest = round(integers.lowest(*kds),2)
-        highest = round(integers.highest(*kds),2)
+        lowest = round(integers.lowest(*kds),1)
+        highest = round(integers.highest(*kds),1)
         if intervals > 0:
             matches.reverse()
             matches_real = []
