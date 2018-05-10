@@ -172,25 +172,31 @@ class Performance:
             height = self.size[1]-self.padding*2-5
             last_pos = None
             now = times.epoch_now()/60
-            count = 1
-            last_no = -1
-            for match in matches_real:
+            for i in range(1,len(matches_real)+1):
+                if i-2 > 0:
+                    last_no = matches_real[i-2].kd
+                else:
+                    last_no = -1
+                if i < len(matches_real):
+                    next_no = matches_real[i].kd
+                else:
+                    next_no = -1
+                match = matches_real[i-1]
                 size_y = (match.kd-lowest)*(height/range_kd)
                 pos = (left,round(bottom-size_y))
                 tl = (pos[0]-2,pos[1]-2)
                 br = (pos[0]+2,pos[1]+2)
-                if match.kd != last_no:
+                if match.kd != last_no or match.kd != next_no:
                     draw.ellipse([tl,br],fill=fg)
                 last_no = match.kd
                 if last_pos != None:
                     draw.line([last_pos,pos],fill=fg,width=2)
                 match_id = str(match.match)
                 width = font.getsize(match_id)[0]
-                if count == 1 or count == match_count:
+                if i == 1 or i == match_count:
                     draw.text((round(left-width/2),round(text_top-font.getsize('0')[1])),match_id,fill=fg,font=font)
                 last_pos = pos
                 left += interval_size
-                count += 1
             print(highest,lowest)
             lowest = strings.strDec(lowest)
             highest = strings.strDec(highest)
