@@ -146,7 +146,6 @@ class Performance:
         draw.line([(self.padding,self.padding),(self.padding,self.size[1]-self.padding)],fill=fg,width=2)
         draw.line([(self.padding,self.size[1]-self.padding),(self.size[0]-self.padding,self.size[1]-self.padding)],fill=fg,width=2)
         text_top = round(self.size[1]-self.padding/4)
-        self.centeredText(draw,font,'Match number',horizontal=True,vertical=round(text_top-font.getsize('Mins')[1]),fill=fg)
         self.centeredText(draw,font,'KD',horizontal=round((self.padding-font.getsize('KD')[0])/2),vertical=True,fill=fg)
         intervals = len(matches)
         kds = []
@@ -155,6 +154,7 @@ class Performance:
             kds.append(match.kd)
             match_count += match.matches
         first_match = lifetime_matches - match_count
+        self.centeredText(draw,font,'Last {} matches'.format(match_count),horizontal=True,vertical=round(text_top-font.getsize('Mins')[1]),fill=fg)
         lowest = round(integers.lowest(*kds),2)
         highest = round(integers.highest(*kds),2)
         if intervals > 0:
