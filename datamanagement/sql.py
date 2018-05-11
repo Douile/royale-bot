@@ -248,7 +248,7 @@ class Database(Postgres):
 
     # links
     def get_link(self,user_id):
-        data = self.all("SELECT * FROM user_links WHERE user_id=%(id)s",parameters={'id':user_id})
+        data = self.all("SELECT * FROM user_links WHERE user_id=%(id)s",parameters={'id':user_id},back_as=dict)
         if len(data) > 1:
             user_data = data[0]
             for i in range(1,len(data)):
