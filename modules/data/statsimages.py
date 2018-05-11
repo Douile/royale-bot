@@ -42,17 +42,17 @@ class Background:
         if self.color != None:
             image = PIL.Image.new('RGBA',self.size,color=self.color)
         elif self.url != None:
-            image = yield from self.collectImage(self.url)
-            image = yield from self.reCropImage(image,self.size)
+            image = await self.collectImage(self.url)
+            image = await self.reCropImage(image,self.size)
         return image
     @staticmethod
     @asyncio.coroutine
     def collectImage(url):
         session = aiohttp.ClientSession()
-        response = yield from session.get(url)
-        content = yield from response.read()
+        response = await session.get(url)
+        content = await response.read()
         response.close()
-        yield from session.close()
+        await session.close()
         image = PIL.Image.open(BytesIO(content)).convert('RGBA')
         return image
     @staticmethod
@@ -93,13 +93,13 @@ class Overlay:
         size_y_small = padding_y*5
         size_y_large = padding_y*12
         overview = Overview((size_x_large,size_y_small))
-        overview_image = yield from overview.generate(data.userdata,data.lifetime)
+        overview_image = await overview.generate(data.userdata,data.lifetime)
         image.paste(overview_image,(padding_x,padding_y),overview_image)
         performance = Performance((size_x_small,size_y_small))
-        performance_image = yield from performance.generate(data.matches,int(data.lifetime.matches))
+        performance_image = await performance.generate(data.matches,int(data.lifetime.matches))
         image.paste(performance_image,(padding_x*2+size_x_large,padding_y),performance_image)
         main = Main((size_x_small+size_x_large+padding_x,size_y_large))
-        main_image = yield from main.generate(data.stats)
+        main_image = await main.generate(data.stats)
         image.paste(main_image,(padding_x,padding_y*2+size_y_small),main_image)
         return image
 
@@ -279,8 +279,8 @@ class Stats:
             self.background.color = color
     @asyncio.coroutine
     def generate(self,data):
-        background = yield from self.background.generate()
-        overlay = yield from self.overlay.generate(data)
+        background = await self.background.generate()
+        overlay = await self.overlay.generate(data)
         background.paste(overlay,(0,0),overlay)
         return background
 
@@ -413,7 +413,7 @@ class MatchEssential:
 @asyncio.coroutine
 def generate(KEY_TN,player,platform,backgrounds=[]):
     print(backgrounds)
-    stats_data = yield from stats.stats(KEY_TN,player,platform)
+    stats_data = await stats.stats(KEY_TN,player,platform)
     if stats_data['status'] == 200:
         stat_data = StatsData(stats_data)
         if stat_data.error == None:
@@ -422,7 +422,7 @@ def generate(KEY_TN,player,platform,backgrounds=[]):
                 url = random.choice(backgrounds)
                 print(url)
                 statsimage.background.url = url
-            image = yield from statsimage.generate(stat_data)
+            image = await statsimage.generate(stat_data)
         else:
             image = None
     else:

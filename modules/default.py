@@ -60,7 +60,7 @@ class Help(Command):
 @asyncio.coroutine
 def remove_help(client,msg):
     try:
-        yield from client.delete_message(msg)
+        await client.delete_message(msg)
     except:
         traceback.print_exc()
 class SetChannel(Command):

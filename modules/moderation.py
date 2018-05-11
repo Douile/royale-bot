@@ -38,12 +38,12 @@ class Mute(Command):
 
 @asyncio.coroutine
 def mute_member(client,member_id,server_id):
-    role = yield from mute_role(client,server_id)
+    role = await mute_role(client,server_id)
     user = discord.Object(member_id)
     user.server = discord.Object(server_id)
     try:
-        yield from client.server_voice_state(user,mute=True)
-        yield from client.add_roles(user,role)
+        await client.server_voice_state(user,mute=True)
+        await client.add_roles(user,role)
     except:
         print('Unable to mute user')
 @asyncio.coroutine
@@ -59,9 +59,9 @@ def mute_role(client,server_id):
         if not role_name in role_names:
             perms = discord.Permissions(send_messages=False,send_tts_messages=False)
             try:
-                value = yield from client.create_role(server,name=role_name,hoist=False,mentionable=False,permissions=perms)
+                value = await client.create_role(server,name=role_name,hoist=False,mentionable=False,permissions=perms)
                 try:
-                    yield from client.move_role(server,value,1)
+                    await client.move_role(server,value,1)
                 except:
                     pass
             except:
@@ -99,5 +99,5 @@ class Kick(Command):
 def kick_user(client,user,kicker,reason):
     kickmsg = '<@!{0}> You were kicked by @{1} for: {2}'.format(user.id,kicker,reason)
     print(kickmsg)
-    yield from client.send_message(user,content=kickmsg)
-    yield from client.kick(user)
+    await client.send_message(user,content=kickmsg)
+    await client.kick(user)
