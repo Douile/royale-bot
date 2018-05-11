@@ -167,7 +167,7 @@ class Performance:
                 match_id += match.matches
             range_kd = highest-lowest
             total_size = self.size[0]-self.padding*2
-            interval_size = round(total_size/(match_count+1))
+            interval_size = round(total_size/(match_count+2))
             left = self.padding+interval_size
             bottom = self.size[1]-self.padding-5
             height = self.size[1]-self.padding*2-5
