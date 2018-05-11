@@ -178,15 +178,16 @@ class HelpEmbed(discord.Embed):
                             if cmd.permission != 'admin':
                                 if cmd.description != '':
                                     commands[command] = cmd.description
-                                    if len(commands[command].aliases) > 0:
-                                        commands[command] += ' Aliases for this command are '
-                                        for alias in commands[command].aliases:
-                                            alias_format = alias.format_map(Map({'prefix':self.prefix}))
-                                            commands[command] += '`{}`, '.format(alias_format)
-                                        if commands[command].endswith(', '):
-                                            commands[command] = commands[command][:-2]
                                 else:
                                     commands[command] = 'Description not set'
+                        if type(commands.get(command,None)) is str:
+                            if len(commands[command].aliases) > 0:
+                                commands[command] += ' Aliases for this command are '
+                                for alias in commands[command].aliases:
+                                    alias_format = alias.format_map(Map({'prefix':self.prefix}))
+                                    commands[command] += '`{}`, '.format(alias_format)
+                                if commands[command].endswith(', '):
+                                    commands[command] = commands[command][:-2]
         if self.admin and commands.get('help',None) != None:
             commands['help'] += ' Add `-u` to print non admin help as admin, add `-d` to never auto delete the help message. E.g. `{prefix}help-u-d` will print a help message for normal users that never gets deleted.'
         is_commands = False
