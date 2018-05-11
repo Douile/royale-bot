@@ -84,7 +84,7 @@ client.database = sql.Database(url=DATABASE_URL)
 
 @asyncio.coroutine
 def autoshop(fnbr_key): # add fnbr not accessable fallback
-    await client.wait_until_ready()
+    yield from client.wait_until_ready()
     while not client.is_closed:
         shopdata = None
         for serverid in client.database.servers():
@@ -113,7 +113,7 @@ def autoshop(fnbr_key): # add fnbr not accessable fallback
 
 @asyncio.coroutine
 def autostatus():
-    await client.wait_until_ready()
+    yield from client.wait_until_ready()
     while not client.is_closed:
         cache_raw = client.database.get_cache("status",once=True)
         if 'status' in cache_raw:
@@ -143,7 +143,7 @@ def autostatus():
 
 @asyncio.coroutine
 def autonews():
-    await client.wait_until_ready()
+    yield from client.wait_until_ready()
     while not client.is_closed:
         cache = client.database.get_cache("news",once=False)
         if cache == None:
@@ -164,7 +164,7 @@ def autonews():
 
 @asyncio.coroutine
 def handle_queue():
-    await client.wait_until_ready()
+    yield from client.wait_until_ready()
     while not client.is_closed:
         for queue_item in client.queued_actions:
             args = [client] + queue_item.args
@@ -179,7 +179,7 @@ def handle_queue():
 @asyncio.coroutine
 def ticker_test():
     ticker_text = ['Est. 2018 @mention for help','Still under development']
-    await client.wait_until_ready()
+    yield from client.wait_until_ready()
     while not client.is_closed:
         for ticker in ticker_text:
             game = discord.Game(name=ticker,type=0)
