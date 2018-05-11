@@ -114,7 +114,7 @@ class Link(Command):
             name = command[command_size:]
             if len(name.strip()) > 0:
                 self.content = '<@!{author}> Your account was linked to `' + name + '`'
-                sql.set_link(msg.author.id,name)
+                self.sql.set_link(msg.author.id,name)
             else:
                 self.content = '<@!{author}> Please provide a username to link to'
         else:
