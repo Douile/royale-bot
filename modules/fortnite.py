@@ -17,7 +17,7 @@ class FortniteModule(Module):
             'news': News(),
             'servers': Servers(),
             'patchnotes': PatchNotes(),
-            'link', Link(sql)
+            'link': Link(sql)
         }
         self.types = ['stats','shop','news','status','autoshop','autostatus','autonews']
 class Shop(Command):
