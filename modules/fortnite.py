@@ -57,7 +57,7 @@ class Shop(Command):
             traceback.print_exc()
 class Stats(Command):
     def __init__(self,tn_key,sql):
-        super().__init__(name='stats',description='Gets the fortnite stats of a player. `{prefix}stats [platform] [player]` if you do not set platform it will default to pc')
+        super().__init__(name='stats',description='Gets the fortnite stats of a player. `{prefix}stats [platform] [player]` if you do not set platform it will default to pc, if you are linked and do not enter a player name it will default to your linked account, you can also @metion another linked user to default to their linked account.')
         self.permission = 'stats'
         self.tn_key = tn_key
         self.sql = sql
