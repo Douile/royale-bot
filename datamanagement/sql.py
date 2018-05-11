@@ -244,3 +244,19 @@ class Database(Postgres):
         else:
             exists = False
         return exists
+
+
+    # links
+    def get_link(self,user_id):
+        data = self.all("SELECT * FROM user_links WHERE user_id=%(id)s",parameters={'id':user_id})
+        if len(data) > 1:
+            user_data = data[0]
+            for i in range(1,len(data)):
+                self.run("DELETE FROM user_links WHERE _id=%(_id)s",parameters={'_id':user_data[i]['_id']})
+        elif len(data) == 1:
+            user_data = data[0]
+        else:
+            user_data = None
+        return user_data
+    def set_link(self,user_id,user_nick):
+        self.run('UPDATE user_links SET (user_id,user_nick) = (%(id)s,%(nick)s) WHERE user_id=%(id)s',parmeters={'id':user_id,'nick':user_nick})
