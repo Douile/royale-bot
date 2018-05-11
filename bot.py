@@ -255,7 +255,9 @@ def commandHandler(command,msg):
                 client.database.set_server_channel(serverid,type,output.settings['channels'][type])
             output.settings.pop('channels')
         if 'backgrounds' in output.settings:
-            client.database.set_server_backgrounds(serverid,backgrounds=output.settings.get('backgrounds'))
+            backgrounds = output.settings.get('backgrounds')
+            for type in backgrounds:
+                client.database.set_server_backgrounds(serverid,backgrounds=backgrounds.get(type),type=type)
             output.settings.pop('backgrounds')
         client.database.set_server_info(serverid,**output.settings)
     if output.delete_command == True:
