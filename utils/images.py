@@ -54,17 +54,17 @@ class Background:
         if self.color != None:
             image = PIL.Image.new('RGBA',self.size,color=self.color)
         elif self.url != None:
-            image = await self.collectImage(self.url)
-            image = await self.reCropImage(image,self.size)
+            image = yield from self.collectImage(self.url)
+            image = yield from self.reCropImage(image,self.size)
         return image
     @staticmethod
     @asyncio.coroutine
     def collectImage(url):
         session = aiohttp.ClientSession()
-        response = await session.get(url)
-        content = await response.read()
+        response = yield from session.get(url)
+        content = yield from response.read()
         response.close()
-        await session.close()
+        yield from session.close()
         image = PIL.Image.open(BytesIO(content)).convert('RGBA')
         return image
     @staticmethod

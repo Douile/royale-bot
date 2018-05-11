@@ -33,7 +33,7 @@ class Shop(Command):
                 bgs = settings.get('backgrounds',{})
                 bgs_s = bgs.get('shop',[])
                 print('Generating shop')
-                file = await shop.generate(shopdata,bgs_s,msg.server.id)
+                file = yield from shop.generate(shopdata,bgs_s,msg.server.id)
                 self.typing = True
                 self.file = file
                 self.content = "Data from <https://fnbr.co>"
@@ -83,7 +83,7 @@ class Stats(Command):
             print('Platform: '+platform)
             bgs = settings.get('backgrounds',{})
             bgs_s = bgs.get('stat',[])
-            statsimage = await statsimages.generate(self.tn_key,name,platform,bgs_s)
+            statsimage = yield from statsimages.generate(self.tn_key,name,platform,bgs_s)
             if statsimage == None:
                 self.content = '<@!{author}> User not found'
             else:

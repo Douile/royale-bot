@@ -21,7 +21,7 @@ class Module:
                 if command.startswith(cmd):
                     is_command = True
                 if is_command and isinstance(self.commands[cmd],Command):
-                    output = await self._run_command(empty,cmd,curcommand,msg,settings)
+                    output = yield from self._run_command(empty,cmd,curcommand,msg,settings)
         return output
     @asyncio.coroutine
     def _run_alias(self,empty,command,msg,settings):
@@ -39,7 +39,7 @@ class Module:
                     if msg.content.startswith(alias_cmd):
                         is_command = True
                 if is_command and isinstance(self.commands[cmd],Command):
-                    output = await self._run_command(empty,cmd,curcommand,msg,settings)
+                    output = yield from self._run_command(empty,cmd,curcommand,msg,settings)
         return output
     @asyncio.coroutine
     def _run_command(self,empty,cmd,command,msg,settings):
@@ -50,11 +50,11 @@ class Module:
             else:
                 pcheck = msg.author.admin or msg.author.id == '293482190031945739'
             if pcheck:
-                output = await self.commands[cmd]._run(command,msg,settings)
+                output = yield from self.commands[cmd]._run(command,msg,settings)
             else:
                 output.noPermission = self.commands[cmd].permission
         else:
-            output = await self.commands[cmd]._run(command,msg,settings)
+            output = yield from self.commands[cmd]._run(command,msg,settings)
         return output
 class Command:
     def __init__(self,name="",description="",permission=None,aliases=[]):
@@ -69,7 +69,7 @@ class Command:
         try:
             if callable(self.run):
                 if asyncio.iscoroutinefunction(self.run):
-                    await self.run(command,msg,settings)
+                    yield from self.run(command,msg,settings)
                 else:
                     self.run(command,msg,settings)
         except NameError:

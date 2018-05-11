@@ -4,7 +4,7 @@ import aiohttp
 
 @asyncio.coroutine
 def fetch(session, url):
-    response = await session.get(url)
+    response = yield from session.get(url)
     return response
 
 @asyncio.coroutine
@@ -16,14 +16,14 @@ def apiSession(apikey):
 def stats(key,player='',platform='pc'):
     url = 'https://api.fortnitetracker.com/v1/profile/{0}/{1}'.format(platform,player)
     print(url)
-    session = await apiSession(key)
-    response = await fetch(session, url)
+    session = yield from apiSession(key)
+    response = yield from fetch(session, url)
     if response.status == 200:
-        json = await response.json()
+        json = yield from response.json()
         json['status'] = response.status
     else:
         json = {'status':response.status,'error':response.reason}
-    await session.close()
+    yield from session.close()
     return json
 
 

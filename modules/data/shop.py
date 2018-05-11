@@ -89,12 +89,12 @@ class ShopImageNew():
     def setFeatured(self, images):
         top = self.padding*2 + self.fheight*2
         left = self.padding
-        await self.drawImages(left,top,images)
+        yield from self.drawImages(left,top,images)
     @asyncio.coroutine
     def setDaily(self, images):
         top = self.padding*2 + self.fheight*2
         left = self.padding*3 + self.size*2
-        await self.drawImages(left,top,images)
+        yield from self.drawImages(left,top,images)
     @asyncio.coroutine
     def drawImages(self,left,top,images):
         sets = arrays.split(images,2)
@@ -125,10 +125,10 @@ class ShopImageNew():
         self.background.save(name)
     @asyncio.coroutine
     def generate(self,featured,daily,name):
-        self.background = await self.background_generator.generate()
-        await self.setFeatured(featured)
-        await self.setDaily(daily)
-        await self.drawText()
+        self.background = yield from self.background_generator.generate()
+        yield from self.setFeatured(featured)
+        yield from self.setDaily(daily)
+        yield from self.drawText()
         return self.background
 class ItemImage():
     def __init__(self,itemname,itemprice,itempriceimage,itemrarity,itemimageurl,size):
@@ -262,7 +262,7 @@ def generate(shopdata,backgrounds=[],serverid=None):
         else:
             size = 4
         out = ShopImageNew(size=300,padding=40,fontsize=40,rowsize=size,fcount=len(shopdata.data.featured),dcount=len(shopdata.data.daily),date=date,background=None)
-        overlay = await out.generate(featured,daily,fname)
+        overlay = yield from out.generate(featured,daily,fname)
     if len(backgrounds) == 1:
         background = backgrounds[0]
     elif len(backgrounds) > 0:
@@ -275,7 +275,7 @@ def generate(shopdata,backgrounds=[],serverid=None):
         newname = fname
     else:
         background_generator = images.Background((overlay.width,overlay.height),url=background)
-        output = await background_generator.generate()
+        output = yield from background_generator.generate()
         output.paste(overlay,(0,0),overlay)
         newname = '{0}-{1}'.format(fname,serverid)
         output.save(newname)
