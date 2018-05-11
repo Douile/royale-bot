@@ -29,7 +29,7 @@ class Status(Command):
         self.content = raw.format(msg.author.id,self.version)
 class Help(Command):
     def __init__(self,modules):
-        super().__init__(name='help',description='Print out all the commands you can use. `{prefix}help`')
+        super().__init__(name='help',description='Print out all the commands you can use. `{prefix}help`',aliases=['<@{bot_id}>','<@!{bot_id}>'])
         self.modules = modules
     def run(self,command,msg,settings):
         self.reset()
@@ -178,6 +178,13 @@ class HelpEmbed(discord.Embed):
                             if cmd.permission != 'admin':
                                 if cmd.description != '':
                                     commands[command] = cmd.description
+                                    if len(commands[command].aliases) > 0:
+                                        commands[command] += ' Aliases for this command are '
+                                        for alias in commands[command].aliases:
+                                            alias_format = alias.format_map(Map({'prefix':self.prefix}))
+                                            commands[command] += '`{}`, '.format(alias_format)
+                                        if commands[command].endswith(', '):
+                                            commands[command] = commands[command][:-2]
                                 else:
                                     commands[command] = 'Description not set'
         if self.admin and commands.get('help',None) != None:
