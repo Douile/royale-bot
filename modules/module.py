@@ -35,7 +35,7 @@ class Module:
                 is_command = False
                 for alias in self.commands[cmd].aliases:
                     alias_cmd = alias.format_map(Map({'prefix':get_prefix(settings)})).strip()
-                    print('Checking for alias "{}" in "{}"'.format(alias_cmd,command))
+                    print('Checking for alias "{}" in "{}"'.format(alias_cmd,msg.content))
                     if msg.content.startswith(alias_cmd):
                         is_command = True
                 if is_command and isinstance(self.commands[cmd],Command):
