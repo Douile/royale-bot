@@ -228,45 +228,54 @@ def generate(shopdata,backgrounds=[],serverid=None):
     time = getTime(shopdata.data.date)
     date = time.strftime("%A %d %B")
     fname = filename(time)
-    backupprice = 'https://image.fnbr.co/price/icon_vbucks.png'
-    for item in shopdata.data.featured:
-        if item.priceIconLink != 'false' and item.priceIconLink != False and item.priceIconLink != 'False':
-            backupprice = item.priceIconLink
-            priceIcon = item.priceIconLink
-        else:
-            priceIcon = backupprice
-        if item.icon != '' and item.icon != False and item.icon != 'False':
-            im = ItemImage(item.name,item.price,priceIcon,item.rarity,item.icon,512) # i need to create a function for this
-        elif item.png != '' and item.png != False and item.png != 'False':
-            im = ItemImage(item.name,item.price,priceIcon,item.rarity,item.png,512)
-        else:
-            im = ItemImage(item.name,item.price,priceIcon,item.rarity,item.priceIconLink,512)
-        featured.append(im.out())
-    for item in shopdata.data.daily:
-        if item.priceIconLink != 'false' and item.priceIconLink != False and item.priceIconLink != 'False':
-            backupprice = item.priceIconLink
-            priceIcon = item.priceIconLink
-        else:
-            priceIcon = backupprice
-        if item.icon != '' and item.icon != False and item.icon != 'False':
-            im = ItemImage(item.name,item.price,priceIcon,item.rarity,item.icon,512)
-        elif item.png != '' and item.png != False and item.png != 'False':
-            im = ItemImage(item.name,item.price,priceIcon,item.rarity,item.png,512)
-        else:
-            im = ItemImage(item.name,item.price,priceIcon,item.rarity,item.priceIconLink,512)
-        daily.append(im.out())
-    if len(shopdata.data.featured) > 4:
-        size = 5
+    if os.isfile(fname):
+        overlay = PIL.Image.open(fname)
     else:
-        size = 4
+        backupprice = 'https://image.fnbr.co/price/icon_vbucks.png'
+        for item in shopdata.data.featured:
+            if item.priceIconLink != 'false' and item.priceIconLink != False and item.priceIconLink != 'False':
+                backupprice = item.priceIconLink
+                priceIcon = item.priceIconLink
+            else:
+                priceIcon = backupprice
+            if item.icon != '' and item.icon != False and item.icon != 'False':
+                im = ItemImage(item.name,item.price,priceIcon,item.rarity,item.icon,512) # i need to create a function for this
+            elif item.png != '' and item.png != False and item.png != 'False':
+                im = ItemImage(item.name,item.price,priceIcon,item.rarity,item.png,512)
+            else:
+                im = ItemImage(item.name,item.price,priceIcon,item.rarity,item.priceIconLink,512)
+            featured.append(im.out())
+        for item in shopdata.data.daily:
+            if item.priceIconLink != 'false' and item.priceIconLink != False and item.priceIconLink != 'False':
+                backupprice = item.priceIconLink
+                priceIcon = item.priceIconLink
+            else:
+                priceIcon = backupprice
+            if item.icon != '' and item.icon != False and item.icon != 'False':
+                im = ItemImage(item.name,item.price,priceIcon,item.rarity,item.icon,512)
+            elif item.png != '' and item.png != False and item.png != 'False':
+                im = ItemImage(item.name,item.price,priceIcon,item.rarity,item.png,512)
+            else:
+                im = ItemImage(item.name,item.price,priceIcon,item.rarity,item.priceIconLink,512)
+            daily.append(im.out())
+        if len(shopdata.data.featured) > 4:
+            size = 5
+        else:
+            size = 4
+        out = ShopImageNew(size=300,padding=40,fontsize=40,rowsize=size,fcount=len(shopdata.data.featured),dcount=len(shopdata.data.daily),date=date,background=None)
+        overlay = yield from out.generate(featured,daily,fname)
     if len(backgrounds) == 1:
         background = backgrounds[0]
     elif len(backgrounds) > 0:
         background = choice(backgrounds)
     else:
         background = None
-    out = ShopImageNew(size=300,padding=40,fontsize=40,rowsize=size,fcount=len(shopdata.data.featured),dcount=len(shopdata.data.daily),date=date,background=background)
-    output = yield from out.generate(featured,daily,fname)
+    if background == None:
+        output = overlay
+    else:
+        background_generator = images.Background((overlay.width,overlay.height),url=background)
+        output = yield from background_generator.generate()
+        output.paste(overlay,(0,0),overlay)
     return output
 def getShopData(apikey):
     print("Getting shop data")
