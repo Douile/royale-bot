@@ -238,7 +238,8 @@ def on_message(msg):
 
 @asyncio.coroutine
 def commandHandler(command,msg):
-    command = command.lower()
+    if command != None:
+        command = command.lower()
     serverid = msg.server.id
     serversettings = client.database.server_info(serverid,channels=True,backgrounds=True)
     if serversettings.get("server_name") != msg.server.name:
