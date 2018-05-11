@@ -76,7 +76,7 @@ class Stats(Command):
         except ValueError:
             platform = 'pc'
             name = args
-        if len(name.strip()) < 1:
+        if len(name) < 1:
             data = self.sql.get_link(msg.author.id)
             if data != None:
                 name = data.get('user_nickname')
