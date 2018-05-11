@@ -8,7 +8,7 @@ from random import choice
 from . import fnbr
 from utils import arrays, integers, images
 import asyncio
-import os
+from os.path import isfile
 
 FONT = "assets/burbank.ttf"
 
@@ -229,7 +229,7 @@ def generate(shopdata,backgrounds=[],serverid=None):
     time = getTime(shopdata.data.date)
     date = time.strftime("%A %d %B")
     fname = filename(time)
-    if os.isfile(fname):
+    if isfile(fname):
         overlay = PIL.Image.open(fname)
     else:
         backupprice = 'https://image.fnbr.co/price/icon_vbucks.png'
