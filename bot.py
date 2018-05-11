@@ -1,4 +1,4 @@
-import discord
+import discord_wrapper as discord
 import asyncio
 import json
 import os
@@ -54,43 +54,6 @@ def get_prefix(settings):
         prefix = '!'
     return prefix
 
-
-class Command():
-    def __init__(self):
-        self.content = None
-        self.file = None
-        self.embed = None
-        self.embeds = None
-        self.settings = None
-        self.shutdown = False
-        self.typing = False
-        self.noPermission = None
-        self.queue = []
-    def changeSettings(self,settings):
-        sets = settings
-        if self.settings != None:
-            sets = self.settings
-        return sets
-class SetPresence(Command):
-    def __init__(self,msg,settings):
-        super().__init__()
-        try:
-            name = msg.content.split(" ")[1]
-            type = msg.content.split(" ")[2]
-        except IndexError:
-            name = ""
-            type = "1"
-        try:
-            type = int(type)
-        except ValueError:
-            type = 1
-        self.game = discord.Game(name=name,type=type)
-        self.content = "Presence changed!"
-class Shutdown(Command):
-    def __init__(self,msg,settings):
-        super().__init__()
-        self.content = "OK <@!{0}>. Shutting down...".format(msg.author.id)
-        self.shutdown = True
 def changes(original={},new={}):
     changed = {}
     for a in new:
@@ -279,20 +242,14 @@ def commandHandler(command,msg):
     if serversettings.get("server_name") != msg.server.name:
         client.database.set_server_info(serverid,server_name=msg.server.name)
     output = Command()
-    admin = msg.author.server_permissions.administrator or msg.author.id == '293482190031945739'
-    if command.startswith("shutdown"):
-        if msg.author.id == '293482190031945739':
-            output = Shutdown(msg,serversettings)
-        else:
-            yield from noPermission(msg,None,serversettings)
-    else:
-        output = yield from defaultmodule._run(output,command,msg,serversettings)
-        if output.content == None and output.embed == None and output.embeds == None:
-            for i in range(0,len(cmodules)):
-                output = yield from cmodules[i]._run(output,command,msg,serversettings)
-        if len(output.queue) > 0:
-            client.queued_actions += output.queue
-            print('Added queued action')
+    admin = msg.author.admin
+    output = yield from defaultmodule._run(output,command,msg,serversettings)
+    if output.content == None and output.embed == None and output.embeds == None:
+        for i in range(0,len(cmodules)):
+            output = yield from cmodules[i]._run(output,command,msg,serversettings)
+    if len(output.queue) > 0:
+        client.queued_actions += output.queue
+        print('Added queued action')
     if output.settings != None:
         if 'channels' in output.settings:
             for type in output.settings['channels']:
@@ -322,10 +279,8 @@ def commandHandler(command,msg):
                 print(json.dumps(output.embed.to_dict()))
             response = yield from client.send_message(msg.channel,content='Sorry there was an error sending response')
         yield from client.delete_message(msg)
-    if isinstance(output,default.Help):
+    if output.is_help == True:
         client.database.set_server_info(serverid,last_help_msg=response.id,last_help_channel=response.channel.id)
-    if output.shutdown == True:
-        yield from client.close()
 @asyncio.coroutine
 def noPermission(msg,type,settings):
     serverid = msg.server.id

@@ -19,33 +19,6 @@ class DefaultModule(Module):
             'channels': Channels(self.types),
             'setprefix': SetPrefix()
         }
-    # def run(self,empty,command,msg,settings):
-    #     output = empty
-    #     if command.startswith('help'):
-    #         if msg.author.server_permissions.administrator:
-    #             self.commands['adminhelp'].run(msg,settings)
-    #             output = self.commands['adminhelp']
-    #         else:
-    #             self.commands['help'].run(msg,settings)
-    #             output = self.commands['help']
-    #     else:
-    #         curcommand = msg.content[len(get_prefix(settings)):]
-    #         for cmd in self.commands:
-    #             if command.startswith(cmd) and isinstance(self.commands[cmd],Command) and cmd != 'help':
-    #                 if self.commands[cmd].permission != None:
-    #                     if self.commands[cmd].permission != 'admin':
-    #                         pcheck = checkPermissions(msg.channel.id,self.commands[cmd].permission,settings)
-    #                     else:
-    #                         pcheck = msg.author.server_permissions.administrator or msg.author.id == '293482190031945739'
-    #                     if pcheck:
-    #                         self.commands[cmd].run(curcommand,msg,settings)
-    #                         output = self.commands[cmd]
-    #                     else:
-    #                         output.noPermission = self.commands[cmd].permission
-    #                 else:
-    #                     self.commands[cmd].run(curcommand,msg,settings)
-    #                     output = self.commands[cmd]
-    #     return output
 class Status(Command):
     def __init__(self,version):
         super().__init__(name='status',description="Print the status of the bot. `{prefix}status`")
@@ -60,14 +33,23 @@ class Help(Command):
         self.modules = modules
     def run(self,command,msg,settings):
         self.reset()
+        self.is_help = True
+        admin = msg.author.admin
         prefix = settings.get('prefix','!')
         if prefix == None:
             prefix = "!"
         try:
+            cmd = command.split(" ")[0].lower()
+            if cmd.count('-u') > 0:
+                admin = False
+            if cmd.count('-d') > 0:
+                self.is_help = False
+        except:
+            pass
+        try:
             category = command.split(" ")[1].lower()
         except IndexError:
             category = None
-        admin = msg.author.server_permissions.administrator
         self.embed = HelpEmbed(prefix=prefix,category=category,icon_url=msg.server.icon_url,admin=admin)
         self.embed.generate(self.modules)
         last_help_msg = settings.get('last_help_msg',None)
@@ -198,6 +180,8 @@ class HelpEmbed(discord.Embed):
                                     commands[command] = cmd.description
                                 else:
                                     commands[command] = 'Description not set'
+        if self.admin and commands.get('help',None) != None:
+            commands['help'] += 'Add `-u` to print non admin help as admin, add `-d` to never auto delete the help message. E.g. `{pefix}help-u-d` will print a help message for normal users that never gets deleted.'
         is_commands = False
         for command in commands:
             description = commands[command].format_map({'prefix':self.prefix})

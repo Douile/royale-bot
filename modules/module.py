@@ -55,7 +55,7 @@ class Command:
         self.embed = None
         self.embeds = None
         self.settings = None
-        self.shutdown = False
+        self.is_help = False
         self.noPermission = None
         self.typing = False
         self.deletes = []
