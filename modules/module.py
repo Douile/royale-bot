@@ -20,6 +20,19 @@ class Module:
                 is_command = False
                 if command.startswith(cmd):
                     is_command = True
+                if is_command and isinstance(self.commands[cmd],Command):
+                    output = yield from self._run_command(empty,cmd,curcommand,msg,settings)
+        return output
+    @asyncio.coroutine
+    def _run_alias(self,empty,command,msg,settings):
+        output = empty
+        run = getattr(self,'run',None)
+        if callable(run):
+            output = self.run(empty,command,msg,settings)
+        else:
+            curcommand = msg.content[len(get_prefix(settings)):]
+            for cmd in self.commands:
+                is_command = False
                 for alias in self.commands[cmd].aliases:
                     alias_cmd = alias.format_map(Map({'prefix':get_prefix(settings)})).strip()
                     print('Checking for alias "{}" in "{}"'.format(alias_cmd,command))

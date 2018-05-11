@@ -216,8 +216,11 @@ def on_message(msg):
         prefix = settings.get("prefix")
         if prefix == None:
             prefix = "!"
-    if not msg.author.bot and msg.content.startswith(prefix):
-        command = msg.content[len(prefix):]
+    if not msg.author.bot:
+        if msg.content.startswith(prefix):
+            command = msg.content[len(prefix):]
+        else:
+            command = None
         yield from commandHandler(command,msg)
 # @client.event
 # @asyncio.coroutine
@@ -242,10 +245,16 @@ def commandHandler(command,msg):
         client.database.set_server_info(serverid,server_name=msg.server.name)
     output = Command()
     output.delete_command = False
-    output = yield from defaultmodule._run(output,command,msg,serversettings)
-    if output.content == None and output.embed == None and output.embeds == None:
-        for i in range(0,len(cmodules)):
-            output = yield from cmodules[i]._run(output,command,msg,serversettings)
+    if command != None:
+        output = yield from defaultmodule._run(output,command,msg,serversettings)
+        if output.content == None and output.embed == None and output.embeds == None:
+            for i in range(0,len(cmodules)):
+                output = yield from cmodules[i]._run(output,command,msg,serversettings)
+    else:
+        output = yield from defaultmodule._run_alias(output,command,msg,serversettings)
+        if output.content == None and output.embed == None and output.embeds == None:
+            for i in range(0,len(cmodules)):
+                output = yield from cmodules[i]._run_alias(output,command,msg,serversettings)
     if len(output.queue) > 0:
         client.queued_actions += output.queue
         print('Added queued action')
