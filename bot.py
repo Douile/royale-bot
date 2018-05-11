@@ -243,7 +243,7 @@ def commandHandler(command,msg):
     if serversettings.get("server_name") != msg.server.name:
         client.database.set_server_info(serverid,server_name=msg.server.name)
     output = Command()
-    admin = msg.author.admin
+    output.delete_command = False
     output = yield from defaultmodule._run(output,command,msg,serversettings)
     if output.content == None and output.embed == None and output.embeds == None:
         for i in range(0,len(cmodules)):
@@ -260,17 +260,17 @@ def commandHandler(command,msg):
             client.database.set_server_backgrounds(serverid,backgrounds=output.settings.get('backgrounds'))
             output.settings.pop('backgrounds')
         client.database.set_server_info(serverid,**output.settings)
+    if output.delete_command == True:
+        yield from client.delete_message(msg)
     if output.typing == True:
         yield from client.send_typing(msg.channel)
     if output.noPermission != None:
         yield from noPermission(msg,output.noPermission,serversettings)
     if output.file != None:
         response = yield from client.send_file(msg.channel,output.file,content=output.content)
-        yield from client.delete_message(msg)
     elif output.embeds != None:
         for embed in output.embeds:
             response = yield from client.send_message(msg.channel,embed=embed)
-        yield from client.delete_message(msg)
     elif output.content != None or output.embed != None:
         try:
             response = yield from client.send_message(msg.channel,content=output.content,embed=output.embed)
@@ -279,7 +279,6 @@ def commandHandler(command,msg):
             if output.embed != None:
                 print(json.dumps(output.embed.to_dict()))
             response = yield from client.send_message(msg.channel,content='Sorry there was an error sending response')
-        yield from client.delete_message(msg)
     if output.is_help == True:
         client.database.set_server_info(serverid,last_help_msg=response.id,last_help_channel=response.channel.id)
 @asyncio.coroutine

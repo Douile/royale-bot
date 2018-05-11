@@ -58,6 +58,7 @@ class Command:
         self.is_help = False
         self.noPermission = None
         self.typing = False
+        self.delete_command = False
         self.deletes = []
         self.queue = []
     def changeSettings(self,settings):
