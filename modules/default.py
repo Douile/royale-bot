@@ -1,4 +1,4 @@
-from .module import Module, Command, checkPermissions, QueueAction, get_prefix
+from .module import Module, Command, checkPermissions, QueueAction, get_prefix, Map
 import discord
 import asyncio
 import traceback
