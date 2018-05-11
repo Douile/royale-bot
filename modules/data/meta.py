@@ -37,8 +37,7 @@ def getStatus():
     return output
 
 def getNews(language='en'):
-    headers= {'Accept-Language':language}
-    response = requests.get(NEWS,headers=headers)
+    response = requests.get(NEWS)
     output = {'success':False}
     if response.status_code == 200:
         data = response.json()
@@ -52,8 +51,6 @@ def getNews(language='en'):
         if 'news' in data['emergencynotice']:
             if 'messages' in data['emergencynotice']['news']:
                 output['messages'] += data['emergencynotice']['news']['messages']
-
-
         output['success'] = True
     return output
 
@@ -78,9 +75,15 @@ def getPatchNotes(limit=5,offset=0,detail=True):
                 'simple':None}
                 html = bs4.BeautifulSoup(blog['content'],'html.parser')
                 if detail == True:
-                    note['detailed'] = parseDetailPatchNotes(html)
+                    try:
+                        note['detailed'] = parseDetailPatchNotes(html)
+                    except:
+                        note['detailed'] = 'Parse error'
                 elif detail == False:
-                    note['simple'] = parseSimplePatchNotes(html)
+                    try:
+                        note['simple'] = parseSimplePatchNotes(html)
+                    except:
+                        note['simple'] = 'Parse error'
                 output['notes'].append(note)
             output['success'] = True
     else:
