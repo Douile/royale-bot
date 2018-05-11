@@ -279,6 +279,8 @@ def generate(shopdata,backgrounds=[],serverid=None):
         output.paste(overlay,(0,0),overlay)
         newname = '{0}-{1}'.format(fname,serverid)
         output.save(newname)
+        if not isfile(fname):
+            overlay.save(fname)
     return newname
 def getShopData(apikey):
     print("Getting shop data")
