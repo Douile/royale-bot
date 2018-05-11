@@ -78,12 +78,12 @@ def getPatchNotes(limit=5,offset=0,detail=True):
                     try:
                         note['detailed'] = parseDetailPatchNotes(html)
                     except:
-                        note['detailed'] = 'Parse error'
+                        note['detailed'] = [{'title':'Parse error','value':'Epic screwed with the api again'}]
                 elif detail == False:
                     try:
                         note['simple'] = parseSimplePatchNotes(html)
                     except:
-                        note['simple'] = 'Parse error'
+                        note['simple'] = {'description':'Parse error','extra':[],'video':None}
                 output['notes'].append(note)
             output['success'] = True
     else:
