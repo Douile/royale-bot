@@ -200,7 +200,7 @@ class Database(Postgres):
         else:
             self.run("DELETE FROM server_backgrounds WHERE server_id=%(id)s AND background_type=%(type)s",parameters={'id':server_id,'type':type})
     def set_server_backgrounds(self,server_id,backgrounds=[],type=None):
-        self.reset_server_backgrounds(server_id)
+        self.reset_server_backgrounds(server_id,type)
         for background in backgrounds:
             self.add_server_background(server_id,background,type)
 
