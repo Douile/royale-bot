@@ -1,4 +1,4 @@
-from .module import Module, Command
+from .module import Module, Command, parse_user_at
 from .data import shop,statsimages,meta
 import traceback
 import time
@@ -8,7 +8,7 @@ import discord
 import asyncio
 
 class FortniteModule(Module):
-    def __init__(self,fnbr_key='',tn_key=''):
+    def __init__(self,fnbr_key='',tn_key='',sql=None):
         super().__init__(name="Fortnite",description="Commands related to fortnite",category="fortnite")
         self.commands = {
             'shop': Shop(fnbr_key),
@@ -17,7 +17,7 @@ class FortniteModule(Module):
             'news': News(),
             'servers': Servers(),
             'patchnotes': PatchNotes(),
-            'link', Link()
+            'link', Link(sql)
         }
         self.types = ['stats','shop','news','status','autoshop','autostatus','autonews']
 class Shop(Command):
@@ -56,10 +56,11 @@ class Shop(Command):
             print(e)
             traceback.print_exc()
 class Stats(Command):
-    def __init__(self,tn_key):
+    def __init__(self,tn_key,sql):
         super().__init__(name='stats',description='Gets the fortnite stats of a player. `{prefix}stats [platform] [player]` if you do not set platform it will default to pc')
         self.permission = 'stats'
         self.tn_key = tn_key
+        self.sql = sql
     @asyncio.coroutine
     def run(self,command,msg,settings):
         args = command[len('stats'):].strip()
@@ -75,6 +76,18 @@ class Stats(Command):
         except ValueError:
             platform = 'pc'
             name = args
+        if len(name.strip()) == 0:
+            data = self.sql.get_link(msg.author.id)
+            if data != None:
+                name = data.get('user_nickname')
+        else:
+            try:
+                user = parse_user_at(name)
+                data = self.sql.get(user.id)
+                if data != None:
+                    name = data.get('user_nickname')
+            except RuntimeError:
+                pass
         try:
             print('Name: '+name)
             print('Platform: '+platform)
@@ -91,15 +104,16 @@ class Stats(Command):
             print(e)
             traceback.print_exc()
 class Link(Command):
-    def __init__(self):
+    def __init__(self,sql):
         super().__init__(name='link',description='Link you fortnite account for easy stats retrieval.')
+        self.sql = sql
     @asyncio.coroutine
     def run(self,command,msg,settings):
         command_size = len('link ')
         if len(command) > command_size:
             name = command[command_size:]
             if len(name.strip()) > 0:
-                settings['links'][msg.author.id] = name
+                sql.set_link(msg.author.id,name)
                 self.content = '<@!{author}> Your account was linked to `' + name + '`'
             else:
                 self.content = '<@!{author}> Please provide a username to link to'
