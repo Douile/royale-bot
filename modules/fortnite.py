@@ -30,19 +30,10 @@ class Shop(Command):
         try:
             shopdata = shop.getShopData(self.fnbr_key)
             if shopdata.status == 200:
-                rawtime = shop.getTime(shopdata.data.date)
-                rtime = time.mktime(rawtime.utctimetuple())
-                now = time.mktime(datetime.utcnow().utctimetuple())
-                tommorow = rtime + (60*60*24)
-                if now > tommorow or not os.path.isfile(shop.filename(rawtime)):
-                    if 'backgrounds' in settings:
-                        backgrounds = settings['backgrounds']
-                    else:
-                        backgrounds = []
-                    print('Generating shop')
-                    file = yield from shop.generate(shopdata,backgrounds,msg.server.id)
-                else:
-                    file = shop.filename(rawtime)
+                bgs = settings.get('backgrounds',{})
+                bgs_s = bgs.get('shop',[])
+                print('Generating shop')
+                file = yield from shop.generate(shopdata,bgs_s,msg.server.id)
                 self.typing = True
                 self.file = file
                 self.content = "Data from <https://fnbr.co>"
@@ -91,13 +82,14 @@ class Stats(Command):
         try:
             print('Name: '+name)
             print('Platform: '+platform)
-            statsimage = yield from statsimages.generate(self.tn_key,name,platform,settings.get('backgrounds',[]))
+            bgs = settings.get('backgrounds',{})
+            bgs_s = bgs.get('stat',[])
+            statsimage = yield from statsimages.generate(self.tn_key,name,platform,bgs_s)
             if statsimage == None:
                 self.content = '<@!{author}> User not found'
             else:
                 self.typing = True
                 statsimage.save('generatedstats.png')
-                self.content = '<@!{author}>'
                 self.file = 'generatedstats.png'
         except Exception as e:
             self.content = "Error getting stats"
@@ -113,7 +105,7 @@ class Link(Command):
         if len(command) > command_size:
             name = command[command_size:]
             if len(name.strip()) > 0:
-                self.content = '<@!{author}> Your account was linked to `' + name + '`'
+                self.content = '<@!{author}> Your account is now linked to `' + name + '`'
                 try:
                     self.sql.set_link(msg.author.id,name)
                 except:
@@ -125,16 +117,22 @@ class Link(Command):
             self.content = '<@!{author}> You must enter a username to link your account'
 class SetBackgrounds(Command):
     def __init__(self):
-        super().__init__(name='setbackground',description='Sets the backgrounds for all images generated. Seperate urls with a space. If you want a blank backround don\'t include any urls. `{prefix}setbackground(s) [url 1] [url 2] [url 3]...`')
+        self.background_types = ['shop','stat']
+        super().__init__(name='setbackground',description='Sets the backgrounds for all images generated. Seperate urls with a space. If you want a blank backround don\'t include any urls. `{prefix}setbackground(s) [type] [url 2] [url 3]...`. `type` must be one of '+str(self.background_types))
         self.permission = 'admin'
     def run(self,command,msg,settings):
         self.reset()
         urls = command.split(" ")
+        type = None
         if len(urls) < 2:
             backgrounds = []
         else:
-            backgrounds = urls[1:]
-        self.settings = {'backgrounds': backgrounds}
+            if urls[1].lower() in self.background_types:
+                type = urls[1].lower()
+                backgrounds = urls[2:]
+            else:
+                backgrounds = urls[1:]
+        self.settings = {'backgrounds': {'type':type,'urls':backgrounds}}
         self.content = '<@!{author}> Set backgrounds'
 class News(Command):
     def __init__(self):

@@ -142,12 +142,16 @@ class Database(Postgres):
         if info == None:
             info = {}
         if backgrounds:
-            backgrounds_data = self.all("SELECT * FROM server_backgrounds WHERE server_id=%(id)s",
+            backgrounds_data = self.all("SELECT background_type,background_url FROM server_backgrounds WHERE server_id=%(id)s",
             parameters={'id':serverid},
             back_as=dict)
-            info['backgrounds'] = []
+            info['backgrounds'] = {}
             for background in backgrounds_data:
-                info['backgrounds'].append(background['background_url'])
+                type = background['background_type']
+                if info['backgrounds'].get(type,None) == None:
+                    info['backgrounds'][type] = [background['background_url']]
+                else:
+                    info['backgrounds'][type].append(background['background_url'])
         if channels:
             channels_data = self.all("SELECT * FROM server_channels WHERE server_id=%(id)s",
             parameters={'id':serverid},
@@ -188,14 +192,17 @@ class Database(Postgres):
         return exists
 
     # server backgrounds
-    def add_server_background(self,server_id,background_url=None):
-        self.run("INSERT INTO server_backgrounds (server_id,background_url) VALUES (%(id)s,%(url)s)",parameters={'id':server_id,'url':background_url})
-    def reset_server_backgrounds(self,server_id):
-        self.run("DELETE FROM server_backgrounds WHERE server_id=%(id)s",parameters={'id':server_id})
-    def set_server_backgrounds(self,server_id,backgrounds=[]):
+    def add_server_background(self,server_id,background_url=None,type=None):
+        self.run("INSERT INTO server_backgrounds (server_id,background_type,background_url) VALUES (%(id)s,%(type)s,%(url)s)",parameters={'id':server_id,'url':background_url,'type':type})
+    def reset_server_backgrounds(self,server_id,type=None):
+        if type == None:
+            self.run("DELETE FROM server_backgrounds WHERE server_id=%(id)s",parameters={'id':server_id})
+        else:
+            self.run("DELETE FROM server_backgrounds WHERE server_id=%(id)s AND background_type=%(type)s",parameters={'id':server_id,'type':type})
+    def set_server_backgrounds(self,server_id,backgrounds=[],type=None):
         self.reset_server_backgrounds(server_id)
         for background in backgrounds:
-            self.add_server_background(server_id,background)
+            self.add_server_background(server_id,background,type)
 
     # server channels
     def set_server_channel(self,server_id,channel_type,channel_id=None):
