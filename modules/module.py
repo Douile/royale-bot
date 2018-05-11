@@ -11,19 +11,18 @@ class Module:
     @asyncio.coroutine
     def _run(self,empty,command,msg,settings):
         output = empty
-        try:
+        run = getattr(self,'run',None)
+        if callable(run):
             output = self.run(empty,command,msg,settings)
-        except Exception as e:
+        else:
             curcommand = msg.content[len(get_prefix(settings)):]
             for cmd in self.commands:
                 is_command = False
                 if command.startswith(cmd):
                     is_command = True
                 for alias in self.commands[cmd].aliases:
-                    prefix = settings.get('prefix','!')
-                    if prefix == None:
-                        prefix = "!"
-                    alias_cmd = alias.format_map(Map({'prefix':prefix})).strip()
+                    alias_cmd = alias.format_map(Map({'prefix':get_prefix(settings)})).strip()
+                    print('Checking for alias "{}" in "{}"'.format(alias_cmd,command))
                     if command.startswith(alias_cmd):
                         is_command = True
                 if is_command and isinstance(self.commands[cmd],Command):
