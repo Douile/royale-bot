@@ -122,7 +122,6 @@ class ShopImageNew():
         draw.text((left,top),"Daily",font=self.font,fill=color)
     @asyncio.coroutine
     def save(self,name):
-        self.drawText()
         self.background.save(name)
     @asyncio.coroutine
     def generate(self,featured,daily,name):
@@ -130,8 +129,7 @@ class ShopImageNew():
         await self.setFeatured(featured)
         await self.setDaily(daily)
         await self.drawText()
-        self.background.save(name)
-        return name
+        return self.background
 class ItemImage():
     def __init__(self,itemname,itemprice,itempriceimage,itemrarity,itemimageurl,size):
         self.size = size
@@ -273,11 +271,15 @@ def generate(shopdata,backgrounds=[],serverid=None):
         background = None
     if background == None:
         output = overlay
+        output.save(fname)
+        newname = fname
     else:
         background_generator = images.Background((overlay.width,overlay.height),url=background)
         output = await background_generator.generate()
         output.paste(overlay,(0,0),overlay)
-    return output
+        newname = '{0}-{1}'.format(fname,serverid)
+        output.save(newname)
+    return newname
 def getShopData(apikey):
     print("Getting shop data")
     shopdata = fnbr.Shop(apikey).send()
