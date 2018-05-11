@@ -79,11 +79,11 @@ class Stats(Command):
         if len(name) < 1:
             data = self.sql.get_link(msg.author.id)
             if data != None:
-                name = data.get('user_nickname')
+                name = data['user_nickname']
         else:
             try:
                 user = parse_user_at(name,msg.server.id)
-                data = self.sql.get(user.id)
+                data = self.sql.get_link(user.id)
                 if data != None:
                     name = data['user_nickname']
             except RuntimeError:
