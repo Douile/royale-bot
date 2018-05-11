@@ -27,10 +27,10 @@ class Module:
                     if command.startswith(alias_cmd):
                         is_command = True
                 if is_command and isinstance(self.commands[cmd],Command):
-                    output = yield from self._run_command(empty,command,msg,settings)
+                    output = yield from self._run_command(empty,cmd,curcommand,msg,settings)
         return output
     @asyncio.coroutine
-    def _run_command(self,empty,command,msg,settings):
+    def _run_command(self,empty,cmd,command,msg,settings):
         output = empty
         if self.commands[cmd].permission != None:
             if self.commands[cmd].permission != 'admin':
@@ -38,11 +38,11 @@ class Module:
             else:
                 pcheck = msg.author.admin or msg.author.id == '293482190031945739'
             if pcheck:
-                output = yield from self.commands[cmd]._run(curcommand,msg,settings)
+                output = yield from self.commands[cmd]._run(command,msg,settings)
             else:
                 output.noPermission = self.commands[cmd].permission
         else:
-            output = yield from self.commands[cmd]._run(curcommand,msg,settings)
+            output = yield from self.commands[cmd]._run(command,msg,settings)
         return output
 class Command:
     def __init__(self,name="",description="",permission=None,aliases=[]):
