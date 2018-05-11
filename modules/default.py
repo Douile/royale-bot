@@ -181,7 +181,7 @@ class HelpEmbed(discord.Embed):
                                 else:
                                     commands[command] = 'Description not set'
         if self.admin and commands.get('help',None) != None:
-            commands['help'] += 'Add `-u` to print non admin help as admin, add `-d` to never auto delete the help message. E.g. `{pefix}help-u-d` will print a help message for normal users that never gets deleted.'
+            commands['help'] += 'Add `-u` to print non admin help as admin, add `-d` to never auto delete the help message. E.g. `{prefix}help-u-d` will print a help message for normal users that never gets deleted.'
         is_commands = False
         for command in commands:
             description = commands[command].format_map({'prefix':self.prefix})
