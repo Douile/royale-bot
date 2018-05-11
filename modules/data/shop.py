@@ -8,6 +8,7 @@ from random import choice
 from . import fnbr
 from utils import arrays, integers, images
 import asyncio
+import os
 
 FONT = "assets/burbank.ttf"
 
