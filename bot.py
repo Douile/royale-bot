@@ -10,6 +10,7 @@ import time
 import traceback
 
 from modules import default, fortnite, moderation
+from modules.module import Command
 from modules.data import shop, meta
 from datamanagement import sql
 
