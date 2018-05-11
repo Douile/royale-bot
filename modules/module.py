@@ -19,7 +19,7 @@ class Module:
                 is_command = False
                 if command.startswith(cmd):
                     is_command = True
-                for alias in self.command[cmd].aliases:
+                for alias in self.commands[cmd].aliases:
                     prefix = settings.get('prefix','!')
                     if prefix == None:
                         prefix = "!"
