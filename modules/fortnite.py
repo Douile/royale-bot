@@ -16,7 +16,8 @@ class FortniteModule(Module):
             'setbackground': SetBackgrounds(),
             'news': News(),
             'servers': Servers(),
-            'patchnotes': PatchNotes()
+            'patchnotes': PatchNotes(),
+            'link', Link()
         }
         self.types = ['stats','shop','news','status','autoshop','autostatus','autonews']
 class Shop(Command):
@@ -94,7 +95,16 @@ class Link(Command):
         super().__init__(name='link',description='Link you fortnite account for easy stats retrieval.')
     @asyncio.coroutine
     def run(self,command,msg,settings):
-        pass
+        command_size = len('link ')
+        if len(command) > command_size:
+            name = command[command_size:]
+            if len(name.strip()) > 0:
+                settings['links'][msg.author.id] = name
+                self.content = '<@!{author}> Your account was linked to `' + name + '`'
+            else:
+                self.content = '<@!{author}> Please provide a username to link to'
+        else:
+            self.content = '<@!{author}> You must enter a username to link your account'
 class SetBackgrounds(Command):
     def __init__(self):
         super().__init__(name='setbackground',description='Sets the backgrounds for all images generated. Seperate urls with a space. If you want a blank backround don\'t include any urls. `{prefix}setbackground(s) [url 1] [url 2] [url 3]...`')
