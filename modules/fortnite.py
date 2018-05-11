@@ -85,7 +85,7 @@ class Stats(Command):
                 user = parse_user_at(name,msg.server.id)
                 data = self.sql.get(user.id)
                 if data != None:
-                    name = data.get('user_nickname')
+                    name = data['user_nickname']
             except RuntimeError:
                 pass
         try:
