@@ -132,7 +132,7 @@ class SetBackgrounds(Command):
                 backgrounds = urls[2:]
             else:
                 backgrounds = urls[1:]
-        self.settings = {'backgrounds': {'type':type,'urls':backgrounds}}
+        self.settings = {'backgrounds': {type:backgrounds}}
         self.content = '<@!{author}> Set backgrounds'
 class News(Command):
     def __init__(self):
