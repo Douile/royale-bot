@@ -7,8 +7,7 @@ class ModerationModule(Module):
         super().__init__(name='Moderation',description='Commands related to moderation',category='moderation')
         self.commands = {
             'mute': Mute(),
-            'kick': Kick(),
-            'testme': TestMe()
+            'kick': Kick()
         }
 
 class Mute(Command):
@@ -102,17 +101,3 @@ def kick_user(client,user,kicker,reason):
     print(kickmsg)
     yield from client.send_message(user,content=kickmsg)
     yield from client.kick(user)
-
-class TestMe(Command):
-    def __init__(self):
-        super().__init__()
-        self.permission = 'admin'
-    @asyncio.coroutine
-    def run(self,command,msg,settings):
-        print('testing pm')
-        self.content = '<@!{author}> sending'
-        self.queue = [QueueAction(test_msg,[msg.author])]
-
-@asyncio.coroutine
-def test_msg(client,user):
-    yield from client.send_message(user,content='This is a test')
