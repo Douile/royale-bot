@@ -219,19 +219,19 @@ def on_message(msg):
     if not msg.author.bot and msg.content.startswith(prefix):
         command = msg.content[len(prefix):]
         yield from commandHandler(command,msg)
-@client.event
-@asyncio.coroutine
-def on_message_edit(before,msg):
-    settings = client.database.server_info(msg.server.id)
-    if settings == None:
-        prefix = "!"
-    else:
-        prefix = settings.get("prefix")
-        if prefix == None:
-            prefix = "!"
-    if not msg.author.bot and msg.content.startswith(prefix):
-        command = msg.content[len(prefix):]
-        yield from commandHandler(command,msg)
+# @client.event
+# @asyncio.coroutine
+# def on_message_edit(before,msg):
+#     settings = client.database.server_info(msg.server.id)
+#     if settings == None:
+#         prefix = "!"
+#     else:
+#         prefix = settings.get("prefix")
+#         if prefix == None:
+#             prefix = "!"
+#     if not msg.author.bot and msg.content.startswith(prefix):
+#         command = msg.content[len(prefix):]
+#         yield from commandHandler(command,msg)
 
 @asyncio.coroutine
 def commandHandler(command,msg):
