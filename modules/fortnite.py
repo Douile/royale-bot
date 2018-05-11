@@ -76,13 +76,13 @@ class Stats(Command):
         except ValueError:
             platform = 'pc'
             name = args
-        if len(name.strip()) == 0:
+        if len(name.strip()) < 1:
             data = self.sql.get_link(msg.author.id)
             if data != None:
                 name = data.get('user_nickname')
         else:
             try:
-                user = parse_user_at(name)
+                user = parse_user_at(name,msg.server.id)
                 data = self.sql.get(user.id)
                 if data != None:
                     name = data.get('user_nickname')
@@ -113,8 +113,8 @@ class Link(Command):
         if len(command) > command_size:
             name = command[command_size:]
             if len(name.strip()) > 0:
-                sql.set_link(msg.author.id,name)
                 self.content = '<@!{author}> Your account was linked to `' + name + '`'
+                sql.set_link(msg.author.id,name)
             else:
                 self.content = '<@!{author}> Please provide a username to link to'
         else:
