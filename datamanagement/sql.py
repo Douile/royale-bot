@@ -103,7 +103,7 @@ class Links(Table):
     def __init__(self):
         super().__init__("user_links",True)
         self.add_column('_id',type='int',primary_key=True,generate=True)
-        self.add_column('user_id',type='text')
+        self.add_column('user_id',type='text',unique=True)
         self.add_column('user_nickname',type='text')
 
 class Database(Postgres):
@@ -259,4 +259,5 @@ class Database(Postgres):
             user_data = None
         return user_data
     def set_link(self,user_id,user_nick):
-        self.run('UPDATE user_links SET (user_id,user_nick) = (%(id)s,%(nick)s) WHERE user_id=%(id)s',parmeters={'id':user_id,'nick':user_nick})
+        self.run('INSERT INTO user_links (user_id,user_nickname) VALUES (%(id)s,%(nick)s) ON CONFLICT\
+        UPDATE user_links SET (user_id,user_nick) = (%(id)s,%(nick)s) WHERE user_id=%(id)s',parmeters={'id':user_id,'nick':user_nick})
