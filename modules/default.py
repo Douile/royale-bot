@@ -134,7 +134,7 @@ class Channels(Command):
             self.embed.add_field(name=channeltype,value=value,inline=False)
 class SetPrefix(Command):
     def __init__(self):
-        super().__init__(name='setprefix',description='Set the command prefix. `{prefix}setprefix "[prefix]"`')
+        super().__init__(name='setprefix',description='Set the command prefix. `{prefix}setprefix "[prefix]"`.')
         self.permission = 'admin'
     def run(self,command,msg,settings):
         self.reset()
@@ -181,7 +181,7 @@ class HelpEmbed(discord.Embed):
                                 else:
                                     commands[command] = 'Description not set'
         if self.admin and commands.get('help',None) != None:
-            commands['help'] += 'Add `-u` to print non admin help as admin, add `-d` to never auto delete the help message. E.g. `{prefix}help-u-d` will print a help message for normal users that never gets deleted.'
+            commands['help'] += ' Add `-u` to print non admin help as admin, add `-d` to never auto delete the help message. E.g. `{prefix}help-u-d` will print a help message for normal users that never gets deleted.'
         is_commands = False
         for command in commands:
             description = commands[command].format_map({'prefix':self.prefix})
