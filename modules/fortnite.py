@@ -12,7 +12,7 @@ class FortniteModule(Module):
         super().__init__(name="Fortnite",description="Commands related to fortnite",category="fortnite")
         self.commands = {
             'shop': Shop(fnbr_key),
-            'stats': Stats(tn_key),
+            'stats': Stats(tn_key,sql),
             'setbackground': SetBackgrounds(),
             'news': News(),
             'servers': Servers(),
