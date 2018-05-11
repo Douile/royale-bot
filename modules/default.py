@@ -181,9 +181,9 @@ class HelpEmbed(discord.Embed):
                                 else:
                                     commands[command] = 'Description not set'
                         if type(commands.get(command,None)) is str:
-                            if len(commands[command].aliases) > 0:
+                            if len(cmd.aliases) > 0:
                                 commands[command] += ' Aliases for this command are '
-                                for alias in commands[command].aliases:
+                                for alias in cmd.aliases:
                                     alias_format = alias.format_map(Map({'prefix':self.prefix}))
                                     commands[command] += '`{}`, '.format(alias_format)
                                 if commands[command].endswith(', '):
