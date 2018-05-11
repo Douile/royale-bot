@@ -262,4 +262,4 @@ class Database(Postgres):
     def set_link(self,user_id,user_nick):
         print('Setting link {} {}'.format(user_id,user_nick))
         self.run('INSERT INTO user_links (user_id,user_nickname) VALUES (%(id)s,%(nick)s) ON CONFLICT (user_id)\
-        DO UPDATE SET (user_id,user_nick) = (%(id)s,%(nick)s) WHERE user_id=%(id)s',parameters={'id':user_id,'nick':user_nick})
+        DO UPDATE SET (user_id,user_nickname) = (%(id)s,%(nick)s) WHERE user_id=%(id)s',parameters={'id':user_id,'nick':user_nick})
