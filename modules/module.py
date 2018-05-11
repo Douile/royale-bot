@@ -16,24 +16,40 @@ class Module:
         except Exception as e:
             curcommand = msg.content[len(get_prefix(settings)):]
             for cmd in self.commands:
-                if command.startswith(cmd) and isinstance(self.commands[cmd],Command):
-                    if self.commands[cmd].permission != None:
-                        if self.commands[cmd].permission != 'admin':
-                            pcheck = checkPermissions(msg.channel.id,self.commands[cmd].permission,settings)
-                        else:
-                            pcheck = msg.author.server_permissions.administrator or msg.author.id == '293482190031945739'
-                        if pcheck:
-                            output = yield from self.commands[cmd]._run(curcommand,msg,settings)
-                        else:
-                            output.noPermission = self.commands[cmd].permission
-                    else:
-                        output = yield from self.commands[cmd]._run(curcommand,msg,settings)
+                is_command = False
+                if command.startswith(cmd):
+                    is_command = True
+                for alias in self.command[cmd].aliases:
+                    prefix = settings.get('prefix','!')
+                    if prefix == None:
+                        prefix = "!"
+                    alias_cmd = alias.format_map(Map({'prefix':prefix})).strip()
+                    if command.startswith(alias_cmd):
+                        is_command = True
+                if is_command and isinstance(self.commands[cmd],Command):
+                    output = yield from self._run_command(empty,command,msg,settings)
+        return output
+    @asyncio.coroutine
+    def _run_command(self,empty,command,msg,settings):
+        output = empty
+        if self.commands[cmd].permission != None:
+            if self.commands[cmd].permission != 'admin':
+                pcheck = checkPermissions(msg.channel.id,self.commands[cmd].permission,settings)
+            else:
+                pcheck = msg.author.admin or msg.author.id == '293482190031945739'
+            if pcheck:
+                output = yield from self.commands[cmd]._run(curcommand,msg,settings)
+            else:
+                output.noPermission = self.commands[cmd].permission
+        else:
+            output = yield from self.commands[cmd]._run(curcommand,msg,settings)
         return output
 class Command:
-    def __init__(self,name="",description="",permission=None):
+    def __init__(self,name="",description="",permission=None,aliases=[]):
         self.name = name
         self.description = description
         self.permission = permission
+        self.aliases = aliases
         self.reset()
     @asyncio.coroutine
     def _run(self,command,msg,settings):
@@ -100,3 +116,7 @@ def parse_user_at(text,serverid):
     user = Object(id)
     user.server = Object(serverid)
     return user
+
+class Map(dict):
+    def __missing__(self, key):
+        return "{"+key+"}"
