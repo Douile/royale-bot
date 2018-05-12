@@ -54,7 +54,10 @@ class Stats(Command):
         self.sql = sql
     @asyncio.coroutine
     def run(self,command,msg,settings):
-        args = command[len('stats'):].strip()
+        if command.startswith('stats'):
+            args = command[len('stats'):].strip()
+        else:
+            args = command.strip()
         try:
             s = args.index(' ')
             platform = args[:s]
