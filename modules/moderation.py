@@ -114,19 +114,23 @@ class Analytics(Command):
         self.embed.set_members(msg.server.member_count)
         for i in [1,7,30]:
             count = yield from client.estimate_pruned_members(msg.server,days=i)
+            print('Got pruned members for {} days: {}'.format(i,count))
             self.embed.set_inactive(i,count)
+        offline = yield from client.request_offline_members(msg.server)
+        self.embed.set_offline(offline)
         self.embed.parse_config()
 
 class AnalyticsEmbed(discord.Embed):
     def __init__(self,servername,servericon):
         super().__init__(title=servername,color=0xff7f23)
         self.set_thumbnail(url=servericon)
-        self.config_data = {'members':0,'inactive_1':0,'inactive_7':0,'unactive_30':0}
+        self.config_data = {'members':0,'offline_members':0,'inactive_1':0,'inactive_7':0,'unactive_30':0}
         self.parse_config()
     def parse_config(self):
         self.clear_fields()
         print('Parsing analytics embed: {}'.format(self.config_data))
         self.add_data('Total members',self.config_data.get('members',0))
+        self.add_data('Offline members',self.config_data.get('offline_members',0))
         self.add_data('Inactive members (1 day)',self.config_data.get('inactive_1',0))
         self.add_data('Inactive members (1 week)',self.config_data.get('inactive_7',0))
         self.add_data('Inactive members (1 month)',self.config_data.get('inactive_30',0))
@@ -139,3 +143,5 @@ class AnalyticsEmbed(discord.Embed):
         self.config_data[key] = amount
     def set_members(self,amount):
         self.config_data['members'] = amount
+    def set_offline(self,amount):
+        self.config_data['offline_members'] = amount
