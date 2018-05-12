@@ -112,7 +112,10 @@ class Analytics(Command):
         self.embed.update_region(str(msg.server.region))
         self.embed.set_members(msg.server.member_count)
         for i in [1,7,30,365]:
-            count = yield from client.estimate_pruned_members(msg.server,days=i)
+            try:
+                count = yield from client.estimate_pruned_members(msg.server,days=i)
+            except HTTPException:
+                count = 'Unknown'
             print('Got pruned members for {} days: {}'.format(i,count))
             self.embed.set_inactive(i,count)
         if server.large:
