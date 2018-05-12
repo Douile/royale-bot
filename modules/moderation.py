@@ -128,6 +128,7 @@ class Analytics(Command):
                 humans += 1
                 if str(member.status) == 'offline':
                     offline += 1
+        print('Humans {}, Offline {}, Bots {}'.format(humans,offline,bots))
         self.embed.set_humans(humans,offline)
         self.embed.set_bots(bots)
         self.embed.parse_config()
