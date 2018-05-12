@@ -4,8 +4,8 @@ import asyncio
 import traceback
 
 class DefaultModule(Module):
-    def __init__(self,modules=[],version=''):
-        super().__init__(name='default')
+    def __init__(self,modules=[],version='',client_id=''):
+        super().__init__(name='default',client_id=client_id)
         self.types = []
         self.modules = modules
         for module in modules:

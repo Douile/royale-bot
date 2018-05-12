@@ -2,12 +2,13 @@ import asyncio
 from discord import Object
 
 class Module:
-    def __init__(self,name="",description="",category=None):
+    def __init__(self,name="",description="",category=None,client_id=''):
         self.name = name
         self.description = description
         self.category = category
         self.commands = {}
         self.types = []
+        self.client_id = client_id
     @asyncio.coroutine
     def _run(self,empty,command,msg,settings):
         output = empty
@@ -34,7 +35,7 @@ class Module:
             for cmd in self.commands:
                 is_command = False
                 for alias in self.commands[cmd].aliases:
-                    alias_cmd = alias.format_map(Map({'prefix':get_prefix(settings),'client_id':client.id})).strip()
+                    alias_cmd = alias.format_map(Map({'prefix':get_prefix(settings),'client_id':self.client_id})).strip()
                     print('Checking for alias "{}" in "{}"'.format(alias_cmd,msg.content))
                     if msg.content.startswith(alias_cmd):
                         is_command = True
