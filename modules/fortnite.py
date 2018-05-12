@@ -32,6 +32,7 @@ class Shop(Command):
             if shopdata.status == 200:
                 bgs = settings.get('backgrounds',{})
                 bgs_s = bgs.get('shop',[])
+                print(bgs_s)
                 print('Generating shop')
                 file = yield from shop.generate(shopdata,bgs_s,msg.server.id)
                 self.typing = True
