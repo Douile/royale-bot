@@ -125,6 +125,7 @@ class AnalyticsEmbed(discord.Embed):
         self.parse_config()
     def parse_config(self):
         self.clear_fields()
+        print('Parsing analytics embed: {}'.format(self.config_data))
         self.add_data('Total members',self.config_data.get('members',0))
         self.add_data('Inactive members (1 day)',self.config_data.get('inactive_1',0))
         self.add_data('Inactive members (1 week)',self.config_data.get('inactive_7',0))
