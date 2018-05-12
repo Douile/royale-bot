@@ -111,11 +111,14 @@ class Analytics(Command):
         self.embed = AnalyticsEmbed(msg.server.name,msg.server.icon_url)
         self.embed.update_region(str(msg.server.region))
         self.embed.set_members(msg.server.member_count)
-        for i in [1,7,30]:
+        for i in [1,7,30,365]:
             count = yield from client.estimate_pruned_members(msg.server,days=i)
             print('Got pruned members for {} days: {}'.format(i,count))
             self.embed.set_inactive(i,count)
-        offline = yield from client.request_offline_members(msg.server)
+        if server.large:
+            offline = 'Server too big'
+        else:
+            offline = yield from client.request_offline_members(msg.server)
         self.embed.set_offline(offline)
         self.embed.parse_config()
 
@@ -123,7 +126,7 @@ class AnalyticsEmbed(discord.Embed):
     def __init__(self,servername,servericon):
         super().__init__(title=servername,color=0xff7f23)
         self.set_thumbnail(url=servericon)
-        self.config_data = {'members':0,'offline_members':0,'inactive_1':0,'inactive_7':0,'unactive_30':0}
+        self.config_data = {'members':0,'offline_members':0,'inactive_1':0,'inactive_7':0,'inactive_30':0,'inactive_365':0}
     def parse_config(self):
         self.clear_fields()
         print('Parsing analytics embed: {}'.format(self.config_data))
@@ -132,6 +135,7 @@ class AnalyticsEmbed(discord.Embed):
         self.add_data('Inactive members (1 day)',self.config_data.get('inactive_1',0))
         self.add_data('Inactive members (1 week)',self.config_data.get('inactive_7',0))
         self.add_data('Inactive members (1 month)',self.config_data.get('inactive_30',0))
+        self.add_data('Inactive members (1 year)',self.config_data.get('inactive_365',0))
     def add_data(self,name,value):
         self.add_field(name=name,value=value,inline=True)
     def update_region(self,region):
