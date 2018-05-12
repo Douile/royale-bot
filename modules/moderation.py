@@ -1,7 +1,6 @@
 from .module import Module, Command, QueueAction, parse_user_at
 import asyncio
 import discord
-import async_timeot
 
 class ModerationModule(Module):
     def __init__(self):
