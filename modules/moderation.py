@@ -110,7 +110,7 @@ class Analytics(Command):
     def run(self,command,msg,settings):
         self.embed = AnalyticsEmbed(msg.server.name,msg.server.icon_url)
         self.embed.update_region(str(msg.server.region))
-        self.embed.set_members(msg.server.member_count)
+        self.embed.update_time(msg.server.created_at)
         for i in [1,7,30,365]:
             try:
                 count = yield from asyncio.wait_for(client.estimate_pruned_members(msg.server,days=i),10.0)
@@ -118,25 +118,31 @@ class Analytics(Command):
                 count = 'Unknown'
             print('Got pruned members for {} days: {}'.format(i,count))
             self.embed.set_inactive(i,count)
-        if msg.server.large:
-            offline = 'Server too big'
-        else:
-            offline = yield from client.request_offline_members(msg.server)
-            if offline == None:
-                offline = 0
-        self.embed.set_offline(offline)
+        humans = 0
+        bots = 0
+        offline = 0
+        for member in msg.server.members:
+            if member.bot:
+                bots += 1
+            else:
+                humans += 1
+                if str(member.status) == 'offline':
+                    offline += 1
+        self.embed.set_humans(humans,offline)
+        self.embed.set_bots(bots)
         self.embed.parse_config()
 
 class AnalyticsEmbed(discord.Embed):
     def __init__(self,servername,servericon):
         super().__init__(title=servername,color=0xff7f23)
         self.set_thumbnail(url=servericon)
+        self.set_footer(text='Server created')
         self.config_data = {}
     def parse_config(self):
         self.clear_fields()
         print('Parsing analytics embed: {}'.format(self.config_data))
-        self.add_data('Total members',self.config_data.get('members',0))
-        self.add_data('Offline members',self.config_data.get('offline_members',0))
+        self.add_data('Humans','{}/{}'.format(self.config_data.get('humans_online',0),self.config_data.get('humans_total',0)))
+        self.add_data('Bots',self.config_data.get('bots',0))
         self.add_data('Inactive members (1 day)',self.config_data.get('inactive_1',0))
         self.add_data('Inactive members (1 week)',self.config_data.get('inactive_7',0))
         self.add_data('Inactive members (1 month)',self.config_data.get('inactive_30',0))
@@ -145,13 +151,17 @@ class AnalyticsEmbed(discord.Embed):
         self.add_field(name=name,value=value,inline=True)
     def update_region(self,region):
         self.description = self.parse_region(region)
+    def update_time(self,time):
+        self.timestamp = time
     def set_inactive(self,days,amount):
         key = 'inactive_{}'.format(days)
         self.config_data[key] = amount
-    def set_members(self,amount):
-        self.config_data['members'] = amount
-    def set_offline(self,amount):
-        self.config_data['offline_members'] = amount
+    def set_bots(self,amount):
+        self.config_data['bots'] = amount
+    def set_humans(self,amount_total,amount_offline):
+        online = amount_toal - amount_offline
+        self.config_data['humans_online'] = online
+        self.config_data['humans_total'] = amount_total
     @staticmethod
     def parse_region(region):
         r = str(region).lower()
