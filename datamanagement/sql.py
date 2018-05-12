@@ -270,3 +270,6 @@ class Database(Postgres):
         print('Setting link {} {}'.format(user_id,user_nick))
         self.run('INSERT INTO user_links (user_id,user_nickname) VALUES (%(id)s,%(nick)s) ON CONFLICT (user_id)\
         DO UPDATE SET user_nickname = %(nick)s',parameters={'id':user_id,'nick':user_nick})
+    def delete_link(self,user_id):
+        print('Deleting link {}'.format(user_id))
+        self.run('DELETE FROM user_links WHERE user_id=%(id)s',parameters={'id':user_id})

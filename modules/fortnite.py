@@ -17,7 +17,8 @@ class FortniteModule(Module):
             'news': News(),
             'servers': Servers(),
             'patchnotes': PatchNotes(),
-            'link': Link(sql)
+            'link': Link(sql),
+            'unlink': UnLink(sql)
         }
         self.types = ['stats','shop','news','status','autoshop','autostatus','autonews']
 class Shop(Command):
@@ -120,6 +121,18 @@ class Link(Command):
                 self.content = '<@!{author}> Please provide a username to link to'
         else:
             self.content = '<@!{author}> You must enter a username to link your account'
+class UnLink(Command):
+    def __init__(self,sql):
+        super().__init__(name='unlink',description='Unlik your fortnite account. `{prefix}unlink`',permission='stats')
+        self.sql = sql
+    @asyncio.coroutine
+    def run(self,command,msg,settings):
+        try:
+            self.sql.delete_link(msg.author.id)
+            self.content = '<@!{author}> Account successfully unlinked'
+        except:
+            traceback.print_exc()
+            self.content = '<@!{author}> Sorry there was an error unlinking your account'
 class SetBackgrounds(Command):
     def __init__(self):
         self.background_types = ['shop','stat']
