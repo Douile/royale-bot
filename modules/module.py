@@ -31,14 +31,14 @@ class Module:
         if callable(run):
             output = self.run(empty,command,msg,settings)
         else:
-            curcommand = msg.content[len(get_prefix(settings)):]
             for cmd in self.commands:
                 is_command = False
+                curcommand = msg.content[len(get_prefix(settings)):]
                 for alias in self.commands[cmd].aliases:
                     alias_cmd = alias.format_map(Map({'prefix':get_prefix(settings),'bot_id':self.client_id})).strip()
-                    print('Checking for alias "{}" in "{}"'.format(alias_cmd,msg.content))
                     if msg.content.startswith(alias_cmd):
                         is_command = True
+                        curcommand = msg.content[len(alias_cmd):]
                 if is_command and isinstance(self.commands[cmd],Command):
                     output = yield from self._run_command(empty,cmd,curcommand,msg,settings)
         return output
