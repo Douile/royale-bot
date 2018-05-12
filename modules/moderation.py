@@ -112,7 +112,7 @@ class Analytics(Command):
         self.embed = AnalyticsEmbed(msg.server.name,msg.server.icon_url)
         self.embed.update_region(str(msg.server.region))
         self.embed.update_time(msg.server.created_at)
-        for i in [1,7,30,120]:
+        for i in [1,7,30,90]:
             try:
                 count = yield from asyncio.wait_for(client.estimate_pruned_members(msg.server,days=i),10.0)
             except:
@@ -149,7 +149,7 @@ class AnalyticsEmbed(discord.Embed):
         self.add_data('Inactive members (1 day)',self.config_data.get('inactive_1',0))
         self.add_data('Inactive members (1 week)',self.config_data.get('inactive_7',0))
         self.add_data('Inactive members (1 month)',self.config_data.get('inactive_30',0))
-        self.add_data('Inactive members (3 months)',self.config_data.get('inactive_120',0))
+        self.add_data('Inactive members (3 months)',self.config_data.get('inactive_90',0))
     def add_data(self,name,value):
         self.add_field(name=name,value=value,inline=True)
     def update_region(self,region):
