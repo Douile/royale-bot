@@ -1,6 +1,7 @@
 from .module import Module, Command, QueueAction, parse_user_at
 import asyncio
 import discord
+import traceback
 
 class ModerationModule(Module):
     def __init__(self):
@@ -118,6 +119,7 @@ class Analytics(Command):
                 count = 'Unknown'
             print('Got pruned members for {} days: {}'.format(i,count))
             self.embed.set_inactive(i,count)
+        self.embed.parse_config()
         humans = 0
         bots = 0
         offline = 0
@@ -129,8 +131,11 @@ class Analytics(Command):
                 if str(member.status) == 'offline':
                     offline += 1
         print('Humans {}, Offline {}, Bots {}'.format(humans,offline,bots))
-        self.embed.set_humans(humans,offline)
-        self.embed.set_bots(bots)
+        try:
+            self.embed.set_humans(humans,offline)
+            self.embed.set_bots(bots)
+        except:
+            traceback.print_exc()
         self.embed.parse_config()
 
 class AnalyticsEmbed(discord.Embed):
