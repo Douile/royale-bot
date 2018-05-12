@@ -254,6 +254,9 @@ def commandHandler(command,msg):
         if output.content == None and output.embed == None and output.embeds == None:
             for i in range(0,len(cmodules)):
                 output = yield from cmodules[i]._run(output,command,msg,serversettings)
+        if output.content == None and output.embed == None and output.embeds == None:
+            for i in range(0,len(cmodules)):
+                output = yield from cmodules[i]._run_alias(output,command,msg,serversettings)
     else:
         output = yield from defaultmodule._run_alias(output,command,msg,serversettings)
         if output.content == None and output.embed == None and output.embeds == None:
