@@ -102,7 +102,7 @@ class Stats(Command):
             traceback.print_exc()
 class Link(Command):
     def __init__(self,sql):
-        super().__init__(name='link',description='Link you fortnite account for easy stats retrieval. `{prefix}link [username]`')
+        super().__init__(name='link',description='Link you fortnite account for easy stats retrieval. `{prefix}link [username]`',permission='stats')
         self.sql = sql
     @asyncio.coroutine
     def run(self,command,msg,settings):
