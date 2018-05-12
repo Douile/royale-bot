@@ -194,6 +194,7 @@ def on_ready():
     print("--Logged in--\n{0}\n{1}\n--End login info--".format(client.user.name,client.user.id))
     yield from client.edit_profile(username=BOT_NAME)
     yield from client.change_presence(game=discord.Game(name="Est. 2018 @mention for help",type=0),status="online",afk=False)
+    defaultmodule.client_id = client.user.id
 
 
 @client.event
@@ -312,7 +313,7 @@ def commandStatus(msg,settings):
 
 
 cmodules = [fortnite.FortniteModule(KEY_FNBR,KEY_TRACKERNETWORK,client.database),moderation.ModerationModule()]
-defaultmodule = default.DefaultModule(cmodules,VERSION,client.user.id)
+defaultmodule = default.DefaultModule(cmodules,VERSION)
 
 def close():
     asyncio.ensure_future(client.close())
