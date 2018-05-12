@@ -60,7 +60,7 @@ class Stats(Command):
             args = command.strip()
         try:
             s = args.index(' ')
-            platform = args[:s]
+            platform = args[:s].lower()
             name = args[s+1:]
             if platform == 'ps4':
                 platform = 'psn'
