@@ -129,12 +129,12 @@ class AnalyticsEmbed(discord.Embed):
         self.add_data('Inactive members (1 day)',self.config.get('inactive_1',0))
         self.add_data('Inactive members (1 week)',self.config.get('inactive_7',0))
         self.add_data('Inactive members (1 month)',self.config.get('inactive_30',0))
-    def add_data(name,value):
+    def add_data(self,name,value):
         self.add_field(name=name,value=value,inline=True)
     def update_region(self,region):
         self.description = region
-    def set_inactive(days,amount):
+    def set_inactive(self,days,amount):
         key = 'inactive_{}'.format(days)
         self.config_data[key] = amount
-    def set_members(amount):
+    def set_members(self,amount):
         self.config_data['members'] = amount
