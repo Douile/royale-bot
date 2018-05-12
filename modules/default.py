@@ -192,7 +192,7 @@ class HelpEmbed(discord.Embed):
             commands['help'] += ' Add `-u` to print non admin help as admin, add `-d` to never auto delete the help message. E.g. `{prefix}help-u-d` will print a help message for normal users that never gets deleted.'
         is_commands = False
         for command in commands:
-            description = commands[command].format_map({'prefix':self.prefix})
+            description = commands[command].format_map(Map({'prefix':self.prefix}))
             cmd = "{0}{1}".format(self.prefix,command)
             self.add_field(name=cmd,value=description,inline=False)
             is_commands = True
