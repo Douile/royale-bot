@@ -180,10 +180,11 @@ def handle_queue():
 
 @asyncio.coroutine
 def ticker_test():
-    ticker_text = ['Est. 2018 @mention for help','Still under development']
+    ticker_text = ['Est. 2018 @mention for help','discord.me/fortniteroyale','Powering {server_count} servers']
     yield from client.wait_until_ready()
     while not client.is_closed:
         for ticker in ticker_text:
+            ticker_f = ticker.format_map({'server_count':len(client.servers)})
             game = discord.Game(name=ticker,type=0)
             yield from client.change_presence(game=game)
             yield from asyncio.sleep(TICKER_TIME)
