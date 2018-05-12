@@ -114,7 +114,7 @@ class Analytics(Command):
         for i in [1,7,30,365]:
             try:
                 count = yield from asyncio.wait_for(client.estimate_pruned_members(msg.server,days=i),10.0)
-            except HTTPException:
+            except:
                 count = 'Unknown'
             print('Got pruned members for {} days: {}'.format(i,count))
             self.embed.set_inactive(i,count)
