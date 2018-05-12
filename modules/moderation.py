@@ -7,7 +7,8 @@ class ModerationModule(Module):
         super().__init__(name='Moderation',description='Commands related to moderation',category='moderation')
         self.commands = {
             'mute': Mute(),
-            'kick': Kick()
+            'kick': Kick(),
+            'analytics': Analytics()
         }
 
 class Mute(Command):
@@ -101,3 +102,39 @@ def kick_user(client,user,kicker,reason):
     print(kickmsg)
     yield from client.send_message(user,content=kickmsg)
     yield from client.kick(user)
+
+class Analytics(Command):
+    def __init__(self):
+        super().__init__(name='analytics',description='Get server analytics. `{prefix}analytics`',permission='admin')
+    @asyncio.coroutine
+    def run(self,command,msg,settings):
+        global client
+        self.embed = AnalyticsEmbed(msg.server.name,msg.server.icon_url)
+        self.embed.update_region(str(msg.server.region))
+        self.embed.set_members(msg.server.member_count)
+        for i in [1,7,30]:
+            count = yield from client.estimate_pruned_members(msg.server,days=i)
+            self.embed.set_inactive(i,count)
+        self.embed.parse_config()
+
+class AnalyticsEmbed(discord.Embed):
+    def __init__(self,servername,servericon):
+        super().__init__(self,title=servername)
+        self.set_thumbnail(url=servericon)
+        self.config_data = {'members':0,'inactive_1':0,'inactive_7':0,'unactive_30':0}
+        self.parse_config()
+    def parse_config(self):
+        self.clear_fields()
+        self.add_data('Total members',self.config_data.get('members',0))
+        self.add_data('Inactive members (1 day)',self.config.get('inactive_1',0))
+        self.add_data('Inactive members (1 week)',self.config.get('inactive_7',0))
+        self.add_data('Inactive members (1 month)',self.config.get('inactive_30',0))
+    def add_data(name,value):
+        self.add_field(name=name,value=value,inline=True)
+    def update_region(self,region):
+        self.description = region
+    def set_inactive(days,amount):
+        key = 'inactive_{}'.format(days)
+        self.config_data[key] = amount
+    def set_members(amount):
+        self.config_data['members'] = amount
