@@ -118,7 +118,7 @@ class Analytics(Command):
                 count = 'Unknown'
             print('Got pruned members for {} days: {}'.format(i,count))
             self.embed.set_inactive(i,count)
-        if server.large:
+        if msg.server.large:
             offline = 'Server too big'
         else:
             offline = yield from client.request_offline_members(msg.server)
