@@ -126,9 +126,9 @@ class AnalyticsEmbed(discord.Embed):
     def parse_config(self):
         self.clear_fields()
         self.add_data('Total members',self.config_data.get('members',0))
-        self.add_data('Inactive members (1 day)',self.config.get('inactive_1',0))
-        self.add_data('Inactive members (1 week)',self.config.get('inactive_7',0))
-        self.add_data('Inactive members (1 month)',self.config.get('inactive_30',0))
+        self.add_data('Inactive members (1 day)',self.config_data.get('inactive_1',0))
+        self.add_data('Inactive members (1 week)',self.config_data.get('inactive_7',0))
+        self.add_data('Inactive members (1 month)',self.config_data.get('inactive_30',0))
     def add_data(self,name,value):
         self.add_field(name=name,value=value,inline=True)
     def update_region(self,region):
