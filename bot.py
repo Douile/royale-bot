@@ -185,7 +185,7 @@ def ticker_test():
     while not client.is_closed:
         for ticker in ticker_text:
             ticker_f = ticker.format_map({'server_count':len(client.servers)})
-            game = discord.Game(name=ticker,type=0)
+            game = discord.Game(name=ticker_f,type=0)
             yield from client.change_presence(game=game)
             yield from asyncio.sleep(TICKER_TIME)
 
