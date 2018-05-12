@@ -131,11 +131,8 @@ class Analytics(Command):
                 if str(member.status) == 'offline':
                     offline += 1
         print('Humans {}, Offline {}, Bots {}'.format(humans,offline,bots))
-        try:
-            self.embed.set_humans(humans,offline)
-            self.embed.set_bots(bots)
-        except:
-            traceback.print_exc()
+        self.embed.set_humans(humans,offline)
+        self.embed.set_bots(bots)
         self.embed.parse_config()
 
 class AnalyticsEmbed(discord.Embed):
