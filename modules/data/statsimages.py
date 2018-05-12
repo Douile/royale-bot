@@ -260,6 +260,8 @@ class Main:
                 stat = getattr(stats,row.lower(),None)
                 if stat != None:
                     value = getattr(stat,c,'0')
+                    if value.strip == '':
+                        value = '0'
                     if value != None:
                         textsize = font.getsize(value)
                         rleft = round(left + ((columnsize-textsize[0])/2))
