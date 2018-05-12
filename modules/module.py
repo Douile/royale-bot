@@ -1,5 +1,6 @@
 import asyncio
 from discord import Object
+import traceback
 
 class Module:
     def __init__(self,name="",description="",category=None,client_id=''):
@@ -75,6 +76,9 @@ class Command:
                     self.run(command,msg,settings)
         except NameError:
             pass
+        except Exception as e:
+            print(e)
+            traceback.print_exc()
         if self.content != None:
             self.content = self.content.format_map({'author':msg.author.id,'channel':msg.channel.id,'server':msg.server.id})
         return self
