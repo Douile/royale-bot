@@ -277,7 +277,7 @@ def generate(shopdata,backgrounds=[],serverid=None):
         background_generator = images.Background((overlay.width,overlay.height),url=background)
         output = yield from background_generator.generate()
         output.paste(overlay,(0,0),overlay)
-        newname = '{0}-{1}'.format(fname,serverid)
+        newname = '{0}-{1}.png'.format(fname[:-4],serverid)
         output.save(newname)
         if not isfile(fname):
             overlay.save(fname)
