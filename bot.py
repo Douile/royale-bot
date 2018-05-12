@@ -8,6 +8,7 @@ import signal
 from datetime import datetime
 import time
 import traceback
+import builtins
 
 from modules import default, fortnite, moderation
 from modules.module import Command
@@ -81,6 +82,7 @@ def changes(original={},new={}):
 client = discord.Client(shard_id=SHARD_NO,shard_count=SHARD_COUNT)
 client.queued_actions = []
 client.database = sql.Database(url=DATABASE_URL)
+builtins.client = client
 
 @asyncio.coroutine
 def autoshop(fnbr_key): # add fnbr not accessable fallback

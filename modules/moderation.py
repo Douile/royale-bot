@@ -108,7 +108,6 @@ class Analytics(Command):
         super().__init__(name='analytics',description='Get server analytics. `{prefix}analytics`',permission='admin')
     @asyncio.coroutine
     def run(self,command,msg,settings):
-        global client
         self.embed = AnalyticsEmbed(msg.server.name,msg.server.icon_url)
         self.embed.update_region(str(msg.server.region))
         self.embed.set_members(msg.server.member_count)
