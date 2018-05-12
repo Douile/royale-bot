@@ -159,13 +159,13 @@ class AnalyticsEmbed(discord.Embed):
             flag = ':flag_de:'
         elif r == 'brazil':
             flag = ':flag_br:'
-        elif r.startswith('us_'):
+        elif r.startswith('us'):
             flag = ':flag_us:'
-        elif r.startswith('eu_'):
+        elif r.startswith('eu'):
             flag = ':flag_eu:'
-        elif r.startswith('vip_us'):
+        elif r.startswith('vip-us'):
             flag = ':moneybag::flag_us:'
-        elif r == 'vip_amsterdam':
+        elif r == 'vip-amsterdam':
             flag = ':moneybag::flag_nl:'
         else:
             flag = ':question:{}'.format(region)
