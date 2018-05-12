@@ -123,7 +123,7 @@ class Link(Command):
             self.content = '<@!{author}> You must enter a username to link your account'
 class UnLink(Command):
     def __init__(self,sql):
-        super().__init__(name='unlink',description='Unlik your fortnite account. `{prefix}unlink`',permission='stats')
+        super().__init__(name='unlink',description='Unlink your fortnite account. `{prefix}unlink`',permission='stats')
         self.sql = sql
     @asyncio.coroutine
     def run(self,command,msg,settings):
