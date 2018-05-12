@@ -1,6 +1,7 @@
 from .module import Module, Command, QueueAction, parse_user_at
 import asyncio
 import discord
+import async_timeot
 
 class ModerationModule(Module):
     def __init__(self):
@@ -113,7 +114,8 @@ class Analytics(Command):
         self.embed.set_members(msg.server.member_count)
         for i in [1,7,30,365]:
             try:
-                count = yield from client.estimate_pruned_members(msg.server,days=i)
+                async with
+                count = yield from asyncio.wait_for(client.estimate_pruned_members(msg.server,days=i),10.0)
             except HTTPException:
                 count = 'Unknown'
             print('Got pruned members for {} days: {}'.format(i,count))
