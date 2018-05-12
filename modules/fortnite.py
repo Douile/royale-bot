@@ -61,7 +61,9 @@ class Stats(Command):
             name = args[s+1:]
             if platform == 'ps4':
                 platform = 'psn'
-            elif not platform in ['pc','xb1','psn']:
+            elif platform == 'xb1':
+                platform = 'xbox'
+            elif not platform in ['pc','xbox','psn']:
                 platform = 'pc'
                 name = args
         except ValueError:
