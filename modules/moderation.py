@@ -122,6 +122,8 @@ class Analytics(Command):
             offline = 'Server too big'
         else:
             offline = yield from client.request_offline_members(msg.server)
+            if offline == None:
+                offline = 0
         self.embed.set_offline(offline)
         self.embed.parse_config()
 
