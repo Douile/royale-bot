@@ -125,7 +125,6 @@ class AnalyticsEmbed(discord.Embed):
         super().__init__(title=servername,color=0xff7f23)
         self.set_thumbnail(url=servericon)
         self.config_data = {'members':0,'offline_members':0,'inactive_1':0,'inactive_7':0,'unactive_30':0}
-        self.parse_config()
     def parse_config(self):
         self.clear_fields()
         print('Parsing analytics embed: {}'.format(self.config_data))
@@ -137,7 +136,7 @@ class AnalyticsEmbed(discord.Embed):
     def add_data(self,name,value):
         self.add_field(name=name,value=value,inline=True)
     def update_region(self,region):
-        self.description = region
+        self.description = self.parse_region(region)
     def set_inactive(self,days,amount):
         key = 'inactive_{}'.format(days)
         self.config_data[key] = amount
@@ -145,3 +144,29 @@ class AnalyticsEmbed(discord.Embed):
         self.config_data['members'] = amount
     def set_offline(self,amount):
         self.config_data['offline_members'] = amount
+    @staticmethod
+    def parse_region(region):
+        r = str(region).lower()
+        if r == 'singapore':
+            flag = ':flag_sg:'
+        elif r == 'london':
+            flag = ':flag_gb:'
+        elif r == 'sydney':
+            flag = ':flag_au:'
+        elif r == 'amsterdam':
+            flag = ':flag_nl:'
+        elif r == 'frankfurt':
+            flag = ':flag_de:'
+        elif r == 'brazil':
+            flag = ':flag_br:'
+        elif r.startswith('us_'):
+            flag = ':flag_us:'
+        elif r.startswith('eu_'):
+            flag = ':flag_eu:'
+        elif r.startswith('vip_us'):
+            flag = ':moneybag::flag_us:'
+        elif r == 'vip_amsterdam':
+            flag = ':moneybag::flag_nl:'
+        else:
+            flag = ':question:{}'.format(region)
+        return flag
