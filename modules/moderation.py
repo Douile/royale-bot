@@ -165,7 +165,7 @@ class AnalyticsEmbed(discord.Embed):
     def set_bots(self,amount):
         self.config_data['bots'] = amount
     def set_humans(self,amount_total,amount_offline):
-        online = amount_toal - amount_offline
+        online = amount_total - amount_offline
         self.config_data['humans_online'] = online
         self.config_data['humans_total'] = amount_total
     @staticmethod
