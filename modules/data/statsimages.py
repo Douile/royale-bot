@@ -183,6 +183,8 @@ class Performance:
                 else:
                     next_no = -1
                 match = matches_real[i-1]
+                if range_kd < 0.1:
+                    range_kd = 0.1
                 size_y = (match.kd-lowest)*(height/range_kd)
                 pos = (left,round(bottom-size_y))
                 tl = (pos[0]-2,pos[1]-2)
