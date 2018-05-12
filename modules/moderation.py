@@ -129,7 +129,7 @@ class AnalyticsEmbed(discord.Embed):
     def __init__(self,servername,servericon):
         super().__init__(title=servername,color=0xff7f23)
         self.set_thumbnail(url=servericon)
-        self.config_data = {'members':0,'offline_members':0,'inactive_1':0,'inactive_7':0,'inactive_30':0,'inactive_365':0}
+        self.config_data = {}
     def parse_config(self):
         self.clear_fields()
         print('Parsing analytics embed: {}'.format(self.config_data))
