@@ -112,8 +112,13 @@ def autoshop(fnbr_key): # add fnbr not accessable fallback
                     else:
                         print('Error getting shop data {0}: {1}'.format(shopdata.error,shopdata.json))
                         shopdata = None
+        time_until_next = nextshop-now
+        if time_until_next < 0:
+            time_until_next = 1
+        else:
+            time_until_next += 60
         print("Autoshop now:{0} next:{1}".format(now,nextshop))
-        yield from asyncio.sleep(60*15)
+        yield from asyncio.sleep(time_until_next)
 
 @asyncio.coroutine
 def autostatus():
