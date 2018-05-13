@@ -13,60 +13,60 @@ from os.path import isfile
 FONT = "assets/burbank.ttf"
 
 # classes
-class ShopImage():
-    def __init__(self, size=300, padding=20, fontsize=40, rowsize=3, fcount=2, dcount=6,date="",background=None):
-        self.rowsize = rowsize
-        self.size = size
-        self.padding = padding
-        self.fontsize = fontsize
-        self.font = PIL.ImageFont.truetype(FONT,fontsize)
-        self.fheight = self.font.getsize("Test")[1]
-        rows = self.rows(fcount)+self.rows(dcount)
-        self.width = round(self.size*self.rowsize + self.padding*4)
-        self.height = round(self.fheight*2 + self.size*rows + self.padding*rows)
-        self.dailytop = self.size*self.rows(fcount)+self.fheight+self.padding*(.5+self.rows(fcount))
-        if background == None or not type(background) is str:
-            self.background = PIL.Image.new("RGBA",(self.width,self.height))
-        else:
-            bg = createImageFromUrl(background)
-            self.background = bg.resize((self.width,self.height))
-        self.datetext = date
-    def setFeatured(self, images):
-        top = self.fheight+self.padding
-        self.drawImages(top,images)
-    def setDaily(self, images):
-        top = round(self.dailytop + self.fheight + self.padding*.5)
-        self.drawImages(top,images)
-    def drawImages(self, top, images):
-        sets = []
-        for i in range(1,self.rows(len(images))+1):
-            n = self.rowsize*i
-            sets.append(images[n-self.rowsize:n])
-        for set in sets:
-            width = (len(set)*self.size)+((len(set)-1)*self.padding)
-            left = (self.width-width)/2
-            for image in set:
-                r = image.resize((self.size,self.size))
-                self.background.paste(r,(round(left),round(top)),r)
-                left += self.size + self.padding
-            top += self.size + self.padding
-    def rows(self, arraysize):
-        arraysize -= 1
-        return round(((arraysize - (arraysize % self.rowsize))/self.rowsize)+1)
-    def drawText(self):
-        color = (255,255,255,255)
-        draw = PIL.ImageDraw.Draw(self.background)
-        left = (self.width/2)-(self.font.getsize("Featured")[0]/2)
-        top = self.padding/2
-        draw.text((left,top), "Featured", font=self.font, fill=color)
-        draw.text((top,top), self.datetext, font=self.font, fill=color)
-        left = (self.width/2)-(self.font.getsize("Daily")[0]/2)
-        draw.text((left,self.dailytop),"Daily",font=self.font,fill=color)
-    def save(self, name):
-        self.drawText()
-        self.background.save(name)
-class ShopImageNew():
-    def __init__(self, size=200, padding=20, fontsize=40, rowsize=3, fcount=2, dcount=6,date="",background=None):
+# class ShopImage():
+#     def __init__(self, size=300, padding=20, fontsize=40, rowsize=3, fcount=2, dcount=6,date="",background=None):
+#         self.rowsize = rowsize
+#         self.size = size
+#         self.padding = padding
+#         self.fontsize = fontsize
+#         self.font = PIL.ImageFont.truetype(FONT,fontsize)
+#         self.fheight = self.font.getsize("Test")[1]
+#         rows = self.rows(fcount)+self.rows(dcount)
+#         self.width = round(self.size*self.rowsize + self.padding*4)
+#         self.height = round(self.fheight*2 + self.size*rows + self.padding*rows)
+#         self.dailytop = self.size*self.rows(fcount)+self.fheight+self.padding*(.5+self.rows(fcount))
+#         if background == None or not type(background) is str:
+#             self.background = PIL.Image.new("RGBA",(self.width,self.height))
+#         else:
+#             bg = createImageFromUrl(background)
+#             self.background = bg.resize((self.width,self.height))
+#         self.datetext = date
+#     def setFeatured(self, images):
+#         top = self.fheight+self.padding
+#         self.drawImages(top,images)
+#     def setDaily(self, images):
+#         top = round(self.dailytop + self.fheight + self.padding*.5)
+#         self.drawImages(top,images)
+#     def drawImages(self, top, images):
+#         sets = []
+#         for i in range(1,self.rows(len(images))+1):
+#             n = self.rowsize*i
+#             sets.append(images[n-self.rowsize:n])
+#         for set in sets:
+#             width = (len(set)*self.size)+((len(set)-1)*self.padding)
+#             left = (self.width-width)/2
+#             for image in set:
+#                 r = image.resize((self.size,self.size))
+#                 self.background.paste(r,(round(left),round(top)),r)
+#                 left += self.size + self.padding
+#             top += self.size + self.padding
+#     def rows(self, arraysize):
+#         arraysize -= 1
+#         return round(((arraysize - (arraysize % self.rowsize))/self.rowsize)+1)
+#     def drawText(self):
+#         color = (255,255,255,255)
+#         draw = PIL.ImageDraw.Draw(self.background)
+#         left = (self.width/2)-(self.font.getsize("Featured")[0]/2)
+#         top = self.padding/2
+#         draw.text((left,top), "Featured", font=self.font, fill=color)
+#         draw.text((top,top), self.datetext, font=self.font, fill=color)
+#         left = (self.width/2)-(self.font.getsize("Daily")[0]/2)
+#         draw.text((left,self.dailytop),"Daily",font=self.font,fill=color)
+#     def save(self, name):
+#         self.drawText()
+#         self.background.save(name)
+class ShopImage:
+    def __init__(self, size=200, padding=20, fontsize=40, rowsize=3, fcount=2, dcount=6, date="", background=None):
         self.size = size
         self.padding = padding
         self.fontsize = fontsize
@@ -130,26 +130,36 @@ class ShopImageNew():
         yield from self.setDaily(daily)
         yield from self.drawText()
         return self.background
-class ItemImage():
+class ItemImage:
     def __init__(self,itemname,itemprice,itempriceimage,itemrarity,itemimageurl,size):
         self.size = size
         color = (255,255,255,0)
         if itemrarity == "uncommon":
-            #color = (46,204,113,255)
             color = (56, 121, 39, 255)
             gradient = ((96,170,58,255),(23,81,23,255))
+            background = 'assets/fortnite_uncommon.png'
         elif itemrarity == "rare":
             color = (61,171,245,255)
             gradient = ((73,172,242,255),(20,57,119,255))
+            background = 'assets/fortnite_rare.png'
         elif itemrarity == "epic":
             color = (199,81,248,255)
             gradient = ((177,91,226,255),(75,36,131,255))
+            background = 'assets/fortnite_epic.png'
         elif itemrarity == "legendary":
             color = (230,126,34,255)
             gradient = ((211,120,65,255),(120,55,29,255))
-        self.background = PIL.Image.new("RGBA",(self.size,self.size),color)
-        draw = PIL.ImageDraw.Draw(self.background)
-        images.radial_gradient(draw,self.size,self.size,gradient[1],gradient[0])
+            background = 'assets/fortnite_legendary.png'
+        try:
+            self.background = PIL.Image.open(background)
+            if self.background.width != self.size[0] or self.background.height != self.size[1]:
+                self.background.resize(self.size)
+        except IOError:
+            self.background = PIL.Image.new("RGBA",(self.size,self.size),color)
+            draw = PIL.ImageDraw.Draw(self.background)
+            images.radial_gradient(draw,self.size,self.size,gradient[1],gradient[0])
+        finally:
+            draw = PIL.ImageDraw.Draw(self.background)
         fontsize = round(self.size/10)
         largefont = PIL.ImageFont.truetype(FONT,fontsize+10)
         smallfont = PIL.ImageFont.truetype(FONT,fontsize-10)
@@ -173,10 +183,6 @@ class ItemImage():
         left = round(left +smallheight + 5)
         self.borderedText(draw,(left,top),itemprice,smallfont,(255,255,255),(0,0,0))
     def borderedText(self,draw,pos,text,font,textcolor=(255,255,255),bordercolor=(0,0,0)):
-        # draw.text((pos[0]-1,pos[1]-1),text,font=font,fill=bordercolor)
-        # draw.text((pos[0]+1,pos[1]-1),text,font=font,fill=bordercolor)
-        # draw.text((pos[0]-1,pos[1]+1),text,font=font,fill=bordercolor)
-        # draw.text((pos[0]+1,pos[1]+1),text,font=font,fill=bordercolor)
         draw.text(pos,text,font=font,fill=textcolor)
     def round(self,size):
         cornertopleft = self.corner(size,self.background.getpixel((1,1)))
@@ -261,7 +267,7 @@ def generate(shopdata,backgrounds=[],serverid=None):
             size = 5
         else:
             size = 4
-        out = ShopImageNew(size=300,padding=40,fontsize=40,rowsize=size,fcount=len(shopdata.data.featured),dcount=len(shopdata.data.daily),date=date,background=None)
+        out = ShopImage(size=300, padding=40, fontsize=40, rowsize=size, fcount=len(shopdata.data.featured), dcount=len(shopdata.data.daily), date=date, background=None)
         overlay = yield from out.generate(featured,daily,fname)
     if len(backgrounds) == 1:
         background = backgrounds[0]
