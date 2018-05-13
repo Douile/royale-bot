@@ -9,6 +9,7 @@ from datetime import datetime
 import time
 import traceback
 import builtins
+import logging
 
 from modules import default, fortnite, moderation
 from modules.module import Command
@@ -24,7 +25,7 @@ def getEnv(name,default=None):
             value = default
     return value
 
-#constants
+# constants
 VERSION = "0.0.89"
 KEY_DISCORD = getEnv("KEY_DISCORD")
 KEY_FNBR = getEnv("KEY_FNBR")
@@ -41,6 +42,20 @@ if len(sys.argv) > 2:
     except ValueError:
         pass
 
+# setup logging
+logger = logging.getLogger('bot')
+logger.setLevel(logging.DEBUG)
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+fh = logging.FileHandler('bot.log')
+fh.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+ch.setFormatter(formatter)
+fh.setFormatter(formatter)
+logger.addHandler(ch)
+logger.addHandler(fh)
+
+# functions
 def checkPermissions(channel,type,settings):
     try:
         if settings[type] == channel or settings[type] == '':
@@ -110,31 +125,31 @@ def autoshop(fnbr_key): # add fnbr not accessable fallback
                         nextshoptime = round(time.mktime(rawtime.utctimetuple()) + (60*60*24))
                         client.database.set_server_info(serverid,next_shop=nextshoptime,latest_shop=file)
                     else:
-                        print('Error getting shop data {0}: {1}'.format(shopdata.error,shopdata.json))
+                        logger.error('Error getting shop data %s: %s', str(shopdata.error), str(shopdata.json))
                         shopdata = None
         time_until_next = nextshop-now
         if time_until_next < 0:
             time_until_next = 1
         else:
             time_until_next += 60
-        print("Autoshop now:{0} next:{1}".format(now,nextshop))
+        logger.info("Autoshop now:%d next:%d", now, nextshop)
         yield from asyncio.sleep(time_until_next)
 
 @asyncio.coroutine
 def autostatus():
     yield from client.wait_until_ready()
     while not client.is_closed:
-        cache_raw = client.database.get_cache("status",once=True)
+        cache_raw = client.database.get_cache("status", once=True)
         if 'status' in cache_raw:
             cache = json.loads(cache_raw['status'])
         else:
             cache = {}
         data = meta.getStatus()
         changed = changes(cache,data)
-        client.database.set_cache("status",json.dumps(data),once=True)
+        client.database.set_cache("status", json.dumps(data), once=True)
         servicechange = []
         for s in changed['services']:
-            if changed['services'][s] == True:
+            if changed['services'][s] is True:
                 servicechange.append(s)
         embed = None
         if len(servicechange) > 0:
@@ -182,7 +197,7 @@ def handle_queue():
             except:
                 pass
             client.queued_actions.remove(queue_item)
-            print('Handled queue action {0} ({1}), {2} remain'.format(str(queue_item.function),str(args),len(client.queued_actions)))
+            logger.info('Handled queue action %s (%s), %s remain', str(queue_item.function), str(args), len(client.queued_actions))
         yield from asyncio.sleep(0.5)
 
 @asyncio.coroutine
@@ -199,7 +214,7 @@ def ticker_test():
 @client.event
 @asyncio.coroutine
 def on_ready():
-    print("--Logged in--\n{0}\n{1}\n--End login info--".format(client.user.name,client.user.id))
+    logger.info("Discord client logged in: %s %s", client.user.name, client.user.id)
     yield from client.edit_profile(username=BOT_NAME)
     yield from client.change_presence(game=discord.Game(name="Est. 2018 @mention for help",type=0),status="online",afk=False)
     defaultmodule.client_id = client.user.id
@@ -272,7 +287,7 @@ def commandHandler(command,msg):
                 output = yield from cmodules[i]._run_alias(output,command,msg,serversettings)
     if len(output.queue) > 0:
         client.queued_actions += output.queue
-        print('Added queued action')
+        logger.debug('Added queued action')
     if output.settings != None:
         if 'channels' in output.settings:
             for type in output.settings['channels']:
@@ -299,9 +314,9 @@ def commandHandler(command,msg):
         try:
             response = yield from client.send_message(msg.channel,content=output.content,embed=output.embed)
         except discord.errors.HTTPException:
-            traceback.print_exc()
+            logger.error(traceback.format_exc())
             if output.embed != None:
-                print(json.dumps(output.embed.to_dict()))
+                logger.error('Error sending embed %s', json.dumps(output.embed.to_dict()))
             response = yield from client.send_message(msg.channel,content='Sorry there was an error sending response')
     if output.is_help == True:
         client.database.set_server_info(serverid,last_help_msg=response.id,last_help_channel=response.channel.id)
@@ -323,12 +338,12 @@ def commandStatus(msg,settings):
     '<@!{0}> bot v{1} is online!'.format(msg.author.id,VERSION)
 
 
-cmodules = [fortnite.FortniteModule(KEY_FNBR,KEY_TRACKERNETWORK,client.database),moderation.ModerationModule()]
-defaultmodule = default.DefaultModule(cmodules,VERSION)
+cmodules = [fortnite.FortniteModule(KEY_FNBR, KEY_TRACKERNETWORK, client.database), moderation.ModerationModule()]
+defaultmodule = default.DefaultModule(cmodules, VERSION)
 
 def close():
     asyncio.ensure_future(client.close())
-client.loop.add_signal_handler(signal.SIGTERM,close)
+client.loop.add_signal_handler(signal.SIGTERM, close)
 client.loop.create_task(autoshop(KEY_FNBR))
 client.loop.create_task(autostatus())
 client.loop.create_task(autonews())
