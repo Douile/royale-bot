@@ -16,6 +16,7 @@ from modules.module import Command
 from dataretrieval import meta
 from imagegeneration import shop
 from datamanagement import sql
+from utils import linecount
 
 def getEnv(name,default=None):
     value = os.environ.get(name,None)
@@ -27,13 +28,15 @@ def getEnv(name,default=None):
     return value
 
 # constants
+LINE_COUNT = linecount.count_project()
+
 KEY_DISCORD = getEnv("KEY_DISCORD")
 KEY_FNBR = getEnv("KEY_FNBR")
 KEY_TRACKERNETWORK = getEnv("KEY_TRACKERNETWORK")
 DATABASE_URL = getEnv("DATABASE_URL")
-BOT_NAME = getEnv("BOT_NAME","FortniteData")
-TICKER_TIME = int(getEnv("TICKER_TIME",30))
-VERSION = {'name': BOT_NAME, 'version_name': '0.9.0', 'revison': getEnv('HEROKU_RELEASE_VERSION', 'v1'), 'description': getEnv('HEROKU_SLUG_DESCRIPTION', '')}
+BOT_NAME = getEnv("BOT_NAME", "FortniteData")
+TICKER_TIME = int(getEnv("TICKER_TIME", 30))
+VERSION = {'name': BOT_NAME, 'version_name': '0.9.0', 'revison': getEnv('HEROKU_RELEASE_VERSION', 'v1'), 'description': getEnv('HEROKU_SLUG_DESCRIPTION', ''), 'lines': LINE_COUNT}
 SHARD_NO = 0
 SHARD_COUNT = 1
 if len(sys.argv) > 2:
@@ -191,12 +194,12 @@ def handle_queue():
         yield from asyncio.sleep(0.5)
 
 @asyncio.coroutine
-def ticker_test():
-    ticker_text = ['Est. 2018 @mention for help','discord.me/fortniteroyale','Powering {server_count} servers']
+def ticker():
+    ticker_text = ['Est. 2018 @mention for help','discord.me/fortniteroyale','Powering {server_count} servers with {lines} lines of code']
     yield from client.wait_until_ready()
     while not client.is_closed:
         for ticker in ticker_text:
-            ticker_f = ticker.format_map({'server_count':len(client.servers)})
+            ticker_f = ticker.format_map({'server_count':len(client.servers), 'lines': LINE_COUNT})
             game = discord.Game(name=ticker_f,type=0)
             yield from client.change_presence(game=game)
             yield from asyncio.sleep(TICKER_TIME)
@@ -338,5 +341,5 @@ client.loop.create_task(autoshop(KEY_FNBR))
 client.loop.create_task(autostatus())
 client.loop.create_task(autonews())
 client.loop.create_task(handle_queue())
-client.loop.create_task(ticker_test())
+client.loop.create_task(ticker())
 client.run(KEY_DISCORD)
