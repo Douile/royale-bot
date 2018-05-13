@@ -5,10 +5,11 @@ from io import BytesIO
 import requests
 from datetime import datetime
 from random import choice
-from . import fnbr
 from utils import arrays, integers, images
 import asyncio
 from os.path import isfile
+
+from dataretrieval import fnbr
 
 FONT = "assets/burbank.ttf"
 
