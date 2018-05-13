@@ -27,13 +27,13 @@ def getEnv(name,default=None):
     return value
 
 # constants
-VERSION = "0.0.89"
 KEY_DISCORD = getEnv("KEY_DISCORD")
 KEY_FNBR = getEnv("KEY_FNBR")
 KEY_TRACKERNETWORK = getEnv("KEY_TRACKERNETWORK")
 DATABASE_URL = getEnv("DATABASE_URL")
 BOT_NAME = getEnv("BOT_NAME","FortniteData")
 TICKER_TIME = int(getEnv("TICKER_TIME",30))
+VERSION = {'name': BOT_NAME, 'version_name': '0.9.0', 'revision': getEnv('HEROKU_RELEASE_VERSION', 'v1'), 'description': getEnv('HEROKU_SLUG_DESCRIPTION', '')}
 SHARD_NO = 0
 SHARD_COUNT = 1
 if len(sys.argv) > 2:

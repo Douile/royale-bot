@@ -22,11 +22,11 @@ class DefaultModule(Module):
 class Status(Command):
     def __init__(self,version):
         super().__init__(name='status',description="Print the status of the bot. `{prefix}status`")
-        self.version = version
+        self.version = Map(version)
     def run(self,command,msg,settings):
         self.reset()
-        raw = '<@!{0}> bot v{1} is online!'
-        self.content = raw.format(msg.author.id,self.version)
+        raw = '<@!{author}> {name} {version_name} ({revison} {description})'
+        self.content = raw.format_map(self.version)
 class Help(Command):
     def __init__(self,modules):
         super().__init__(name='help',description='Print out all the commands you can use. `{prefix}help`',aliases=['<@{bot_id}>','<@!{bot_id}>'])
