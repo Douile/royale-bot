@@ -1,4 +1,4 @@
-from . import stats
+from dataretrieval import stats
 from utils import integers, times, strings
 import PIL.Image
 import PIL.ImageDraw

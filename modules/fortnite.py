@@ -1,5 +1,6 @@
 from .module import Module, Command, parse_user_at
-from .data import shop,statsimages,meta
+from dataretrieval import meta
+from imagegeneration import shop, stats
 import traceback
 import time
 from datetime import datetime
@@ -90,7 +91,7 @@ class Stats(Command):
             print('Platform: '+platform)
             bgs = settings.get('backgrounds',{})
             bgs_s = bgs.get('stat',[])
-            statsimage = yield from statsimages.generate(self.tn_key,name,platform,bgs_s)
+            statsimage = yield from stats.generate(self.tn_key,name,platform,bgs_s)
             if statsimage == None:
                 self.content = '<@!{author}> User not found'
             else:
