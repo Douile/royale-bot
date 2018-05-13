@@ -25,7 +25,7 @@ class Status(Command):
         self.version = Map(version)
     def run(self,command,msg,settings):
         self.reset()
-        raw = '<@!{author}> {name} {version_name} ({revison} {description})'
+        raw = '<@!{author}> {name} {version_name} ({revison} {description}) is online.'
         self.content = raw.format_map(self.version)
 class Help(Command):
     def __init__(self,modules):
