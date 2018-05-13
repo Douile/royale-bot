@@ -26,7 +26,7 @@ def count_lines(lines):
 
 def read_lines(file):
     f = open(file, 'r')
-    lines = f.readlines
+    lines = f.readlines()
     f.close()
     return lines
 
