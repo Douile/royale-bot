@@ -7,6 +7,7 @@ import asyncio
 import aiohttp
 import random
 from io import BytesIO
+from logger_wrapper import LoggedClass
 
 DEFAULT_SIZE = (1000,600)
 DEFAULT_FONT = 'assets/burbank.ttf'

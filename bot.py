@@ -9,11 +9,12 @@ from datetime import datetime
 import time
 import traceback
 import builtins
-import logging
+import logger_wrapper as logging
 
 from modules import default, fortnite, moderation
 from modules.module import Command
-from modules.data import shop, meta
+from dataretrieval import meta
+from imagegeneration import shop
 from datamanagement import sql
 
 def getEnv(name,default=None):
@@ -42,42 +43,7 @@ if len(sys.argv) > 2:
     except ValueError:
         pass
 
-# setup logging
-logger = logging.getLogger('bot')
-logger.setLevel(logging.DEBUG)
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-fh = logging.FileHandler('bot.log')
-fh.setLevel(logging.DEBUG)
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-ch.setFormatter(formatter)
-fh.setFormatter(formatter)
-logger.addHandler(ch)
-logger.addHandler(fh)
-
-# logged class buitlin
-class LoggedClass:
-    @staticmethod
-    def getLogger(name):
-        if __name__ == '__main__':
-            module = 'main'
-        else:
-            module = __name__
-        if name == None:
-            n = ''
-        else:
-            module += '.'
-            n = name
-        return logging.getLogger('bot.'+module+n)
-    @property
-    def logger(self):
-        if self.__module__ == '__main__':
-            module = ''
-        else:
-            module = self.__module__ + '.'
-        name = self.__class__.__name__
-        return logging.getLogger('bot.'+module+name)
-builtins.LoggedClass = LoggedClass
+logger = logging.default()
 
 # functions
 def checkPermissions(channel,type,settings):
