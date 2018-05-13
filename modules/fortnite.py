@@ -107,7 +107,7 @@ class Link(Command):
     def run(self,command,msg,settings):
         command_size = len('link ')
         if len(command) > command_size:
-            name = command[command_size:]
+            name = command[command_size:].strip()
             if len(name.strip()) > 0:
                 self.content = '<@!{author}> Your account is now linked to `' + name + '`'
                 try:
