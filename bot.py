@@ -55,6 +55,30 @@ fh.setFormatter(formatter)
 logger.addHandler(ch)
 logger.addHandler(fh)
 
+# logged class buitlin
+class LoggedClass:
+    @staticmethod
+    def getLogger(name):
+        if __name__ == '__main__':
+            module = 'main'
+        else:
+            module = __name__
+        if name == None:
+            n = ''
+        else:
+            module += '.'
+            n = name
+        return logging.getLogger('bot.'+module+n)
+    @property
+    def logger(self):
+        if self.__module__ == '__main__':
+            module = ''
+        else:
+            module = self.__module__ + '.'
+        name = self.__class__.__name__
+        return logging.getLogger('bot.'+module+name)
+builtins.LoggedClass = LoggedClass
+
 # functions
 def checkPermissions(channel,type,settings):
     try:

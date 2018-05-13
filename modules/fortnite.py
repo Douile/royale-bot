@@ -2,11 +2,12 @@ from .module import Module, Command, parse_user_at
 from dataretrieval import meta
 from imagegeneration import shop, stats
 import traceback
-import time
 from datetime import datetime
-import os.path
 import discord
 import asyncio
+import logging
+
+logger = logging.getLogger('bot.fortnite')
 
 class FortniteModule(Module):
     def __init__(self,fnbr_key='',tn_key='',sql=None):
@@ -34,8 +35,7 @@ class Shop(Command):
             if shopdata.status == 200:
                 bgs = settings.get('backgrounds',{})
                 bgs_s = bgs.get('shop',[])
-                print(bgs_s)
-                print('Generating shop')
+                logger.debug('Generating shop')
                 file = yield from shop.generate(shopdata,bgs_s,msg.server.id)
                 self.typing = True
                 self.file = file
@@ -47,8 +47,7 @@ class Shop(Command):
                     self.file = settings['latest_shop']
         except Exception as e:
             self.content = "Error generating image"
-            print(e)
-            traceback.print_exc()
+            logger.error(traceback.format_exc())
 class Stats(Command):
     def __init__(self,tn_key,sql):
         super().__init__(name='stats',description='Gets the fortnite stats of a player. `{prefix}stats [platform] [player]` if you do not set platform it will default to pc, if you are linked and do not enter a player name it will default to your linked account, you can also @metion another linked user to default to their linked account.',permission='stats',aliases=['{prefix}'])
@@ -87,8 +86,7 @@ class Stats(Command):
             except RuntimeError:
                 pass
         try:
-            print('Name: '+name)
-            print('Platform: '+platform)
+            logger.debug('Stats command name: %s platform %s', name, platform)
             bgs = settings.get('backgrounds',{})
             bgs_s = bgs.get('stat',[])
             statsimage = yield from stats.generate(self.tn_key,name,platform,bgs_s)
@@ -100,8 +98,7 @@ class Stats(Command):
                 self.file = 'generatedstats.png'
         except Exception as e:
             self.content = "Error getting stats"
-            print(e)
-            traceback.print_exc()
+            logger.error(traceback.format_exc())
 class Link(Command):
     def __init__(self,sql):
         super().__init__(name='link',description='Link you fortnite account for easy stats retrieval. `{prefix}link [username]`',permission='stats')

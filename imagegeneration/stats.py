@@ -131,7 +131,7 @@ class Overview:
         draw.text((platformleft,self.padding),userdata.platform,fill=(255,255,255,255),font=font)
         return image
 
-class Performance:
+class Performance(LoggedClass):
     def __init__(self,size):
         self.size = size
         self.color = DEFAULT_COLOR
@@ -200,16 +200,15 @@ class Performance:
                     draw.text((round(left-width/2),round(text_top-font.getsize('0')[1])),match_id,fill=fg,font=font)
                 last_pos = pos
                 left += interval_size
-            print(highest,lowest)
             lowest = strings.strDec(lowest)
             highest = strings.strDec(highest)
-            print(highest,lowest)
+            self.logger.debug('Performance highest: %s lowest: %s', highest, lowest)
             left = round((self.padding-font.getsize(lowest)[0])/2)
             top = round(self.size[1]-self.padding-5-(font.getsize(lowest)[1]/2))
-            draw.text((left,top),lowest,font=font,fill=fg)
+            draw.text((left, top), lowest, font=font, fill=fg)
             left = round((self.padding-font.getsize(highest)[0])/2)
             top = round(self.padding-(font.getsize(highest)[1]/2))
-            draw.text((left,top),highest,font=font,fill=fg)
+            draw.text((left, top), highest, font=font, fill=fg)
         return image
     def centeredText(self,draw,font,text,horizontal=True,vertical=True,**textargs):
         if horizontal == True:
@@ -254,7 +253,6 @@ class Main:
             c = column.lower()
             if c == 'win%':
                 c = 'win_percent'
-            print(c)
             top = rowsize
             for row in rows:
                 stat = getattr(stats,row.lower(),None)
@@ -268,7 +266,7 @@ class Main:
                         rtop = round(top+ ((rowsize-textsize[1])/2))
                         draw.text((rleft,rtop),value,fill=fg,font=font)
                     else:
-                        print('{0} not found'.format(c))
+                        self.logger.warning('Column %s not found', c)
                 top += rowsize
             left += columnsize
         return image
@@ -416,7 +414,8 @@ class MatchEssential:
 
 @asyncio.coroutine
 def generate(KEY_TN,player,platform,backgrounds=[]):
-    print(backgrounds)
+    logger = LoggedClass.getLogger('generation')
+    logger.debug('backgrounds: %s', str(backgrounds))
     stats_data = yield from stats.stats(KEY_TN,player,platform)
     if stats_data['status'] == 200:
         stat_data = StatsData(stats_data)
@@ -424,7 +423,7 @@ def generate(KEY_TN,player,platform,backgrounds=[]):
             statsimage = Stats()
             if len(backgrounds) > 0:
                 url = random.choice(backgrounds)
-                print(url)
+                logger.debug('Chosen background: %s', url)
                 statsimage.background.url = url
             image = yield from statsimage.generate(stat_data)
         else:
