@@ -37,4 +37,4 @@ class LoggedClass:
         else:
             module = self.__module__ + '.'
         name = self.__class__.__name__
-        return logging.getLogger(PREFIX'.'+module+name)
+        return logging.getLogger(PREFIX+'.'+module+name)
