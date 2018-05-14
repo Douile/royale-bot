@@ -177,8 +177,7 @@ class Servers(Command):
             self.embed.add_service(name=s,value=status['services'][s])
 class PatchNotes(Command):
     def __init__(self):
-        super().__init__(name='patchnotes',description="Get the latest patchnotes. `{prefix}patchnotes ([d], [detail])` include `d` or `detail` for a more detailed breakdown of the patchnotes.")
-        self.permission = 'news'
+        super().__init__(name='patchnotes',description="Get the latest patchnotes. `{prefix}patchnotes ([d], [detail])` include `d` or `detail` for a more detailed breakdown of the patchnotes.", permission='patchnotes')
     @asyncio.coroutine
     def run(self,command,msg,settings):
         args = command.split(" ")
