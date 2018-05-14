@@ -77,7 +77,7 @@ def parse_detail_patchNotes(html):
             value = ''
         elif node.name == 'li':
             mkdn = yield from markdown(str(node))
-            newstr = '- {0}\n'.format(mkdn, baseurl="https://www.epicgames.com").lstrip("* ").strip())
+            newstr = '- {0}\n'.format(mkdn, baseurl="https://www.epicgames.com").lstrip("* ").strip()
             if len(value)+len(newstr) > 1024:
                 contents.append({'title': title, 'value': value})
                 value = newstr
