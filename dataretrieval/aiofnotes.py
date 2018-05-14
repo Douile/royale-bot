@@ -128,7 +128,7 @@ def parse_simple_patchnotes(html):
                 contents['description'] += c+"\n"
         else:
             titletext = title.getText(strip=True)
-            identifier = ' (Save the world)'
+            identifier = ' (Save the World)'
             if not titletext.endswith(identifier):
                 realtitle = titletext
                 nodetext = '<%s>' % node.name
