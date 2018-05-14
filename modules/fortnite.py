@@ -25,7 +25,7 @@ class FortniteModule(Module):
         self.types = ['autoshop','autostatus','autonews']
         for command_name in self.commands:
             command = self.commands[command_name]
-            if command.permission is not None and not command.permission in self.types:
+            if command.permission is not None and not command.permission in self.types and command.permission != 'admin':
                 self.types.append(command.permission)
 class Shop(Command):
     def __init__(self,fnbr_key):
