@@ -9,7 +9,7 @@ PATCHNOTES = 'https://www.epicgames.com/fortnite/api/blog/getPosts?category=patc
 @asyncio.coroutine
 def fetch_patch_notes(limit=5,offset=0,detail=True):
     url = PATCHNOTES.format(limit, offset)
-    session = aiohttp.Session()
+    session = aiohttp.ClientSession()
     response = yield from session.get(url)
     output = {'success': False}
     if response.status == 200:
