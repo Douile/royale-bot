@@ -1,5 +1,5 @@
 from .module import Module, Command, parse_user_at
-from dataretrieval import patchnotesasync
+from dataretrieval import aiofnotes
 from imagegeneration import shop, stats
 import traceback
 from datetime import datetime
@@ -190,7 +190,7 @@ class PatchNotes(Command):
             detailed = True
         else:
             detailed = False
-        notes = yield from patchnotesasync.get_patch_notes(1, 0, detailed)
+        notes = yield from aiofnotes.get_patch_notes(1, 0, detailed)
         if notes['success']:
             self.embed = PatchNotesEmbed(notes['notes'][0])
             if notes['notes'][0]['simple'] != None:
