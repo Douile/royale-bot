@@ -117,8 +117,8 @@ def parse_simple_patchnotes(html):
                 contents['description'] += c+"\n"
         else:
             titletext = title.getText(strip=True)
-            identifier = ' (Battle Royale)'
-            if titletext.endswith(identifier):
+            identifier = ' (Save the world)'
+            if not titletext.endswith(identifier):
                 realtitle = titletext[:titletext.index(identifier)]
                 nodetext = '<%s>' % node.name
                 value = html2text.html2text(str(node)[len(nodetext)+len(str(title)):-len(nodetext)-1]).strip('*\n ')
