@@ -104,6 +104,8 @@ def parse_simple_patchnotes(html):
     contents = {'description':'','extra':[],'video':None}
     if len(str(contents)) < 300:
         print(contents)
+    else:
+        print(len(contents))
     outer = html.find('div', attrs={'class': 'patch-notes-description'})
     inner = outer.findChild('div')
     content = inner.findAll('p',recursive=False)
