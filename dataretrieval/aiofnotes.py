@@ -130,7 +130,7 @@ def parse_simple_patchnotes(html):
             titletext = title.getText(strip=True)
             identifier = ' (Save the world)'
             if not titletext.endswith(identifier):
-                realtitle = titletext[:titletext.index(identifier)]
+                realtitle = titletext[]
                 nodetext = '<%s>' % node.name
                 value = html2text.html2text(str(node)[len(nodetext)+len(str(title)):-len(nodetext)-1]).strip('*\n ')
                 contents['extra'].append({'title':realtitle,'value':value})
