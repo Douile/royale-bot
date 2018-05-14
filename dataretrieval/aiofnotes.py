@@ -102,7 +102,7 @@ def parse_detail_patchnotes(html):
 @asyncio.coroutine
 def parse_simple_patchnotes(html):
     contents = {'description':'','extra':[],'video':None}
-    outer = html.find('div', attrs={'class': 'patch-notes-view'})
+    outer = html.find('div', attrs={'class': 'patch-notes-description'})
     inner = outer.findChild('div')
     content = inner.findAll('p',recursive=False)
     for node in content:
