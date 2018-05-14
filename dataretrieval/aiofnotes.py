@@ -114,8 +114,7 @@ def parse_simple_patchnotes(html):
     else:
         print(len(contents))
     outer = html.find('div', attrs={'class': 'patch-notes-description'})
-    inner = outer.findChild('div')
-    content = inner.findAll('p',recursive=False)
+    content = outer.findAll('p',recursive=False)
     for node in content:
         logger.debug(node)
         title = node.find('strong')
