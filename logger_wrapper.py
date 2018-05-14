@@ -2,6 +2,8 @@ import logging
 
 PREFIX = 'bot'
 
+logging.basicConfig(filename=PREFIX+'.log',level=logging.DEBUG,format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
 def default():
     logger = logging.getLogger(PREFIX)
     logger.setLevel(logging.DEBUG)
