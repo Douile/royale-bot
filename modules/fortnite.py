@@ -23,7 +23,8 @@ class FortniteModule(Module):
             'unlink': UnLink(sql)
         }
         self.types = ['autoshop','autostatus','autonews']
-        for command in self.commands:
+        for command_name in self.commands:
+            command = self.commands[command_name]
             if command.permission is not None and not command.permission in self.types:
                 self.types.append(command.permission)
 class Shop(Command):
