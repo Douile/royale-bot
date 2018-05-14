@@ -36,7 +36,7 @@ def fetch_patch_notes(limit=5,offset=0,detail=True):
                   'detailed': None,
                   'simple': None
                 }
-                html = bs4.BeautifulSoup(blog['content'], 'html.parser')
+                html = bs4.BeautifulSoup(content, 'html.parser')
                 if detail == True:
                     try:
                         note['detailed'] = yield from parse_detail_patchnotes(html)
