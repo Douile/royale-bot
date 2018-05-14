@@ -19,7 +19,7 @@ def fetch_patch_notes(limit=5,offset=0,detail=True):
         if 'blogList' in data:
             output['notes'] = []
             for blog in data['blogList']:
-                url = 'https://www.epicgames.com/fortnite/en-US/news{0}'.format(blog.get('externalLink','/'))
+                url = 'https://www.epicgames.com/fortnite/en-US/{0}'.format(blog.get('externalLink','/'))
                 content_response = yield from session.get(url)
                 if content_response.status == 200:
                     content = yield from content_response.text()
