@@ -263,8 +263,6 @@ class PatchNotesEmbed(discord.Embed):
             self.description = note['simple']['description']
             for extra in note['simple']['extra']:
                 self.add_field(name=extra['title'],value=extra['value'],inline=False)
-            if note['simple']['video'] != None:
-                self.set_video(url=note['simple']['video'])
 class StatsEmbed(discord.Embed):
     def __init__(self, data):
         if data.get('status') == 200:
