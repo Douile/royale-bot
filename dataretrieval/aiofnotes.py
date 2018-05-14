@@ -3,6 +3,7 @@ import aiohttp
 import bs4
 import html2text
 import logging
+import traceback
 
 from utils import strings
 
@@ -16,6 +17,7 @@ def getLogger(name):
 
 @asyncio.coroutine
 def fetch_patch_notes(limit=5,offset=0,detail=True):
+    debugger = getLogger('fetch_patch_notes')
     url = PATCHNOTES.format(limit, offset)
     session = aiohttp.ClientSession()
     response = yield from session.get(url)
@@ -47,11 +49,13 @@ def fetch_patch_notes(limit=5,offset=0,detail=True):
                     try:
                         note['detailed'] = yield from parse_detail_patchnotes(html)
                     except:
+                        debugger.error(traceback.format_exc())
                         note['detailed'] = [{'title': 'Parse error', 'value': 'Epic screwed with the api again'}]
                 elif detail == False:
                     try:
                         note['simple'] = yield from parse_simple_patchnotes(html)
                     except:
+                        debugger.error(traceback.format_exc())
                         note['simple'] = {'description': 'Parse error', 'extra': [], 'video': None}
                 output['notes'].append(note)
             output['success'] = True
