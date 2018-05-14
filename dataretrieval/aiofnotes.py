@@ -2,10 +2,16 @@ import asyncio
 import aiohttp
 import bs4
 import html2text
+import logging
 
 from utils import strings
 
 PATCHNOTES = 'https://www.epicgames.com/fortnite/api/blog/getPosts?category=patch+notes&postsPerPage={0}&offset={1}&locale=en-US'
+
+LOGGERNAME = 'bot.aiofnotes.'
+
+def getLogger(name):
+    return logging.getLogger(LOGGERNAME+name)
 
 
 @asyncio.coroutine
@@ -101,6 +107,7 @@ def parse_detail_patchnotes(html):
 
 @asyncio.coroutine
 def parse_simple_patchnotes(html):
+    logger = getLogger('parse_simple_patchnotes')
     contents = {'description':'','extra':[],'video':None}
     if len(str(contents)) < 300:
         print(contents)
@@ -110,6 +117,7 @@ def parse_simple_patchnotes(html):
     inner = outer.findChild('div')
     content = inner.findAll('p',recursive=False)
     for node in content:
+        logger.debug(node)
         title = node.find('strong')
         if title == None:
             c = yield from markdown(str(node))
