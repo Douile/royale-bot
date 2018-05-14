@@ -74,11 +74,9 @@ class Command:
                     yield from self.run(command,msg,settings)
                 else:
                     self.run(command,msg,settings)
-        except NameError:
-            pass
-        except Exception as e:
-            print(e)
+        except:
             traceback.print_exc()
+            self.noPermission = 'Error'
         if self.content != None:
             self.content = self.content.format_map(Map({'author':msg.author.id,'channel':msg.channel.id,'server':msg.server.id}))
         return self
