@@ -3,6 +3,8 @@ import aiohttp
 import bs4
 import html2text
 
+from utils import strings
+
 PATCHNOTES = 'https://www.epicgames.com/fortnite/api/blog/getPosts?category=patch+notes&postsPerPage={0}&offset={1}&locale=en-US'
 
 
@@ -37,12 +39,12 @@ def fetch_patch_notes(limit=5,offset=0,detail=True):
                 html = bs4.BeautifulSoup(blog['content'], 'html.parser')
                 if detail == True:
                     try:
-                        note['detailed'] = yield from parseDetailPatchNotes(html)
+                        note['detailed'] = yield from parse_detail_patchnotes(html)
                     except:
                         note['detailed'] = [{'title': 'Parse error', 'value': 'Epic screwed with the api again'}]
                 elif detail == False:
                     try:
-                        note['simple'] = yield from parseSimplePatchNotes(html)
+                        note['simple'] = yield from parse_simple_patchnotes(html)
                     except:
                         note['simple'] = {'description': 'Parse error', 'extra': [], 'video': None}
                 output['notes'].append(note)
@@ -54,7 +56,7 @@ def fetch_patch_notes(limit=5,offset=0,detail=True):
 
 
 @asyncio.coroutine
-def parse_detail_patchNotes(html):
+def parse_detail_patchnotes(html):
     contents = []
     outer = html.find('div', attrs={'id':'overview-section'})
     inner = outer.findChild('div')
@@ -98,7 +100,7 @@ def parse_detail_patchNotes(html):
 
 
 @asyncio.coroutine
-def parseSimplePatchNotes(html):
+def parse_simple_patchnotes(html):
     contents = {'description':'','extra':[],'video':None}
     outer = html.find('div',attrs={'id':'overview-section'})
     inner = outer.findChild('div')
