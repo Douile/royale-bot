@@ -153,7 +153,7 @@ class ItemImage:
             background = 'assets/fortnite_legendary.png'
         try:
             self.background = PIL.Image.open(background)
-            if self.background.width != self.size[0] or self.background.height != self.size[1]:
+            if self.background.width != self.size or self.background.height != self.size:
                 self.background.resize(self.size)
         except IOError:
             self.background = PIL.Image.new("RGBA",(self.size,self.size),color)
