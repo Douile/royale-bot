@@ -1,5 +1,5 @@
 from .module import Module, Command, parse_user_at
-from dataretrieval import meta
+from dataretrieval import patchnotesasync
 from imagegeneration import shop, stats
 import traceback
 from datetime import datetime
@@ -179,9 +179,9 @@ class PatchNotes(Command):
     def __init__(self):
         super().__init__(name='patchnotes',description="Get the latest patchnotes. `{prefix}patchnotes ([d], [detail])` include `d` or `detail` for a more detailed breakdown of the patchnotes.")
         self.permission = 'news'
+    @asyncio.coroutine
     def run(self,command,msg,settings):
-        self.reset()
-        args = msg.content.split(" ")
+        args = command.split(" ")
         try:
             arg = args[1].lower()
         except IndexError:
@@ -190,7 +190,7 @@ class PatchNotes(Command):
             detailed = True
         else:
             detailed = False
-        notes = meta.getPatchNotes(1,0,detailed)
+        notes = yield from patchnotesasync.get_patch_notes(1, 0, detailed)
         if notes['success']:
             self.embed = PatchNotesEmbed(notes['notes'][0])
             if notes['notes'][0]['simple'] != None:
