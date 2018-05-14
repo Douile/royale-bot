@@ -22,7 +22,10 @@ class FortniteModule(Module):
             'link': Link(sql),
             'unlink': UnLink(sql)
         }
-        self.types = ['stats','shop','news','status','autoshop','autostatus','autonews']
+        self.types = ['autoshop','autostatus','autonews']
+        for command in self.commands:
+            if command.permission is not None and not command.permission in self.types:
+                self.types.append(command.permission)
 class Shop(Command):
     def __init__(self,fnbr_key):
         super().__init__(name="shop",description='Print an image of today\'s fortnite shop. `{prefix}shop`')
