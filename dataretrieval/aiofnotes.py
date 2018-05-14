@@ -13,7 +13,7 @@ def fetch_patch_notes(limit=5,offset=0,detail=True):
     response = yield from session.get(url)
     output = {'success': False}
     if response.status == 200:
-        data = response.json()
+        data = yield from response.json()
         if 'blogList' in data:
             output['notes'] = []
             for blog in data['blogList']:
