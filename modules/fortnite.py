@@ -190,7 +190,7 @@ class PatchNotes(Command):
         else:
             detailed = False
         notes = yield from aiofnotes.fetch_patch_notes(1, 0, detailed)
-        logger.debug('Fetched patch notes',extra=notes)
+        logger.debug('Fetched patch notes: %s', notes)
         if notes['success']:
             self.embed = PatchNotesEmbed(notes['notes'][0])
             if notes['notes'][0]['simple'] != None:
