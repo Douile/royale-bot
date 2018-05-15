@@ -10,6 +10,7 @@ import time
 import traceback
 import builtins
 import logging
+import logging.config
 
 from modules import default, fortnite, moderation
 from modules.module import Command
@@ -83,16 +84,9 @@ def changes(original={},new={}):
                     changed[a][b] = True
     return changed
 
-# setup logging
-logFormatter = logging.Formatter("%(asctime)s [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s")
-rootLogger = logging.getLogger()
-fileHandler = logging.FileHandler('logs/bot.log')  # files
-fileHandler.setFormatter(logFormatter)
-rootLogger.addHandler(fileHandler)
-consoleHandler = logging.StreamHandler()  # stdout
-consoleHandler.setFormatter(logFormatter)
-rootLogger.addHandler(consoleHandler)
 
+# setup logging
+logging.config.fileConfig('logs/logger.conf')
 
 
 client = discord.Client(shard_id=SHARD_NO,shard_count=SHARD_COUNT)
