@@ -3,25 +3,21 @@ from os.path import join
 
 
 def count_lines(lines):
-    nb_lines = 0
-    docstring = False
+    file_line_count = 0
+    file_blank_line_count = 0
+    file_comment_line_count = 0
+
     for line in lines:
-        line = line.strip()
+        file_line_count += 1
 
-        if line == "" \
-           or line.startswith("#") \
-           or docstring and not (line.startswith('"""') or line.startswith("'''"))\
-           or (line.startswith("'''") and line.endswith("'''") and len(line) > 3)\
-           or (line.startswith('"""') and line.endswith('"""') and len(line) > 3):
-            continue
+        lineWithoutWhitespace = line.strip()
+        if not lineWithoutWhitespace:
+            file_blank_line_count += 1
+        elif lineWithoutWhitespace.startswith('#'):
+            file_comment_line_count += 1
 
-        # this is either a starting or ending docstring
-        elif line.startswith('"""') or line.startswith("'''"):
-            docstring = not docstring
-            continue
-        else:
-            nb_lines += 1
-    return nb_lines
+    file_code_line_count = file_line_count - file_blank_line_count - file_comment_line_count
+    return file_code_line_count
 
 
 def read_lines(file):
@@ -37,8 +33,10 @@ def count_file(file):
 
 def count_project():
     line_count = 0
-    for root, dirs, files in os.walk('.', topdown=True):
+    for root, dirs, files in os.walk(os.getcwd()):
         for name in files:
-            if name.endswith('.py'):
-                line_count += count_file(join(root, name))
+            fullpath = join(root, name)
+            if '.ignore' not in fullpath and '.git' not in fullpath:
+                if fullpath.endswith('.py'):
+                    line_count += count_file(join(root, name))
     return line_count
