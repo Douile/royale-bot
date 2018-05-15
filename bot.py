@@ -86,7 +86,35 @@ def changes(original={},new={}):
 
 
 # setup logging
-logging.config.fileConfig('logs/logger_conf.ini')
+logging_config = {
+    'version': 1,
+    'disable_existing_loggers': True,
+     'formatters': {
+        'verbose': {
+            'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
+        }
+    },
+    'handlers': {
+        'console':{
+            'level':'DEBUG',
+            'class':'logging.StreamHandler',
+            'formatter': 'verboose'
+        },
+        'file': {
+            'level': 'ERROR',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'formatter': 'verboose',
+
+        }
+    },
+    'loggers': {
+        'bot': {
+            'handlers': ['console', 'file'],
+            'propogate': True
+        }
+    }
+}
+logging.config.dictConfig(logging_config)
 
 
 client = discord.Client(shard_id=SHARD_NO,shard_count=SHARD_COUNT)
