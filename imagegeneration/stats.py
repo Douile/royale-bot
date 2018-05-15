@@ -7,7 +7,9 @@ import asyncio
 import aiohttp
 import random
 from io import BytesIO
-from logger_wrapper import LoggedClass
+import logging
+
+LOGGER = logging.getLogger('stats_generation')
 
 DEFAULT_SIZE = (1000,600)
 DEFAULT_FONT = 'assets/burbank.ttf'
@@ -132,7 +134,7 @@ class Overview:
         draw.text((platformleft,self.padding),userdata.platform,fill=(255,255,255,255),font=font)
         return image
 
-class Performance(LoggedClass):
+class Performance:
     def __init__(self,size):
         self.size = size
         self.color = DEFAULT_COLOR
@@ -203,7 +205,7 @@ class Performance(LoggedClass):
                 left += interval_size
             lowest = strings.strDec(lowest)
             highest = strings.strDec(highest)
-            self.logger.debug('Performance highest: %s lowest: %s', highest, lowest)
+            self.LOGGER.debug('Performance highest: %s lowest: %s', highest, lowest)
             left = round((self.padding-font.getsize(lowest)[0])/2)
             top = round(self.size[1]-self.padding-5-(font.getsize(lowest)[1]/2))
             draw.text((left, top), lowest, font=font, fill=fg)
@@ -267,7 +269,7 @@ class Main:
                         rtop = round(top+ ((rowsize-textsize[1])/2))
                         draw.text((rleft,rtop),value,fill=fg,font=font)
                     else:
-                        self.logger.warning('Column %s not found', c)
+                        self.LOGGER.warning('Column %s not found', c)
                 top += rowsize
             left += columnsize
         return image
@@ -415,8 +417,7 @@ class MatchEssential:
 
 @asyncio.coroutine
 def generate(KEY_TN,player,platform,backgrounds=[]):
-    logger = LoggedClass.getLogger('generation')
-    logger.debug('backgrounds: %s', str(backgrounds))
+    LOGGER.debug('backgrounds: %s', str(backgrounds))
     stats_data = yield from stats.stats(KEY_TN,player,platform)
     if stats_data['status'] == 200:
         stat_data = StatsData(stats_data)
@@ -424,7 +425,7 @@ def generate(KEY_TN,player,platform,backgrounds=[]):
             statsimage = Stats()
             if len(backgrounds) > 0:
                 url = random.choice(backgrounds)
-                logger.debug('Chosen background: %s', url)
+                LOGGER.debug('Chosen background: %s', url)
                 statsimage.background.url = url
             image = yield from statsimage.generate(stat_data)
         else:
