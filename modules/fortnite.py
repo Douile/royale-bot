@@ -170,10 +170,9 @@ class News(Command):
             self.content = 'Sorry <@!{author}> we were unable to get the news.'
 class Servers(Command):
     def __init__(self):
-        super().__init__(name='servers',description='Print the fortnite servers status. `{prefix}servers`')
-        self.permission = 'status'
+        super().__init__(name='servers',description='Print the fortnite servers status. `{prefix}servers`',permission='servers')
+    @asyncio.coroutine
     def run(self,command,msg,settings):
-        self.reset()
         status = meta.getStatus()
         self.content = '<@!{0}>'.format(msg.author.id)
         self.embed = StatusEmbed(status['online'],status['message'])
