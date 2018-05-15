@@ -101,6 +101,21 @@ class Command:
         if self.settings != None:
             sets = self.settings
         return sets
+    @property
+    def empty(self):
+        if self.content is None and \
+             self.file is None and \
+             self.embed is None and \
+             self.embeds is None and \
+             self.noPermission is None and \
+             self.deletes == [] and \
+             self.queue == []:
+            is_empty = True
+        else:
+            is_empty = False
+        return is_empty
+
+
 def checkPermissions(channel,type,settings):
     try:
         channel_id = settings['channels'].get(type)
