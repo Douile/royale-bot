@@ -293,15 +293,15 @@ def commandHandler(command, msg):
     output.delete_command = False
     if command != None:
         output = yield from defaultmodule._run(output,command,msg,serversettings)
-        if output.content == None and output.embed == None and output.embeds == None:
+        if output.empty:
             for i in range(0,len(cmodules)):
                 output = yield from cmodules[i]._run(output,command,msg,serversettings)
-        if output.content == None and output.embed == None and output.embeds == None:
+        if output.empty:
             for i in range(0,len(cmodules)):
                 output = yield from cmodules[i]._run_alias(output,command,msg,serversettings)
     else:
         output = yield from defaultmodule._run_alias(output,command,msg,serversettings)
-        if output.content == None and output.embed == None and output.embeds == None:
+        if output.empty:
             for i in range(0,len(cmodules)):
                 output = yield from cmodules[i]._run_alias(output,command,msg,serversettings)
     if len(output.queue) > 0:
