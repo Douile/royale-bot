@@ -109,12 +109,9 @@ logging_config = {
             'backupCount': 10
         }
     },
-    'loggers': {
-        'bot': {
-            'level': 'DEBUG',
-            'handlers': ['console', 'file'],
-            'propogate': True
-        }
+    'root': {
+        'level': 'DEBUG',
+        'handlers': ['console', 'file'],
     }
 }
 logging.config.dictConfig(logging_config)
