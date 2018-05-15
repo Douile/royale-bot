@@ -102,11 +102,9 @@ logging_config = {
         },
         'file': {
             'level': 'DEBUG',
-            'class': 'logging.handlers.RotatingFileHandler',
+            'class': 'logging.FileHandler',
             'formatter': 'verbose',
-            'filename': 'logs/bot.log',
-            'maxBytes': 1048576,
-            'backupCount': 10
+            'filename': 'logs/bot.log'
         }
     },
     'root': {
