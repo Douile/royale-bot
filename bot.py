@@ -86,7 +86,7 @@ def changes(original={},new={}):
 
 
 # setup logging
-logging.config.fileConfig('logs/logger.conf')
+logging.config.fileConfig('logs/logger_conf.ini')
 
 
 client = discord.Client(shard_id=SHARD_NO,shard_count=SHARD_COUNT)
