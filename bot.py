@@ -98,17 +98,18 @@ logging_config = {
         'console':{
             'level':'DEBUG',
             'class':'logging.StreamHandler',
-            'formatter': 'verboose'
+            'formatter': 'verbose'
         },
         'file': {
-            'level': 'ERROR',
+            'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
-            'formatter': 'verboose',
+            'formatter': 'verbose',
 
         }
     },
     'loggers': {
         'bot': {
+            'level': 'DEBUG',
             'handlers': ['console', 'file'],
             'propogate': True
         }
