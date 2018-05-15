@@ -46,8 +46,6 @@ if len(sys.argv) > 2:
     except ValueError:
         pass
 
-logger = logging.default()
-
 # functions
 def checkPermissions(channel,type,settings):
     try:
