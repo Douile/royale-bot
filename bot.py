@@ -164,7 +164,7 @@ def autostatus():
                         message = yield from client.edit_message(server, embed = embed)
                     else:
                         message = yield from client.send_message(server, embed = embed)
-                    sql.set_server_info(serverid, last_stats_msg=message.id, last_stats_channel=message.channel.id)
+                    sql.set_server_info(serverid, last_status_msg=message.id, last_status_channel=message.channel.id)
         yield from asyncio.sleep(60*2)
 
 @asyncio.coroutine
