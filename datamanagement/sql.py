@@ -8,6 +8,12 @@ class Table:
         self.columns = []
     def add_column(self, name, type='int', unique=False, not_null=False, primary_key=False,generate=False):
         self.columns.append(Column(name,type,unique,not_null,primary_key,generate))
+    @property
+    def column_names(self):
+        names = []
+        for column in self.columns:
+            names.append(column.name)
+        return names
     def __str__(self):
         if len(self.columns) > 0:
             string = " ("
@@ -76,6 +82,8 @@ class ServerData(Table):
         self.add_column("server_name",type="text")
         self.add_column("last_help_msg",type="text")
         self.add_column("last_help_channel",type="text")
+        self.add_column("last_stats_msg",type="text")
+        self.add_column("last_stats_channel",type="text")
         self.add_column("next_shop",type="int")
         self.add_column("latest_shop",type="text")
         self.add_column("prefix",type="text")
@@ -160,22 +168,15 @@ class Database(Postgres):
             for channel in channels_data:
                 info['channels'][channel['channel_type']] = channel['channel_id']
         return info
-    def set_server_info(self,server_id,server_name=None,last_help_msg=None,last_help_channel=None,next_shop=None,latest_shop=None,prefix=None):
-        print("set_server_info: server_id: {0}, server_name: {1}, last_help_msg: {2}, last_help_channel: {3}, next_shop: {4}, latest_shop: {5}, prefix: {6}".format(server_id,server_name,last_help_msg,last_help_channel,next_shop,latest_shop,prefix))
+    def set_server_info(self,server_id,**kwargs):
+        print("set_server_info: server_id: {server_id}, server_name: {server_name}, last_help_msg: {last_help_msg}, last_help_channel: {last_help_channel}, next_shop: {next_shop}, latest_shop: {latest_shop}, prefix: {prefix}".format_map(ArgMap(kwargs)))
         if not self.is_server(server_id):
             self.run("INSERT INTO server_data (server_id) VALUES (%(id)s)",parameters={'id':server_id})
-        if server_name != None:
-            self.set_server_info_string(server_id,'server_name',server_name)
-        if last_help_msg != None:
-            self.set_server_info_string(server_id,'last_help_msg',last_help_msg)
-        if last_help_channel != None:
-            self.set_server_info_string(server_id,'last_help_channel',last_help_channel)
-        if next_shop != None:
-            self.set_server_info_int(server_id,'next_shop',next_shop)
-        if latest_shop != None:
-            self.set_server_info_string(server_id,'latest_shop',latest_shop)
-        if prefix != None:
-            self.set_server_info_string(server_id,'prefix',prefix)
+        cols = ServerData().column_names
+        for arg in kwargs:
+            if arg in cols:
+                if kwargs.get(arg,None) != None:
+                    self.set_server_info_string(server_id, arg, kwargs.get(arg))
     def set_server_info_string(self,server_id,column,value):
         self.set_server_info_raw(server_id,column,value,"s")
     def set_server_info_int(self,server_id,column,value):
@@ -273,3 +274,8 @@ class Database(Postgres):
     def delete_link(self,user_id):
         print('Deleting link {}'.format(user_id))
         self.run('DELETE FROM user_links WHERE user_id=%(id)s',parameters={'id':user_id})
+
+
+class ArgMap:
+    def __missing__(self, key):
+        return None

@@ -147,7 +147,7 @@ def autostatus():
         embed = None
         if len(servicechange) > 0:
             embed = fortnite.StatusEmbed(data['online'],data['message'])
-            for s in servicechange:
+            for s in data['services']:
                 embed.add_service(name=s,value=data['services'][s])
         elif changed['online'] == True or changed['message'] == True:
             embed = fortnite.StatusEmbed(data['online'],data['message'])
@@ -155,7 +155,16 @@ def autostatus():
             for serverid in client.database.servers():
                 server = client.database.server_info(serverid,channels=True)
                 if 'autostatus' in server['channels']:
-                    yield from client.send_message(discord.Object(server['channels']['autostatus']),embed=embed)
+                    last_stats_msg = server.get('last_stats_msg', None)
+                    last_stats_channel = server.get('last_stats_channel', None)
+                    server = discord.Object(server['channels']['autostatus'])
+                    if last_stats_msg is not None and last_stats_channel is not None:
+                        old_message = discord.Object(last_stats_msg)
+                        old_message.channel = discord.Object(last_stats_channel)
+                        message = yield from client.edit_message(server, embed = embed)
+                    else:
+                        message = yield from client.send_message(server, embed = embed)
+                    sql.set_server_info(serverid, last_stats_msg=message.id, last_stats_channel=message.channel.id)
         yield from asyncio.sleep(60*2)
 
 @asyncio.coroutine
