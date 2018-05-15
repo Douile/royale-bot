@@ -205,7 +205,7 @@ class Performance:
                 left += interval_size
             lowest = strings.strDec(lowest)
             highest = strings.strDec(highest)
-            self.LOGGER.debug('Performance highest: %s lowest: %s', highest, lowest)
+            LOGGER.debug('Performance highest: %s lowest: %s', highest, lowest)
             left = round((self.padding-font.getsize(lowest)[0])/2)
             top = round(self.size[1]-self.padding-5-(font.getsize(lowest)[1]/2))
             draw.text((left, top), lowest, font=font, fill=fg)
@@ -269,7 +269,7 @@ class Main:
                         rtop = round(top+ ((rowsize-textsize[1])/2))
                         draw.text((rleft,rtop),value,fill=fg,font=font)
                     else:
-                        self.LOGGER.warning('Column %s not found', c)
+                        LOGGER.warning('Column %s not found', c)
                 top += rowsize
             left += columnsize
         return image
