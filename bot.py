@@ -234,7 +234,7 @@ def ticker():
 def count_users(client_class):
     users = 0
     for server in client_class.servers:
-        users += server.members
+        users += len(server.members)
     return users
 
 
