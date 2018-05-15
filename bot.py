@@ -9,7 +9,7 @@ from datetime import datetime
 import time
 import traceback
 import builtins
-import logger_wrapper as logging
+import logging
 
 from modules import default, fortnite, moderation
 from modules.module import Command
@@ -85,6 +85,16 @@ def changes(original={},new={}):
                     changed[a][b] = True
     return changed
 
+# setup logging
+logFormatter = logging.Formatter("%(asctime)s [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s")
+rootLogger = logging.getLogger()
+fileHandler = logging.FileHandler('logs/bot.log')  # files
+fileHandler.setFormatter(logFormatter)
+rootLogger.addHandler(fileHandler)
+consoleHandler = logging.StreamHandler()  # stdout
+consoleHandler.setFormatter(logFormatter)
+rootLogger.addHandler(consoleHandler)
+
 
 
 client = discord.Client(shard_id=SHARD_NO,shard_count=SHARD_COUNT)
@@ -94,6 +104,7 @@ builtins.client = client
 
 @asyncio.coroutine
 def autoshop(fnbr_key): # add fnbr not accessable fallback
+    logger = logging.getLogger('autoshop')
     yield from client.wait_until_ready()
     while not client.is_closed:
         shopdata = None
@@ -130,6 +141,7 @@ def autoshop(fnbr_key): # add fnbr not accessable fallback
 
 @asyncio.coroutine
 def autostatus():
+    logger = logging.getLogger('autostatus')
     yield from client.wait_until_ready()
     while not client.is_closed:
         cache_raw = client.database.get_cache("status", once=True)
@@ -164,7 +176,11 @@ def autostatus():
                         message = yield from client.edit_message(server, embed = embed)
                     else:
                         message = yield from client.send_message(server, embed = embed)
-                    sql.set_server_info(serverid, last_status_msg=message.id, last_status_channel=message.channel.id)
+                    try:
+                        sql.set_server_info(serverid, last_status_msg=message.id, last_status_channel=message.channel.id)
+                    except:
+                        error = traceback.format_exc()
+                        logger.error('Error updating server info %s', error)
         yield from asyncio.sleep(60*2)
 
 @asyncio.coroutine
@@ -190,6 +206,7 @@ def autonews():
 
 @asyncio.coroutine
 def handle_queue():
+    logger = logging.getLogger('handle_queue')
     yield from client.wait_until_ready()
     while not client.is_closed:
         for queue_item in client.queued_actions:
@@ -226,6 +243,7 @@ def count_users(client_class):
 @client.event
 @asyncio.coroutine
 def on_ready():
+    logger = logging.getLogger()
     logger.info("Discord client logged in: %s %s", client.user.name, client.user.id)
     yield from client.edit_profile(username=BOT_NAME)
     yield from client.change_presence(game=discord.Game(name="Est. 2018 @mention for help",type=0),status="online",afk=False)
@@ -260,22 +278,11 @@ def on_message(msg):
         else:
             command = None
         yield from commandHandler(command,msg)
-# @client.event
-# @asyncio.coroutine
-# def on_message_edit(before,msg):
-#     settings = client.database.server_info(msg.server.id)
-#     if settings == None:
-#         prefix = "!"
-#     else:
-#         prefix = settings.get("prefix")
-#         if prefix == None:
-#             prefix = "!"
-#     if not msg.author.bot and msg.content.startswith(prefix):
-#         command = msg.content[len(prefix):]
-#         yield from commandHandler(command,msg)
+
 
 @asyncio.coroutine
-def commandHandler(command,msg):
+def commandHandler(command, msg):
+    logger = logging.getLogger('commandHandler')
     if command != None:
         command = command.lower()
     serverid = msg.server.id
@@ -337,7 +344,7 @@ def noPermission(msg,type,settings):
     serverid = msg.server.id
     if type == 'error':
         m = '<@!{0}> Sorry an error occured'
-    elif type in ['shop','stats','news','status']:
+    elif type in settings['channels']:
         m = '<@!{0}> Please use the set {1} channel <#{2}>'.format(msg.author.id,type,settings['channels'][type])
     elif type == 'setchannel' or type == 'resetchannels':
         m = '<@!{0}> You must be an administrator to change channel settings'.format(msg.author.id)
