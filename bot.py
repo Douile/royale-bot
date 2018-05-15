@@ -106,7 +106,7 @@ logging_config = {
             'formatter': 'verbose',
             'filename': 'logs/bot.log',
             'maxBytes': 1048576,
-            'backupFiles': 10
+            'backupCount': 10
         }
     },
     'loggers': {
