@@ -1,6 +1,9 @@
 import asyncio
 from discord import Object
 import traceback
+import logging
+
+LOGGER = logging.getLogger('module')
 
 class Module:
     def __init__(self,name="",description="",category=None,client_id=''):
@@ -75,7 +78,8 @@ class Command:
                 else:
                     self.run(command,msg,settings)
         except:
-            traceback.print_exc()
+            error = traceback.format_exc()
+            LOGGER.error('Error running command %s', error)
             self.noPermission = 'Error'
         if self.content != None:
             self.content = self.content.format_map(Map({'author':msg.author.id,'channel':msg.channel.id,'server':msg.server.id}))
