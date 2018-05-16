@@ -117,6 +117,8 @@ logging.config.dictConfig(logging_config)
 
 if SHARD_NO == 0:
     defaults_database = True
+else:
+    defaults_database = False
 
 client = discord.Client(shard_id=SHARD_NO,shard_count=SHARD_COUNT)
 client.queued_actions = []
