@@ -175,12 +175,10 @@ def autostatus():
             if changed['services'][s] is True:
                 servicechange.append(s)
         embed = None
-        if len(servicechange) > 0:
+        if len(servicechange) > 0 or changed['online'] == True or changed['message'] == True:
             embed = fortnite.StatusEmbed(data['online'],data['message'])
             for s in data['services']:
                 embed.add_service(name=s,value=data['services'][s])
-        elif changed['online'] == True or changed['message'] == True:
-            embed = fortnite.StatusEmbed(data['online'],data['message'])
         if embed != None:
             for serverid in client.database.servers():
                 server = client.database.server_info(serverid,channels=True)
