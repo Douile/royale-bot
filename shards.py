@@ -1,7 +1,7 @@
 import os
 import threading
 
-THREADS = 2
+THREADS = 15
 
 class BotThread:
     def __init__(self, shard_id, shard_count):

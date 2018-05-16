@@ -37,7 +37,6 @@ KEY_TRACKERNETWORK = getEnv("KEY_TRACKERNETWORK")
 DATABASE_URL = getEnv("DATABASE_URL")
 BOT_NAME = getEnv("BOT_NAME", "FortniteData")
 TICKER_TIME = int(getEnv("TICKER_TIME", 30))
-VERSION = {'name': BOT_NAME, 'version_name': '0.9.0', 'revison': getEnv('HEROKU_RELEASE_VERSION', 'v1'), 'description': getEnv('HEROKU_SLUG_DESCRIPTION', ''), 'lines': LINE_COUNT}
 SHARD_NO = 0
 SHARD_COUNT = 1
 if len(sys.argv) > 2:
@@ -46,6 +45,7 @@ if len(sys.argv) > 2:
         SHARD_COUNT = int(sys.argv[2])
     except ValueError:
         pass
+VERSION = {'name': BOT_NAME, 'version_name': '0.9.0', 'revison': getEnv('HEROKU_RELEASE_VERSION', 'v1'), 'description': getEnv('HEROKU_SLUG_DESCRIPTION', ''), 'lines': LINE_COUNT, 'shards': SHARD_COUNT}
 
 # functions
 def checkPermissions(channel,type,settings):
