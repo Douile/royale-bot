@@ -189,7 +189,7 @@ def autostatus():
                     if last_status_msg is not None and last_status_channel is not None:
                         old_message = discord.Object(last_status_msg)
                         old_message.channel = discord.Object(last_status_channel)
-                        message = yield from client.edit_message(server, embed = embed)
+                        message = yield from client.edit_message(old_message, embed = embed)
                     else:
                         message = yield from client.send_message(server, embed = embed)
                     try:
