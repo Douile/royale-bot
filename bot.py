@@ -115,9 +115,12 @@ logging_config = {
 logging.config.dictConfig(logging_config)
 
 
+if SHARD_NO == 0:
+    defaults_database = True
+
 client = discord.Client(shard_id=SHARD_NO,shard_count=SHARD_COUNT)
 client.queued_actions = []
-client.database = sql.Database(url=DATABASE_URL)
+client.database = sql.Database(defaults_database, url=DATABASE_URL)
 builtins.client = client
 
 @asyncio.coroutine

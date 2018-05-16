@@ -115,9 +115,10 @@ class Links(Table):
         self.add_column('user_nickname',type='text')
 
 class Database(Postgres):
-    def __init__(self,*,url):
+    def __init__(self,defaults=False,*,url):
         super().__init__(url)
-        self.setup_defaults()
+        if defaults:
+            self.setup_defaults()
     def setup_defaults(self):
         self.run_unsafe(ServerData().create())
         self.run_unsafe(ServerData().alter())
