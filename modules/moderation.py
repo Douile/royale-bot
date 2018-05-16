@@ -2,6 +2,11 @@ from .module import Module, Command, QueueAction, parse_user_at
 import asyncio
 import discord
 import traceback
+import logging
+
+
+LOGGER = logging.getLogger('moderation')
+
 
 class ModerationModule(Module):
     def __init__(self):
@@ -47,7 +52,8 @@ def mute_member(client,member_id,server_id):
         yield from client.server_voice_state(user,mute=True)
         yield from client.add_roles(user,role)
     except:
-        print('Unable to mute user')
+        error = traceback.format_exc()
+        LOGGER.warn('Unable to mute user: %s', error)
 @asyncio.coroutine
 def mute_role(client,server_id):
     server = client.get_server(server_id)
@@ -86,7 +92,7 @@ class Kick(Command):
         if s > -1:
             user = data[:s]
             reason = data[s+1:]
-            print('Kick {0} : {1}'.format(user,reason))
+            LOGGER.debug('Kick %s : %s', user, reason)
             user_ob = parse_user_at(user,msg.server.id)
             member = msg.server.get_member(user_ob.id)
             kicker = msg.author.nick
@@ -100,8 +106,7 @@ class Kick(Command):
 @asyncio.coroutine
 def kick_user(client,user,kicker,reason):
     kickmsg = '<@!{0}> You were kicked by @{1} for: {2}'.format(user.id,kicker,reason)
-    print(kickmsg)
-    yield from client.send_message(user,content=kickmsg)
+    yield from client.send_message(user, content=kickmsg)
     yield from client.kick(user)
 
 class Analytics(Command):
@@ -116,8 +121,10 @@ class Analytics(Command):
             try:
                 count = yield from asyncio.wait_for(client.estimate_pruned_members(msg.server,days=i),10.0)
             except:
+                error = traceback.format_exc()
+                LOGGER.warn('Unable to estimate pruned: %s', error)
                 count = 'Unknown'
-            print('Got pruned members for {} days: {}'.format(i,count))
+            LOGGER.debug('Got pruned members for %d days: %d', i,count)
             self.embed.set_inactive(i,count)
         self.embed.parse_config()
         humans = 0
@@ -130,7 +137,7 @@ class Analytics(Command):
                 humans += 1
                 if str(member.status) == 'offline':
                     offline += 1
-        print('Humans {}, Offline {}, Bots {}'.format(humans,offline,bots))
+        LOGGER.debug('Count totals: Humans %d, Offline %d, Bots %d', humans ,offline, bots)
         self.embed.set_humans(humans,offline)
         self.embed.set_bots(bots)
         self.embed.parse_config()
@@ -143,7 +150,7 @@ class AnalyticsEmbed(discord.Embed):
         self.config_data = {}
     def parse_config(self):
         self.clear_fields()
-        print('Parsing analytics embed: {}'.format(self.config_data))
+        LOGGER.debug('Parsing analytics embed: %s', str(self.config_data))
         self.add_data('Humans','{}/{}'.format(self.config_data.get('humans_online',0),self.config_data.get('humans_total',0)))
         self.add_data('Bots',self.config_data.get('bots',0))
         self.add_data('Inactive members (1 day)',self.config_data.get('inactive_1',0))
