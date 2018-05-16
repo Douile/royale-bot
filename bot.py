@@ -185,17 +185,17 @@ def autostatus():
             for serverid in client.database.servers():
                 server = client.database.server_info(serverid,channels=True)
                 if 'autostatus' in server['channels']:
-                    last_stats_msg = server.get('last_stats_msg', None)
-                    last_stats_channel = server.get('last_stats_channel', None)
+                    last_status_msg = server.get('last_status_msg', None)
+                    last_status_channel = server.get('last_status_channel', None)
                     server = discord.Object(server['channels']['autostatus'])
-                    if last_stats_msg is not None and last_stats_channel is not None:
-                        old_message = discord.Object(last_stats_msg)
-                        old_message.channel = discord.Object(last_stats_channel)
+                    if last_status_msg is not None and last_status_channel is not None:
+                        old_message = discord.Object(last_status_msg)
+                        old_message.channel = discord.Object(last_status_channel)
                         message = yield from client.edit_message(server, embed = embed)
                     else:
                         message = yield from client.send_message(server, embed = embed)
                     try:
-                        sql.set_server_info(serverid, last_status_msg=message.id, last_status_channel=message.channel.id)
+                        client.database.set_server_info(serverid, last_status_msg=message.id, last_status_channel=message.channel.id)
                     except:
                         error = traceback.format_exc()
                         logger.error('Error updating server info %s', error)
