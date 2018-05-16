@@ -265,7 +265,7 @@ def count_users(client_class):
 @asyncio.coroutine
 def on_ready():
     logger = logging.getLogger()
-    logger.info("Discord client logged in: %s %s", client.user.name, client.user.id)
+    logger.info("Discord client logged in: %s %s %d/%d", client.user.name, client.user.id, client.shard_id, client.shard_count)
     yield from client.edit_profile(username=BOT_NAME)
     yield from client.change_presence(game=discord.Game(name="Est. 2018 @mention for help",type=0),status="online",afk=False)
     defaultmodule.client_id = client.user.id
