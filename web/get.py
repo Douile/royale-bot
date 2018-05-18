@@ -17,7 +17,7 @@ def handle(path,headers,data):
 
 def read_bytes(filename):
     with open(filename, 'rb') as file:
-        content = file.read()
+        content = str(file.read(), 'utf-8')
     return content
 
 
