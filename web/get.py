@@ -11,13 +11,13 @@ def handle(path,headers,data):
         file_data = read_bytes(file_path)
         response = HTTPResponseData(200, parse_path(file_path), file_data)
     else:
-        response = HTTPResponseData(404, 'text/html', '')
+        response = HTTPResponseData(404, 'text/html', bytes('', 'utf-8'))
     return response
 
 
 def read_bytes(filename):
     with open(filename, 'rb') as file:
-        content = str(file.read(), 'utf-8')
+        content = file.read()
     return content
 
 
