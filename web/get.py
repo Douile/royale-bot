@@ -7,7 +7,7 @@ PATH = os.path.join(os.getcwd(),'images/')
 
 def handle(path,headers,data):
     file_path = os.path.join(PATH,path)
-    if os.isfile(file_path):
+    if os.path.isfile(file_path):
         file_data = read_bytes(file_path)
         response = HTTPResponseData(200, parse_path(file_path), file_data)
     else:
