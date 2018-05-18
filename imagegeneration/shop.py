@@ -13,59 +13,7 @@ from dataretrieval import fnbr
 
 FONT = "assets/burbank.ttf"
 
-# classes
-# class ShopImage():
-#     def __init__(self, size=300, padding=20, fontsize=40, rowsize=3, fcount=2, dcount=6,date="",background=None):
-#         self.rowsize = rowsize
-#         self.size = size
-#         self.padding = padding
-#         self.fontsize = fontsize
-#         self.font = PIL.ImageFont.truetype(FONT,fontsize)
-#         self.fheight = self.font.getsize("Test")[1]
-#         rows = self.rows(fcount)+self.rows(dcount)
-#         self.width = round(self.size*self.rowsize + self.padding*4)
-#         self.height = round(self.fheight*2 + self.size*rows + self.padding*rows)
-#         self.dailytop = self.size*self.rows(fcount)+self.fheight+self.padding*(.5+self.rows(fcount))
-#         if background == None or not type(background) is str:
-#             self.background = PIL.Image.new("RGBA",(self.width,self.height))
-#         else:
-#             bg = createImageFromUrl(background)
-#             self.background = bg.resize((self.width,self.height))
-#         self.datetext = date
-#     def setFeatured(self, images):
-#         top = self.fheight+self.padding
-#         self.drawImages(top,images)
-#     def setDaily(self, images):
-#         top = round(self.dailytop + self.fheight + self.padding*.5)
-#         self.drawImages(top,images)
-#     def drawImages(self, top, images):
-#         sets = []
-#         for i in range(1,self.rows(len(images))+1):
-#             n = self.rowsize*i
-#             sets.append(images[n-self.rowsize:n])
-#         for set in sets:
-#             width = (len(set)*self.size)+((len(set)-1)*self.padding)
-#             left = (self.width-width)/2
-#             for image in set:
-#                 r = image.resize((self.size,self.size))
-#                 self.background.paste(r,(round(left),round(top)),r)
-#                 left += self.size + self.padding
-#             top += self.size + self.padding
-#     def rows(self, arraysize):
-#         arraysize -= 1
-#         return round(((arraysize - (arraysize % self.rowsize))/self.rowsize)+1)
-#     def drawText(self):
-#         color = (255,255,255,255)
-#         draw = PIL.ImageDraw.Draw(self.background)
-#         left = (self.width/2)-(self.font.getsize("Featured")[0]/2)
-#         top = self.padding/2
-#         draw.text((left,top), "Featured", font=self.font, fill=color)
-#         draw.text((top,top), self.datetext, font=self.font, fill=color)
-#         left = (self.width/2)-(self.font.getsize("Daily")[0]/2)
-#         draw.text((left,self.dailytop),"Daily",font=self.font,fill=color)
-#     def save(self, name):
-#         self.drawText()
-#         self.background.save(name)
+
 class ShopImage:
     def __init__(self, size=200, padding=20, fontsize=40, rowsize=3, fcount=2, dcount=6, date="", background=None):
         self.size = size
@@ -73,8 +21,8 @@ class ShopImage:
         self.fontsize = fontsize
         self.font = PIL.ImageFont.truetype(FONT,self.fontsize)
         self.fheight = self.font.getsize("Tp")[1]
-        self.frows = (fcount-(fcount%2))/2
-        self.drows = (dcount-(dcount%2))/2
+        self.frows = (fcount+(fcount%2))/2
+        self.drows = (dcount+(dcount%2))/2
         self.rows = 1
         if self.frows > self.drows:
             self.rows = self.frows
