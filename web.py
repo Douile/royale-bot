@@ -21,16 +21,16 @@ class S(BaseHTTPRequestHandler):
         raw_data = self.rfile.read()
         data = get.handle(self.path,self.headers,raw_data)
         self._set_headers(data.code,data.type)
-        self.wfile.write(str(data.response, 'utf-8'))
+        self.wfile.write(data.response)
 
     def do_HEAD(self):
-        self._set_headers(200,'text/json')
+        self._set_headers(200, 'text/json')
 
     def do_POST(self):
         raw_data = self.rfile.read()
         data = post.handle(self.path,self.headers,raw_data)
         self._set_headers(data.code,data.type)
-        self.wfile.write(str(data.response, 'utf-8'))
+        self.wfile.write(data.response)
 
 def run(server_class=HTTPServer, handler_class=S, port=80):
     server_address = ('', port)
