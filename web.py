@@ -40,5 +40,4 @@ def run(server_class=HTTPServer, handler_class=S, port=80):
 
 PORT = int(getEnv('PORT',5000))
 
-if __name__ == "__main__":
-    run(port=PORT)
+run(port=PORT)
