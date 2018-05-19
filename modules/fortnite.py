@@ -272,7 +272,13 @@ class PatchNotesEmbed(discord.Embed):
                 self.add_field(name=extra['title'],value=extra['value'],inline=False)
 class PatchNotesText:
     def __init__(self, note):
-        self.content = '***Patch Notes v{}***'.format(note.get('simple',{}).get('extra',{}).get('title',''))
+        data = note['simple']
+        self.content = '***Patch Notes v{version}***\n**{short}**'
+        map = {
+            'version': note['title'],
+            'short': note['shorts']
+        }
+        self.content.format_map(map)
     def __str__(self):
         return self.content
 class StatsEmbed(discord.Embed):
