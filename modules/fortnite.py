@@ -195,9 +195,12 @@ class PatchNotes(Command):
         notes = yield from aiofnotes.fetch_patch_notes(1, 0, detailed)
         logger.debug('Fetched patch notes: %s', notes)
         if notes['success']:
-            self.embed = PatchNotesEmbed(notes['notes'][0])
-            if notes['notes'][0]['simple'] != None:
-                self.content = notes['notes'][0]['simple']['video']
+            if arg == 't':
+                self.content = PatchNotesText(notes['notes'][0])
+            else:
+                self.embed = PatchNotesEmbed(notes['notes'][0])
+                if notes['notes'][0]['simple'] != None:
+                    self.content = notes['notes'][0]['simple']['video']
         else:
             self.content = 'Sorry <@!{author}> we were unable to get the patch notes'
 
@@ -267,6 +270,11 @@ class PatchNotesEmbed(discord.Embed):
             self.description = note['simple']['description']
             for extra in note['simple']['extra']:
                 self.add_field(name=extra['title'],value=extra['value'],inline=False)
+class PatchNotesText:
+    def __init__(self, note):
+        self.content = '***Patch Notes v{}***'.format(note..get('simple',{}).get('extra',{}).get('title',''))
+    def __str__(self):
+        return self.content
 class StatsEmbed(discord.Embed):
     def __init__(self, data):
         if data.get('status') == 200:
