@@ -369,6 +369,8 @@ def noPermission(msg,type,settings):
         m = '<@!{0}> Please use the set {1} channel <#{2}>'.format(msg.author.id,type,settings['channels'][type])
     elif type == 'setchannel' or type == 'resetchannels':
         m = '<@!{0}> You must be an administrator to change channel settings'.format(msg.author.id)
+    elif type == 'error':
+        m = '<@!{0}> Sorry we encountered a strange error.'.format(msg.author.id)
     else:
         m = '<@!{0}> You don\'t have permission'.format(msg.author.id)
     mymsg = yield from client.send_message(msg.channel,m)
