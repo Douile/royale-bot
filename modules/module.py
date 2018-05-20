@@ -77,7 +77,7 @@ class Command:
                     self.run(command,msg,settings)
         except:
             error = traceback.format_exc()
-            logging.getModule('module').error('Error running command %s', error)
+            logging.getLogger('module').error('Error running command %s', error)
             self.noPermission = 'error'
         if self.content != None:
             self.content = self.content.format_map(Map({'author':msg.author.id,'channel':msg.channel.id,'server':msg.server.id}))
