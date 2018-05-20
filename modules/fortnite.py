@@ -65,7 +65,7 @@ class Stats(Command):
             args = command[len('stats'):].strip()
         else:
             args = command.strip()
-        platfrom, name = yield from parse_fortnite_user(args, msg.author.id, msg.server.id, self.sql)
+        platform, name = yield from parse_fortnite_user(args, msg.author.id, msg.server.id, self.sql)
         try:
             logger.debug('Stats command name: %s platform %s', name, platform)
             bgs = settings.get('backgrounds',{})
@@ -92,7 +92,7 @@ class Matches(Command):
             args = command[len('matches'):].strip()
         else:
             args = command.strip()
-        platfrom, name = yield from parse_fortnite_user(args, msg.author.id, msg.server.id, self.sql)
+        platform, name = yield from parse_fortnite_user(args, msg.author.id, msg.server.id, self.sql)
         try:
             logger.debug('Stats command name: %s platform %s', name, platform)
             bgs = settings.get('backgrounds',{})
