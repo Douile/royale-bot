@@ -441,7 +441,7 @@ def generate(KEY_TN,player,platform,backgrounds=[]):
             if len(backgrounds) > 0:
                 url = random.choice(backgrounds)
                 LOGGER.debug('Chosen background: %s', url)
-                statsimage.background.url = url
+                statsimage.setBackground(url=url)
             image = yield from statsimage.generate(stat_data)
         else:
             image = None
@@ -460,7 +460,7 @@ def generate_performance(KEY_TN, player, platform, backgrounds=[]):
             if len(backgrounds) > 0:
                 url = random.choice(backgrounds)
                 LOGGER.debug('Chosen background: %s', url)
-                statsimage.background.url = url
+                statsimage.setBackground(url=url)
             image = yield from statsimage.generate(stat_data)
         else:
             image = None
