@@ -96,13 +96,13 @@ class Overlay:
         size_y_small = padding_y*5
         size_y_large = padding_y*12
         overview = Overview((size_x_large,size_y_small))
-        overview_image = yield from overview.generate(data.userdata,data.lifetime)
+        overview_image = yield from overview.generate(data)
         image.paste(overview_image,(padding_x,padding_y),overview_image)
         performance = Performance((size_x_small,size_y_small))
-        performance_image = yield from performance.generate(data.matches,int(data.lifetime.matches))
+        performance_image = yield from performance.generate(data)
         image.paste(performance_image,(padding_x*2+size_x_large,padding_y),performance_image)
         main = Main((size_x_small+size_x_large+padding_x,size_y_large))
-        main_image = yield from main.generate(data.stats)
+        main_image = yield from main.generate(data)
         image.paste(main_image,(padding_x,padding_y*2+size_y_small),main_image)
         return image
 
@@ -112,7 +112,9 @@ class Overview:
         self.color = DEFAULT_COLOR
         self.padding = 15
     @asyncio.coroutine
-    def generate(self,userdata,lifetimestats):
+    def generate(self,data):
+        userdata = data.userdata
+        lifetimestats = data.lifetime
         lifetime = Map(lifetimestats,True)
         image = PIL.Image.new('RGBA',self.size,self.color)
         draw = PIL.ImageDraw.Draw(image)
@@ -140,7 +142,9 @@ class Performance:
         self.color = DEFAULT_COLOR
         self.padding = 20
     @asyncio.coroutine
-    def generate(self,matches,lifetime_matches):
+    def generate(self,data):
+        matches = data.matches
+        lifetime_matches = int(data.lifetime.matches)
         image = PIL.Image.new('RGBA',self.size,self.color)
         draw = PIL.ImageDraw.Draw(image)
         fontsize = round(self.padding/3*2)
@@ -230,7 +234,8 @@ class Main:
         self.color = DEFAULT_COLOR
         self.padding = 15
     @asyncio.coroutine
-    def generate(self,stats):
+    def generate(self,data):
+        stats = data.stats
         image = PIL.Image.new('RGBA',self.size,self.color)
         draw = PIL.ImageDraw.Draw(image)
         font = PIL.ImageFont.truetype(DEFAULT_FONT_NEAT,size=24)
@@ -273,21 +278,31 @@ class Main:
                 top += rowsize
             left += columnsize
         return image
-class Stats:
+class ImageGenerator:
     def __init__(self):
         self.background = Background(color=(0,0,0,0))
-        self.overlay = Overlay()
-    def setBackground(self,color=None,url=None):
+        self.overlays = []
+    def setBackground(self, color=None, url=None):
         if url != None:
             self.background.url = url
         if color != None:
             self.background.color = color
-    @asyncio.coroutine
-    def generate(self,data):
+    def addOverlay(self, overlay):
+        self.overlays.append(overlay)
+    @asyncio.generate
+    def generate(self, data):
         background = yield from self.background.generate()
-        overlay = yield from self.overlay.generate(data)
-        background.paste(overlay,(0,0),overlay)
-        return background
+        for overlay in self.overlays:
+            overlay_image = yield from overlay.generate(data)
+            background.paste(overlay_image,(0,0),overlay_image)
+class StatsImage(ImageGenerator):
+    def __init__(self):
+        super().__init__()
+        self.addOverlay(Overlay())
+class PerformanceImage(ImageGenerator):
+    def __init__(self):
+        super().__init__()
+        self.addOverlay(Performance(DEFAULT_SIZE))
 
 class StatsData:
     def __init__(self,data):
@@ -422,7 +437,26 @@ def generate(KEY_TN,player,platform,backgrounds=[]):
     if stats_data['status'] == 200:
         stat_data = StatsData(stats_data)
         if stat_data.error == None:
-            statsimage = Stats()
+            statsimage = StatsImage()
+            if len(backgrounds) > 0:
+                url = random.choice(backgrounds)
+                LOGGER.debug('Chosen background: %s', url)
+                statsimage.background.url = url
+            image = yield from statsimage.generate(stat_data)
+        else:
+            image = None
+    else:
+        image = None
+    return image
+
+@asynio.coroutine
+def generate_performance(KEY_TN, player, platform, backgrounds=[]):
+    LOGGER.debug('backgrounds: %s', str(backgrounds))
+    stats_data = yield from stats.stats(KEY_TN,player,platform)
+    if stats_data['status'] == 200:
+        stat_data = StatsData(stats_data)
+        if stat_data.error == None:
+            statsimage = PerformanceImage()
             if len(backgrounds) > 0:
                 url = random.choice(backgrounds)
                 LOGGER.debug('Chosen background: %s', url)
