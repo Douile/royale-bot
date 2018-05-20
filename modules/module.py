@@ -3,8 +3,6 @@ from discord import Object
 import traceback
 import logging
 
-LOGGER = logging.getLogger('module')
-
 class Module:
     def __init__(self,name="",description="",category=None,client_id=''):
         self.name = name
@@ -79,8 +77,8 @@ class Command:
                     self.run(command,msg,settings)
         except:
             error = traceback.format_exc()
-            LOGGER.error('Error running command %s', error)
-            self.noPermission = 'Error'
+            logging.getModule('module').error('Error running command %s', error)
+            self.noPermission = 'error'
         if self.content != None:
             self.content = self.content.format_map(Map({'author':msg.author.id,'channel':msg.channel.id,'server':msg.server.id}))
         return self
