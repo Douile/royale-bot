@@ -114,6 +114,20 @@ class Command:
         else:
             is_empty = False
         return is_empty
+    def __iter__(self):
+        yield 'content', self.content
+        yield 'file', self.file
+        yield 'embed', self.embed
+        yield 'embeds', self.embeds
+        yield 'settings', self.settings
+        yield 'is_help', self.is_help
+        yield 'noPermission', self.noPermission
+        yield 'typing', self.typing
+        yield 'delete_command', self.delete_command
+        yield 'deletes', self.deletes
+        yield 'queue', self.queue
+    def debug(self):
+        LOGGER.debug('message object: %s', str(dict(self)))
 
 
 def checkPermissions(channel,type,settings):
