@@ -449,7 +449,7 @@ def generate(KEY_TN,player,platform,backgrounds=[]):
         image = None
     return image
 
-@asynio.coroutine
+@asyncio.coroutine
 def generate_performance(KEY_TN, player, platform, backgrounds=[]):
     LOGGER.debug('backgrounds: %s', str(backgrounds))
     stats_data = yield from stats.stats(KEY_TN,player,platform)
