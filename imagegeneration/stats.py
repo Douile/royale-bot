@@ -289,7 +289,7 @@ class ImageGenerator:
             self.background.color = color
     def addOverlay(self, overlay):
         self.overlays.append(overlay)
-    @asyncio.generate
+    @asyncio.coroutine
     def generate(self, data):
         background = yield from self.background.generate()
         for overlay in self.overlays:
