@@ -60,6 +60,7 @@ class Stats(Command):
         self.sql = sql
     @asyncio.coroutine
     def run(self,command,msg,settings):
+        logger = logging.getLogger('matches')
         if command.startswith('stats'):
             args = command[len('stats'):].strip()
         else:
@@ -86,6 +87,7 @@ class Matches(Command):
         self.sql = sql
     @asyncio.coroutine
     def run(self,command,msg,settings):
+        logger = logging.getLogger('matches')
         if command.startswith('matches'):
             args = command[len('matches'):].strip()
         else:
