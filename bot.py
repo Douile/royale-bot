@@ -325,7 +325,7 @@ def commandHandler(command, msg):
         if output.empty:
             for i in range(0,len(cmodules)):
                 output = yield from cmodules[i]._run_alias(output,command,msg,serversettings)
-    output.debug()
+    output.debug(logger)
     if len(output.queue) > 0:
         client.queued_actions += output.queue
         logger.debug('Added queued action')

@@ -126,8 +126,8 @@ class Command:
         yield 'delete_command', self.delete_command
         yield 'deletes', self.deletes
         yield 'queue', self.queue
-    def debug(self):
-        LOGGER.debug('message object: %s', str(dict(self)))
+    def debug(self, logger):
+        logger.debug('message object: %s', str(dict(self)))
 
 
 def checkPermissions(channel,type,settings):
