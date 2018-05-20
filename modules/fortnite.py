@@ -64,7 +64,7 @@ class Stats(Command):
             args = command[len('stats'):].strip()
         else:
             args = command.strip()
-        platfrom, name = yield from parse_fortnite_user(args, self.sql)
+        platfrom, name = yield from parse_fortnite_user(args, msg.author.id, msg.server.id, self.sql)
         try:
             logger.debug('Stats command name: %s platform %s', name, platform)
             bgs = settings.get('backgrounds',{})
@@ -90,7 +90,7 @@ class Matches(Command):
             args = command[len('matches'):].strip()
         else:
             args = command.strip()
-        platfrom, name = yield from parse_fortnite_user(args, self.sql)
+        platfrom, name = yield from parse_fortnite_user(args, msg.author.id, msg.server.id, self.sql)
         try:
             logger.debug('Stats command name: %s platform %s', name, platform)
             bgs = settings.get('backgrounds',{})
@@ -303,7 +303,7 @@ class StatsEmbed(discord.Embed):
                 self.add_field(name=key,value=value,inline=False)
 
 @asyncio.coroutine
-def parse_fortnite_user(args, sql):
+def parse_fortnite_user(args, author, server, sql):
     try:
         s = args.index(' ')
         platform = args[:s].lower()
@@ -319,12 +319,12 @@ def parse_fortnite_user(args, sql):
         platform = 'pc'
         name = args
     if len(name) < 1:
-        data = sql.get_link(msg.author.id)
+        data = sql.get_link(author)
         if data != None:
             name = data['user_nickname']
     else:
         try:
-            user = parse_user_at(name,msg.server.id)
+            user = parse_user_at(name,server)
             data = sql.get_link(user.id)
             if data != None:
                 name = data['user_nickname']
