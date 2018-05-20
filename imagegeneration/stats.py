@@ -295,6 +295,7 @@ class ImageGenerator:
         for overlay in self.overlays:
             overlay_image = yield from overlay.generate(data)
             background.paste(overlay_image,(0,0),overlay_image)
+        return background
 class StatsImage(ImageGenerator):
     def __init__(self):
         super().__init__()
