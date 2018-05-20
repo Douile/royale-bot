@@ -15,6 +15,7 @@ class FortniteModule(Module):
         self.commands = {
             'shop': Shop(fnbr_key),
             'stats': Stats(tn_key,sql),
+            'matches': Matches(tn_key,sql),
             'setbackground': SetBackgrounds(),
             'news': News(),
             'servers': Servers(),
@@ -63,32 +64,7 @@ class Stats(Command):
             args = command[len('stats'):].strip()
         else:
             args = command.strip()
-        try:
-            s = args.index(' ')
-            platform = args[:s].lower()
-            name = args[s+1:]
-            if platform == 'ps4':
-                platform = 'psn'
-            elif platform == 'xb1':
-                platform = 'xbox'
-            elif not platform in ['pc','xbox','psn']:
-                platform = 'pc'
-                name = args
-        except ValueError:
-            platform = 'pc'
-            name = args
-        if len(name) < 1:
-            data = self.sql.get_link(msg.author.id)
-            if data != None:
-                name = data['user_nickname']
-        else:
-            try:
-                user = parse_user_at(name,msg.server.id)
-                data = self.sql.get_link(user.id)
-                if data != None:
-                    name = data['user_nickname']
-            except RuntimeError:
-                pass
+        platfrom, name = yield from parse_fortnite_user(args, self.sql)
         try:
             logger.debug('Stats command name: %s platform %s', name, platform)
             bgs = settings.get('backgrounds',{})
@@ -103,6 +79,33 @@ class Stats(Command):
         except Exception as e:
             self.content = "Error getting stats"
             logger.error(traceback.format_exc())
+class Matches(Command):
+    def __init__(self,tn_key,sql):
+        super().__init__(name='matches',permission='stats')
+        self.tn_key = tn_key
+        self.sql = sql
+    @asyncio.coroutine
+    def run(self,command,msg,settings):
+        if command.startswith('matches'):
+            args = command[len('matches'):].strip()
+        else:
+            args = command.strip()
+        platfrom, name = yield from parse_fortnite_user(args, self.sql)
+        try:
+            logger.debug('Stats command name: %s platform %s', name, platform)
+            bgs = settings.get('backgrounds',{})
+            bgs_s = bgs.get('stat',[])
+            statsimage = yield from stats.generate_performance(self.tn_key,name,platform,bgs_s)
+            if statsimage == None:
+                self.content = '<@!{author}> User not found'
+            else:
+                self.typing = True
+                statsimage.save('generatedmatches.png')
+                self.file = 'generatedmatches.png'
+        except Exception as e:
+            self.content = "Error getting stats"
+            logger.error(traceback.format_exc())
+
 class Link(Command):
     def __init__(self,sql):
         super().__init__(name='link',description='Link you fortnite account for easy stats retrieval. `{prefix}link [username]`',permission='stats')
@@ -298,3 +301,33 @@ class StatsEmbed(discord.Embed):
                 key = stat.get('key')
                 value = stat.get('value')
                 self.add_field(name=key,value=value,inline=False)
+
+@asyncio.coroutine
+def parse_fortnite_user(args, sql):
+    try:
+        s = args.index(' ')
+        platform = args[:s].lower()
+        name = args[s+1:]
+        if platform == 'ps4':
+            platform = 'psn'
+        elif platform == 'xb1':
+            platform = 'xbox'
+        elif not platform in ['pc','xbox','psn']:
+            platform = 'pc'
+            name = args
+    except ValueError:
+        platform = 'pc'
+        name = args
+    if len(name) < 1:
+        data = sql.get_link(msg.author.id)
+        if data != None:
+            name = data['user_nickname']
+    else:
+        try:
+            user = parse_user_at(name,msg.server.id)
+            data = sql.get_link(user.id)
+            if data != None:
+                name = data['user_nickname']
+        except RuntimeError:
+            pass
+    return platform, name
