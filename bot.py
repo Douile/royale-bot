@@ -389,7 +389,18 @@ defaultmodule = default.DefaultModule(cmodules, VERSION)
 def close():
     asyncio.ensure_future(client.close())
 client.loop.add_signal_handler(signal.SIGTERM, close)
-if SHARD_NO == 0:
+if SHARD_COUNT > 4:
+    if SHARD_NO == 0:
+        client.loop.create_task(autoshop(KEY_FNBR))
+    elif SHARD_NO == 1:
+        client.loop.create_task(autostatus())
+    elif SHARD_NO == 2:
+        client.loop.create_task(autonews())
+    elif SHARD_NO == 3:
+        client.loop.create_task(handle_queue())
+    elif SHARD_NO == 4:
+        client.loop.create_task(ticker())
+else:
     client.loop.create_task(autoshop(KEY_FNBR))
     client.loop.create_task(autostatus())
     client.loop.create_task(autonews())
