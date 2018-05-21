@@ -242,7 +242,7 @@ def handle_queue():
 
 @asyncio.coroutine
 def ticker():
-    ticker_text = ['Est. 2018 @mention for help','discord.me/fortniteroyale','Powering {user_count} users over {server_count} servers','{lines}... beep boop processing']
+    ticker_text = ['Est. 2018 @mention for help','discord.me/fortniteroyale']
     yield from client.wait_until_ready()
     while not client.is_closed:
         for ticker in ticker_text:
