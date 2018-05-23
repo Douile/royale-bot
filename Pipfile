@@ -12,6 +12,7 @@ requests = "==2.18.4"
 "html2text" = "==2018.1.9"
 Pillow = "==5.1.0"
 google-api-python-client = "==1.6.7"
+instagram_private_api = {git = "https://git@github.com/ping/instagram_private_api.git", ref = "1.5.5"}
 
 [dev-packages]
 
