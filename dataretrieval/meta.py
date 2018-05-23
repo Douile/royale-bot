@@ -37,7 +37,7 @@ def getStatus():
     return output
 
 def getNews(language='en'):
-    response = requests.get(NEWS)
+    response = requests.get(NEWS,headers={'Accept-Language':'en-US'})
     output = {'success':False}
     if response.status_code == 200:
         data = response.json()
