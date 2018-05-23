@@ -12,7 +12,7 @@ INSTAGRAM_PASS = getEnv('INSTAGRAM_PASS')
 KEY_FNBR = getEnv("KEY_FNBR")
 if INSTAGRAM_PASS == None or INSTAGRAM_USER == None or KEY_FNBR == None:
     raise RuntimeError('Please supply enviroment variables')
-BACKGROUNDS = []
+BACKGROUNDS = ['https://cdn.discordapp.com/attachments/433610141938614272/445321166455046145/T_LS_Leviathan.png', 'https://cdn.discordapp.com/attachments/433610141938614272/445321165884358656/T_LS_Graffii.png', 'https://cdn.discordapp.com/attachments/387267356184936470/445303160572084225/api.png', 'https://cdn.discordapp.com/attachments/433405696323616768/443042066109562880/T_LS_Season4_Cumulative_01.png', 'https://cdn.discordapp.com/attachments/433405696323616768/443042041577078804/T_LS_Season4_Cumulative_02.png']
 
 
 

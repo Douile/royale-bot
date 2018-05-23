@@ -14,7 +14,7 @@ def instagram():
     os.system('python instagram.py')
 
 if __name__ == '__main__':
-    threading.Thead(target=instagram).start()
+    threading.Thread(target=instagram).start()
     for i in range(THREADS):
         thread = BotThread(i,THREADS)
         threading.Thread(target=thread.run).start()
