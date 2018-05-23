@@ -16,7 +16,8 @@ def now():
 
 def morning():
     tnow = now()
-    morning = tnow - (now.hour*60*60) - (now.minute*60) - (now.second)
+    now_d = datetime.utcnow()
+    morning = tnow - (now_d.hour*60*60) - (now_d.minute*60) - (now_d.second)
     return morning
 
 def tommorow():
