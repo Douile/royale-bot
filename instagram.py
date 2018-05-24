@@ -24,7 +24,7 @@ def readPhoto(name):
 def post_photo(photo, caption):
     api = Client(INSTAGRAM_USER, INSTAGRAM_PASS)
     photo_data = Image.open(photo)
-    photo_data.save('temp_insta.jpg')
+    photo_data.convert('RGB').save('temp_insta.jpg')
     bytes_photo = readPhoto('temp_insta.jpg')
     size_photo = photo_data.size
     r = api.post_photo(bytes_photo, size_photo, caption=caption)
