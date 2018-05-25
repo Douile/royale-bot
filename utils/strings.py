@@ -23,15 +23,15 @@ def strDec(dec):
         raise ValueError('You must pass a string, int or float.')
     try:
         i = string.index('.')
-        s = len(string)-i
+        s = len(string)-i+1
         for b in range(1,s):
-            a = len(string)-b
+            a = s-b
             if string[a] == '0':
                 string = string[:a]
-                if a >= s-1:
-                    string = string[:i]
             else:
                 break
     except ValueError:
         pass
+    if string.endswith('.'):
+        string = string[:-1]
     return string
