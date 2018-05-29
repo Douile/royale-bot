@@ -169,17 +169,17 @@ def autostatus():
     yield from client.wait_until_ready()
     logger.info('Autostatus started')
     while not client.is_closed:
-        #cache_raw = client.database.get_cache("status", once=True)
-        #if 'status' in cache_raw:
+        # cache_raw = client.database.get_cache("status", once=True)
+        # if 'status' in cache_raw:
         #    cache = json.loads(cache_raw['status'])
-        #else:
+        # else:
         #    cache = {}
         data = yield from meta.getStatus()
         logger.debug('Fetched status data (online: %s, services: %s', data['online'], data['services'])
-        #changed = changes(cache,data)
-        #client.database.set_cache("status", json.dumps(data), once=True)
-        #servicechange = []
-        #for s in changed['services']:
+        # changed = changes(cache,data)
+        # client.database.set_cache("status", json.dumps(data), once=True)
+        # servicechange = []
+        # for s in changed['services']:
         #    if changed['services'][s] is True:
         #        servicechange.append(s)
         embed = fortnite.StatusEmbed(data['online'],data['message'])
