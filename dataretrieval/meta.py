@@ -1,6 +1,8 @@
 import requests
 import bs4
 import html2text
+import asyncio
+import aiohttp
 from utils import strings
 
 NEWS = 'https://fortnitecontent-website-prod07.ol.epicgames.com/content/api/pages/fortnite-game'
@@ -17,9 +19,14 @@ def markdown(html,baseurl=None):
     mark = converter.handle(html)
     return strings.stripAdditionalReturns(mark)
 
+@asyncio.coroutine
 def getStatus():
-    response = requests.get(STATUS)
-    data = response.json()[0]
+    session = aiohttp.ClientSession()
+    response = yield from session.get(STATUS)
+    data = yield from response.json()
+    session.close()
+    if len(data) > 0:
+        data = data[0]
     output = {'online':False,'message':'','services':{}}
     if data['status'] == 'UP':
         output['online'] = True

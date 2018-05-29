@@ -129,7 +129,7 @@ builtins.client = client
 def autoshop(fnbr_key): # add fnbr not accessable fallback
     logger = logging.getLogger('autoshop')
     yield from client.wait_until_ready()
-    logger.debug('started')
+    logger.debug('Autoshop started')
     while not client.is_closed:
         shopdata = None
         for serverid in client.database.servers():
@@ -167,21 +167,21 @@ def autoshop(fnbr_key): # add fnbr not accessable fallback
 def autostatus():
     logger = logging.getLogger('autostatus')
     yield from client.wait_until_ready()
-    logger.debug('started')
+    logger.debug('Autostatus started')
     while not client.is_closed:
         #cache_raw = client.database.get_cache("status", once=True)
         #if 'status' in cache_raw:
         #    cache = json.loads(cache_raw['status'])
         #else:
         #    cache = {}
-        data = meta.getStatus()
+        data = yield from meta.getStatus()
         #changed = changes(cache,data)
         #client.database.set_cache("status", json.dumps(data), once=True)
         #servicechange = []
         #for s in changed['services']:
         #    if changed['services'][s] is True:
         #        servicechange.append(s)
-        #embed = None
+        embed = None
         embed = fortnite.StatusEmbed(data['online'],data['message'])
         for s in data['services']:
             embed.add_service(name=s,value=data['services'][s])
@@ -210,7 +210,7 @@ def autostatus():
 def autonews():
     logger = logging.getLogger('autonews')
     yield from client.wait_until_ready()
-    logger.debug('started')
+    logger.debug('Autonews started')
     while not client.is_closed:
         cache = client.database.get_cache("news",once=False)
         if cache == None:
@@ -233,7 +233,7 @@ def autonews():
 def handle_queue():
     logger = logging.getLogger('handle_queue')
     yield from client.wait_until_ready()
-    logger.debug('started')
+    logger.debug('Queue handler started')
     while not client.is_closed:
         for queue_item in client.queued_actions:
             args = [client] + queue_item.args
@@ -250,7 +250,7 @@ def ticker():
     logger = logging.getLogger('ticker')
     ticker_text = ['Est. 2018 @mention for help','discord.me/fortniteroyale']
     yield from client.wait_until_ready()
-    logger.debug('started')
+    logger.debug('Ticker started')
     while not client.is_closed:
         for ticker in ticker_text:
             user_count = yield from count_users(client)
