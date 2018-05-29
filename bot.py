@@ -183,6 +183,7 @@ def autostatus():
         embed = fortnite.StatusEmbed(data['online'],data['message'])
         for s in data['services']:
             embed.add_service(name=s,value=data['services'][s])
+        logger.debug('New status embed %s',str(dict(embed)))
         if embed != None:
             for serverid in client.database.servers():
                 server = client.database.server_info(serverid,channels=True)
