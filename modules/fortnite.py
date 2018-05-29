@@ -179,7 +179,7 @@ class Servers(Command):
     @asyncio.coroutine
     def run(self,command,msg,settings):
         status = yield from meta.getStatus()
-        self.content = '<@!{0}>'.format(msg.author.id)
+        self.content = '<@!{0}> current server status'.format(msg.author.id)
         self.embed = StatusEmbed(status['online'],status['message'])
         for s in status['services']:
             self.embed.add_service(name=s,value=status['services'][s])
