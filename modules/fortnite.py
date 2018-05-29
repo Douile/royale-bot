@@ -230,10 +230,10 @@ class StatusEmbed(discord.Embed):
         level = -1
         if value == 'Operational':
             level = 0
-        elif value == 'Degraded Performance' or value == 'Under Maintenance':
-            level = 1
         elif value == 'Major Outage':
             level = 2
+        else:
+            level = 1
         if level == 2:
             value = ':x: __**{0}**__'.format(value)
             self.color = 0xff0000
