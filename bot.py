@@ -175,6 +175,7 @@ def autostatus():
         #else:
         #    cache = {}
         data = yield from meta.getStatus()
+        logger.debug('Fetched status data online: %s', data['online'])
         #changed = changes(cache,data)
         #client.database.set_cache("status", json.dumps(data), once=True)
         #servicechange = []
