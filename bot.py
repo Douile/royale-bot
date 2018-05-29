@@ -167,23 +167,22 @@ def autostatus():
     logger = logging.getLogger('autostatus')
     yield from client.wait_until_ready()
     while not client.is_closed:
-        cache_raw = client.database.get_cache("status", once=True)
-        if 'status' in cache_raw:
-            cache = json.loads(cache_raw['status'])
-        else:
-            cache = {}
+        #cache_raw = client.database.get_cache("status", once=True)
+        #if 'status' in cache_raw:
+        #    cache = json.loads(cache_raw['status'])
+        #else:
+        #    cache = {}
         data = meta.getStatus()
-        changed = changes(cache,data)
-        client.database.set_cache("status", json.dumps(data), once=True)
-        servicechange = []
-        for s in changed['services']:
-            if changed['services'][s] is True:
-                servicechange.append(s)
-        embed = None
-        if len(servicechange) > 0 or changed['online'] == True or changed['message'] == True:
-            embed = fortnite.StatusEmbed(data['online'],data['message'])
-            for s in data['services']:
-                embed.add_service(name=s,value=data['services'][s])
+        #changed = changes(cache,data)
+        #client.database.set_cache("status", json.dumps(data), once=True)
+        #servicechange = []
+        #for s in changed['services']:
+        #    if changed['services'][s] is True:
+        #        servicechange.append(s)
+        #embed = None
+        embed = fortnite.StatusEmbed(data['online'],data['message'])
+        for s in data['services']:
+            embed.add_service(name=s,value=data['services'][s])
         if embed != None:
             for serverid in client.database.servers():
                 server = client.database.server_info(serverid,channels=True)
