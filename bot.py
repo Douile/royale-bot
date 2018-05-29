@@ -195,9 +195,15 @@ def autostatus():
                 if last_status_msg is not None and last_status_channel is not None:
                     old_message = discord.Object(last_status_msg)
                     old_message.channel = discord.Object(last_status_channel)
-                    message = yield from client.edit_message(old_message, embed = embed)
+                    try:
+                        message = yield from client.edit_message(old_message, embed = embed)
+                    except:
+                        logger.error('Error editing message')
                 else:
-                    message = yield from client.send_message(server, embed = embed)
+                    try:
+                        message = yield from client.send_message(server, embed = embed)
+                    except:
+                        logger.error('Error sending message')
                 try:
                     client.database.set_server_info(serverid, last_status_msg=message.id, last_status_channel=message.channel.id)
                 except:
