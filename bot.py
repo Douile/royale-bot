@@ -209,7 +209,7 @@ def autostatus():
 def autonews():
     logger = logging.getLogger('autonews')
     yield from client.wait_until_ready()
-    logger.info(Autonews started')
+    logger.info('Autonews started')
     while not client.is_closed:
         cache = client.database.get_cache("news",once=False)
         if cache == None:
