@@ -183,7 +183,7 @@ def autostatus():
         #    if changed['services'][s] is True:
         #        servicechange.append(s)
         embed = fortnite.StatusEmbed(data['online'],data['message'])
-        for s in data['services']:
+        for s in status['services']:
             embed.add_service(name=s,value=data['services'][s])
         logger.debug('New status embed %s',str(dict(embed)))
         for serverid in client.database.servers():
