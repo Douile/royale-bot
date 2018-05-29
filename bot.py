@@ -129,6 +129,7 @@ builtins.client = client
 def autoshop(fnbr_key): # add fnbr not accessable fallback
     logger = logging.getLogger('autoshop')
     yield from client.wait_until_ready()
+    logger.debug('started')
     while not client.is_closed:
         shopdata = None
         for serverid in client.database.servers():
@@ -166,6 +167,7 @@ def autoshop(fnbr_key): # add fnbr not accessable fallback
 def autostatus():
     logger = logging.getLogger('autostatus')
     yield from client.wait_until_ready()
+    logger.debug('started')
     while not client.is_closed:
         #cache_raw = client.database.get_cache("status", once=True)
         #if 'status' in cache_raw:
@@ -206,7 +208,9 @@ def autostatus():
 
 @asyncio.coroutine
 def autonews():
+    logger = logging.getLogger('autonews')
     yield from client.wait_until_ready()
+    logger.debug('started')
     while not client.is_closed:
         cache = client.database.get_cache("news",once=False)
         if cache == None:
@@ -229,6 +233,7 @@ def autonews():
 def handle_queue():
     logger = logging.getLogger('handle_queue')
     yield from client.wait_until_ready()
+    logger.debug('started')
     while not client.is_closed:
         for queue_item in client.queued_actions:
             args = [client] + queue_item.args
@@ -242,8 +247,10 @@ def handle_queue():
 
 @asyncio.coroutine
 def ticker():
+    logger = logging.getLogger('ticker')
     ticker_text = ['Est. 2018 @mention for help','discord.me/fortniteroyale']
     yield from client.wait_until_ready()
+    logger.debug('started')
     while not client.is_closed:
         for ticker in ticker_text:
             user_count = yield from count_users(client)
