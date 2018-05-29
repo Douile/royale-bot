@@ -129,7 +129,7 @@ builtins.client = client
 def autoshop(fnbr_key): # add fnbr not accessable fallback
     logger = logging.getLogger('autoshop')
     yield from client.wait_until_ready()
-    logger.debug('Autoshop started')
+    logger.info('Autoshop started')
     while not client.is_closed:
         shopdata = None
         for serverid in client.database.servers():
@@ -167,7 +167,7 @@ def autoshop(fnbr_key): # add fnbr not accessable fallback
 def autostatus():
     logger = logging.getLogger('autostatus')
     yield from client.wait_until_ready()
-    logger.debug('Autostatus started')
+    logger.info('Autostatus started')
     while not client.is_closed:
         #cache_raw = client.database.get_cache("status", once=True)
         #if 'status' in cache_raw:
@@ -182,36 +182,34 @@ def autostatus():
         #for s in changed['services']:
         #    if changed['services'][s] is True:
         #        servicechange.append(s)
-        embed = None
         embed = fortnite.StatusEmbed(data['online'],data['message'])
         for s in data['services']:
             embed.add_service(name=s,value=data['services'][s])
         logger.debug('New status embed %s',str(dict(embed)))
-        if embed != None:
-            for serverid in client.database.servers():
-                server = client.database.server_info(serverid,channels=True)
-                if 'autostatus' in server['channels']:
-                    last_status_msg = server.get('last_status_msg', None)
-                    last_status_channel = server.get('last_status_channel', None)
-                    server = discord.Object(server['channels']['autostatus'])
-                    if last_status_msg is not None and last_status_channel is not None:
-                        old_message = discord.Object(last_status_msg)
-                        old_message.channel = discord.Object(last_status_channel)
-                        message = yield from client.edit_message(old_message, embed = embed)
-                    else:
-                        message = yield from client.send_message(server, embed = embed)
-                    try:
-                        client.database.set_server_info(serverid, last_status_msg=message.id, last_status_channel=message.channel.id)
-                    except:
-                        error = traceback.format_exc()
-                        logger.error('Error updating server info %s', error)
+        for serverid in client.database.servers():
+            server = client.database.server_info(serverid,channels=True)
+            if 'autostatus' in server['channels']:
+                last_status_msg = server.get('last_status_msg', None)
+                last_status_channel = server.get('last_status_channel', None)
+                server = discord.Object(server['channels']['autostatus'])
+                if last_status_msg is not None and last_status_channel is not None:
+                    old_message = discord.Object(last_status_msg)
+                    old_message.channel = discord.Object(last_status_channel)
+                    message = yield from client.edit_message(old_message, embed = embed)
+                else:
+                    message = yield from client.send_message(server, embed = embed)
+                try:
+                    client.database.set_server_info(serverid, last_status_msg=message.id, last_status_channel=message.channel.id)
+                except:
+                    error = traceback.format_exc()
+                    logger.error('Error updating server info %s', error)
         yield from asyncio.sleep(60*2)
 
 @asyncio.coroutine
 def autonews():
     logger = logging.getLogger('autonews')
     yield from client.wait_until_ready()
-    logger.debug('Autonews started')
+    logger.info(Autonews started')
     while not client.is_closed:
         cache = client.database.get_cache("news",once=False)
         if cache == None:
@@ -234,7 +232,7 @@ def autonews():
 def handle_queue():
     logger = logging.getLogger('handle_queue')
     yield from client.wait_until_ready()
-    logger.debug('Queue handler started')
+    logger.info('Queue handler started')
     while not client.is_closed:
         for queue_item in client.queued_actions:
             args = [client] + queue_item.args
@@ -251,7 +249,7 @@ def ticker():
     logger = logging.getLogger('ticker')
     ticker_text = ['Est. 2018 @mention for help','discord.me/fortniteroyale']
     yield from client.wait_until_ready()
-    logger.debug('Ticker started')
+    logger.info('Ticker started')
     while not client.is_closed:
         for ticker in ticker_text:
             user_count = yield from count_users(client)

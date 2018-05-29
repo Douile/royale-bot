@@ -178,7 +178,7 @@ class Servers(Command):
         super().__init__(name='servers',description='Print the fortnite servers status. `{prefix}servers`',permission='servers')
     @asyncio.coroutine
     def run(self,command,msg,settings):
-        status = meta.getStatus()
+        status = yield from meta.getStatus()
         self.content = '<@!{0}>'.format(msg.author.id)
         self.embed = StatusEmbed(status['online'],status['message'])
         for s in status['services']:
