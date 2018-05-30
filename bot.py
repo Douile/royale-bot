@@ -201,7 +201,7 @@ def autostatus():
                     channel = discord.Object(last_status_channel)
                     try:
                         old_message = yield from client.get_message(channel, last_status_msg)
-                    except NotFound, Forbidden, HTTPException:
+                    except (NotFound, Forbidden, HTTPException):
                         old_message = None
                     except:
                         old_message = None
