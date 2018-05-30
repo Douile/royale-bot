@@ -111,19 +111,19 @@ class APIResponse():
                 self.error = self.json['error']
             except KeyError:
                 self.error = response.reason
-        elif response.url.includes('/images'):
+        elif '/images' in response.url:
                 self.type = IMAGE_TYPE
                 self.data = ImageResponse(self.json)
-        elif response.url.includes('/shop'):
+        elif '/shop' in response.url:
                 self.type = SHOP_TYPE
                 self.data = ShopResponse(self.json)
-        elif response.url.includes('/stats'):
+        elif '/stats' in response.url:
             self.type = STATS_TYPE
             self.data = StatResponse(self.json)
-        elif response.url.includes('/seen'):
+        elif '/seen' in response.url:
             self.type = SEEN_TYPE
             self.data = SeenResponse(self.json)
-        elif response.url.includes('/list'):
+        elif '/list' in response.url:
             self.type = LIST_TYPE
             self.data = ItemListResponse(response.text)
         else:
