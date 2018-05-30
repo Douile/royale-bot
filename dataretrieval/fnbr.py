@@ -169,7 +169,7 @@ class SeenResponse():
         self.lastSeen = data.get('lastSeen')
         self.firstSeen = data.get('firstSeen')
         self.occurences = data.get('occurences')
-        if occurences < 2:
+        if self.occurences < 2:
             self.new = True
         else:
             self.new = False
