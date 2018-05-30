@@ -91,7 +91,7 @@ class ShopAndSeen:
         if data.type == SHOP_TYPE:
             for item in data.data.daily+data.data.featured:
                 seen = Seen(item.id)
-                item.seen = seen.send()
+                item.seen = seen.send().data
         return data
 # responses
 class APIResponse():
@@ -168,9 +168,12 @@ class SeenResponse():
         data = json.get('data',{})
         self.lastSeen = data.get('lastSeen')
         self.firstSeen = data.get('firstSeen')
-        self.occurences = data.get('occurences')
-        if self.occurences < 2:
-            self.new = True
+        self.occurrences = data.get('occurrences')
+        if self.occurrences is not None:
+            if self.occurrences < 2:
+                self.new = True
+            else:
+                self.new = False
         else:
             self.new = False
 
