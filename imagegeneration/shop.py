@@ -176,9 +176,9 @@ class CountImage:
     def __init__(self, count):
         red = (255,0,0,255)
         white = (255,255,255,255)
-        size = (36,36)
+        size = (50,50)
         count = str(count)
-        font = PIL.ImageFont.truetype(FONT, 24)
+        font = PIL.ImageFont.truetype(FONT, 36)
         textsize = font.getsize(count)
         if textsize[0] > size[0]-4:
             size = (textsize[0]+4,size[1])
