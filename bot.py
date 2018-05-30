@@ -202,12 +202,14 @@ def autostatus():
                     try:
                         message = yield from client.edit_message(old_message, embed = embed)
                     except:
-                        logger.error('Error editing message')
+                        error = traceback.format_exc()
+                        logger.error('Error editing message %s', error)
                 else:
                     try:
                         message = yield from client.send_message(server, embed = embed)
                     except:
-                        logger.error('Error sending message')
+                        error = traceback.format_exc()
+                        logger.error('Error sending message %s', error)
                 try:
                     client.database.set_server_info(serverid, last_status_msg=message.id, last_status_channel=message.channel.id)
                 except:
