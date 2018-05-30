@@ -91,7 +91,7 @@ logging_config = {
     'disable_existing_loggers': True,
      'formatters': {
         'verbose': {
-            'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
+            'format': '%(name)-12s %(levelname)-10s %(message)s'
         }
     },
     'handlers': {
@@ -175,16 +175,20 @@ def autostatus():
         # else:
         #    cache = {}
         data = yield from meta.getStatus()
-        logger.debug('Fetched status data (online: %s, services: %s', data['online'], data['services'])
+        logger.debug('Fetched status data (online: %s, services: %s)', data['online'], data['services'])
         # changed = changes(cache,data)
         # client.database.set_cache("status", json.dumps(data), once=True)
         # servicechange = []
         # for s in changed['services']:
         #    if changed['services'][s] is True:
         #        servicechange.append(s)
-        embed = fortnite.StatusEmbed(data['online'],data['message'])
-        for s in status['services']:
-            embed.add_service(s,data['services'][s])
+        try:
+            embed = fortnite.StatusEmbed(data['online'],data['message'])
+            for s in status['services']:
+                embed.add_service(s,data['services'][s])
+        except:
+            error = traceback.format_exc()
+            logger.error('Error compiling embed %s', error)
         logger.debug('Embed built')
         for serverid in client.database.servers():
             server = client.database.server_info(serverid,channels=True)
