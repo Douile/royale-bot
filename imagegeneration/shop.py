@@ -132,12 +132,9 @@ class ItemImage:
         self.background.paste(price,(left,top),price)
         left = round(left +smallheight + 5)
         self.borderedText(draw,(left,top),itemprice,smallfont,(255,255,255),(0,0,0))
-        if count == 1:
-            new = PIL.Image.open(NEW_IMG).convert('RGBA')
-            x = self.background.width - new.width - 10
-            y = 10
-            self.background.paste(new,(x,y),new)
-        elif count > 1:
+        if count > 0:
+            if count == 1:
+                count = 'NEW'
             countimg = CountImage(count).out()
             x = self.background.width - countimg.width - 10
             y = 10
