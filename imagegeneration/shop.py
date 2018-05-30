@@ -12,6 +12,7 @@ from os.path import isfile
 from dataretrieval import fnbr
 
 FONT = "assets/burbank.ttf"
+NEW_IMG = "assets/new.png"
 
 
 class ShopImage:
@@ -80,7 +81,7 @@ class ShopImage:
         yield from self.drawText()
         return self.background
 class ItemImage:
-    def __init__(self,itemname,itemprice,itempriceimage,itemrarity,itemimageurl,size):
+    def __init__(self,itemname,itemprice,itempriceimage,itemrarity,itemimageurl,size,count=0):
         self.size = size
         color = (255,255,255,0)
         if itemrarity == "uncommon":
@@ -131,6 +132,16 @@ class ItemImage:
         self.background.paste(price,(left,top),price)
         left = round(left +smallheight + 5)
         self.borderedText(draw,(left,top),itemprice,smallfont,(255,255,255),(0,0,0))
+        if count == 1:
+            new = PIL.Image.open(NEW_IMG).convert('RGBA')
+            x = self.background.width - new.width - 10
+            y = 10
+            self.background.paste(new,(x,y),new)
+        elif count > 1:
+            countimg = CountImage(count).out()
+            x = self.background.width - countimg.width - 10
+            y = 10
+            self.background.paste(countimg,(x,y),countimg)
     def borderedText(self,draw,pos,text,font,textcolor=(255,255,255),bordercolor=(0,0,0)):
         draw.text(pos,text,font=font,fill=textcolor)
     def round(self,size):
@@ -161,6 +172,24 @@ class ItemImage:
                 a = color[3]
                 color = (r,g,b,a)
                 draw.point((x,y),fill=color)
+    def out(self):
+        return self.background
+
+class CountImage:
+    def __init__(self, count):
+        red = (255,0,0,255)
+        white = (255,255,255,255)
+        size = (36,36)
+        font = PIL.ImageFont.truetype(FONT, 24)
+        textsize = font.getsize(count)
+        if textsize[0] > size[0]-4:
+            size = (textsize[0]+4,size[1])
+        self.background = PIL.Image.new('RGBA', size, (0,0,0,0))
+        draw = PIL.ImageDraw.Draw(self.background)
+        draw.ellipse([(0,0),self.background.size],fill=red)
+        left = round((self.background.width-textsize[0])/2)
+        top = round((self.background.height-textsize[1])/2)
+        draw.text((left,top),count,fill=white,font=font)
     def out(self):
         return self.background
 
@@ -239,7 +268,7 @@ def generate(shopdata,backgrounds=[],serverid=None):
     return newname
 def getShopData(apikey):
     print("Getting shop data")
-    shopdata = fnbr.Shop(apikey).send()
+    shopdata = fnbr.ShopAndSeen(apikey).send()
     return shopdata
 def getTime(isotime):
     return datetime.strptime(isotime, "%Y-%m-%dT%H:%M:%S.%fZ")

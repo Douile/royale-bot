@@ -14,6 +14,7 @@ STATS_TYPE = "stats"
 IMAGE_TYPE = "image"
 SHOP_TYPE = "shop"
 LIST_TYPE = "list"
+SEEN_TYPE = "seen"
 # requests
 class APIRequest():
     def __init__(self,key,endpoint,arguments={}):
@@ -75,6 +76,23 @@ class ItemList(APIRequest):
     def send(self):
         self.response = requests.get(self.url())
         return APIResponse(self.response)
+class Seen(APIRequest):
+    def __init__(self, id=''):
+        super().__init__(None,"/seen/",{})
+        self.item_id = id
+    def url(self):
+        return BASEURL + self.endpoint + self.item_id + self.parseArguments()
+class ShopAndSeen:
+    def __init__(self, apikey):
+        self.key = apikey
+    def send(self):
+        shop = Shop(self.key)
+        data = shop.send()
+        if data.type == SHOP_TYPE:
+            for item in data.data.daily, data.data.featured:
+                seen = Seen(item.id)
+                item.seen = seen.send()
+        return data
 # responses
 class APIResponse():
     def __init__(self,response):
@@ -93,19 +111,19 @@ class APIResponse():
                 self.error = self.json['error']
             except KeyError:
                 self.error = response.reason
-        elif 'data' in self.json:
-            if type(self.json['data']) is list:
+        elif response.url.includes('/images'):
                 self.type = IMAGE_TYPE
                 self.data = ImageResponse(self.json)
-            elif type(self.json['data']) is dict:
+        elif response.url.includes('/shop'):
                 self.type = SHOP_TYPE
                 self.data = ShopResponse(self.json)
-            else:
-                self.type = NONE_TYPE
-        elif 'totalCosmetics' in self.json and 'matrix' in self.json:
+        elif response.url.includes('/stats'):
             self.type = STATS_TYPE
             self.data = StatResponse(self.json)
-        elif response.url == "https://fnbr.co/list":
+        elif response.url.includes('/seen'):
+            self.type = SEEN_TYPE
+            self.data = SeenResponse(self.json)
+        elif response.url.includes('/list'):
             self.type = LIST_TYPE
             self.data = ItemListResponse(response.text)
         else:
@@ -145,6 +163,16 @@ class ItemListResponse():
                 rarity = re.findall('<td class="\w capital">(.*?)<\/td>',str)
                 js = {'name':name,'type':type,'rarity':rarity,'images':{'icon':icon}}
                 self.items.append(Item(js))
+class SeenResponse():
+    def __init__(self,json={}):
+        data = json.get('data',{})
+        self.lastSeen = data.get('lastSeen')
+        self.firstSeen = data.get('firstSeen')
+        self.occurences = data.get('occurences')
+        if occurences < 2:
+            self.new = True
+        else:
+            self.new = False
 
 class Item():
     def __init__(self,json={}):
