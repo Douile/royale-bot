@@ -196,7 +196,7 @@ def autostatus():
                 last_status_msg = server.get('last_status_msg', None)
                 last_status_channel = server.get('last_status_channel', None)
                 server = discord.Object(server['channels']['autostatus'])
-                old_message = None:
+                old_message = None
                 if last_status_msg is not None and last_status_channel is not None:
                     channel = discord.Object(last_status_channel)
                     try:
