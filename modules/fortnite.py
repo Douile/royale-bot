@@ -35,6 +35,7 @@ class Shop(Command):
         self.fnbr_key = fnbr_key
     @asyncio.coroutine
     def run(self,command,msg,settings):
+        logger = logging.getLogger('shop-command')
         try:
             shopdata = shop.getShopData(self.fnbr_key)
             if shopdata.status == 200:
