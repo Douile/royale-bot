@@ -184,7 +184,7 @@ def autostatus():
         #        servicechange.append(s)
         try:
             embed = fortnite.StatusEmbed(data['online'],data['message'])
-            for s in status['services']:
+            for s in data['services']:
                 embed.add_service(s,data['services'][s])
         except:
             error = traceback.format_exc()
