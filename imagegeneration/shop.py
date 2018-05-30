@@ -180,6 +180,7 @@ class CountImage:
         red = (255,0,0,255)
         white = (255,255,255,255)
         size = (36,36)
+        count = str(count)
         font = PIL.ImageFont.truetype(FONT, 24)
         textsize = font.getsize(count)
         if textsize[0] > size[0]-4:
