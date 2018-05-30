@@ -24,7 +24,7 @@ def getStatus():
     session = aiohttp.ClientSession()
     response = yield from session.get(STATUS)
     data = yield from response.json()
-    session.close()
+    yield from session.close()
     if len(data) > 0:
         data = data[0]
     output = {'online':False,'message':'','services':{}}
