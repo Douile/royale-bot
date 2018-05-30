@@ -196,9 +196,18 @@ def autostatus():
                 last_status_msg = server.get('last_status_msg', None)
                 last_status_channel = server.get('last_status_channel', None)
                 server = discord.Object(server['channels']['autostatus'])
+                old_message = None:
                 if last_status_msg is not None and last_status_channel is not None:
-                    old_message = discord.Object(last_status_msg)
-                    old_message.channel = discord.Object(last_status_channel)
+                    channel = discord.Object(last_status_channel)
+                    try:
+                        old_message = yield from client.get_message(channel, last_status_msg)
+                    except NotFound, Forbidden, HTTPException:
+                        old_message = None
+                    except:
+                        old_message = None
+                        logger.error('Error getting message')
+
+                if old_message is not None:
                     try:
                         message = yield from client.edit_message(old_message, embed = embed)
                     except:
