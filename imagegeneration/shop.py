@@ -221,12 +221,13 @@ def generate(shopdata,backgrounds=[],serverid=None):
                 priceIcon = item.priceIconLink
             else:
                 priceIcon = backupprice
+            count = item.seen.occurrences
             if item.icon != '' and item.icon != False and item.icon != 'False':
-                im = ItemImage(item.name,item.price,priceIcon,item.rarity,item.icon,512) # i need to create a function for this
+                im = ItemImage(item.name,item.price,priceIcon,item.rarity,item.icon,512,count) # i need to create a function for this
             elif item.png != '' and item.png != False and item.png != 'False':
-                im = ItemImage(item.name,item.price,priceIcon,item.rarity,item.png,512)
+                im = ItemImage(item.name,item.price,priceIcon,item.rarity,item.png,512,count)
             else:
-                im = ItemImage(item.name,item.price,priceIcon,item.rarity,item.priceIconLink,512)
+                im = ItemImage(item.name,item.price,priceIcon,item.rarity,item.priceIconLink,512,count)
             featured.append(im.out())
         for item in shopdata.data.daily:
             if item.priceIconLink != 'false' and item.priceIconLink != False and item.priceIconLink != 'False':
@@ -234,12 +235,13 @@ def generate(shopdata,backgrounds=[],serverid=None):
                 priceIcon = item.priceIconLink
             else:
                 priceIcon = backupprice
+            count = item.seen.occurrences
             if item.icon != '' and item.icon != False and item.icon != 'False':
-                im = ItemImage(item.name,item.price,priceIcon,item.rarity,item.icon,512)
+                im = ItemImage(item.name,item.price,priceIcon,item.rarity,item.icon,512,count)
             elif item.png != '' and item.png != False and item.png != 'False':
-                im = ItemImage(item.name,item.price,priceIcon,item.rarity,item.png,512)
+                im = ItemImage(item.name,item.price,priceIcon,item.rarity,item.png,512,count)
             else:
-                im = ItemImage(item.name,item.price,priceIcon,item.rarity,item.priceIconLink,512)
+                im = ItemImage(item.name,item.price,priceIcon,item.rarity,item.priceIconLink,512,count)
             daily.append(im.out())
         if len(shopdata.data.featured) > 4:
             size = 5
