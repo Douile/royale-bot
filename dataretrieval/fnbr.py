@@ -89,7 +89,7 @@ class ShopAndSeen:
         shop = Shop(self.key)
         data = shop.send()
         if data.type == SHOP_TYPE:
-            for item in data.data.daily, data.data.featured:
+            for item in data.data.daily+data.data.featured:
                 seen = Seen(item.id)
                 item.seen = seen.send()
         return data
