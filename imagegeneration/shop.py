@@ -87,19 +87,19 @@ class ItemImage:
         if itemrarity == "uncommon":
             color = (56, 121, 39, 255)
             gradient = ((96,170,58,255),(23,81,23,255))
-            background = 'assets/fortnite_uncommon.png'
+            background = 'assets/fortnite_uncommon_rounded.png'
         elif itemrarity == "rare":
             color = (61,171,245,255)
             gradient = ((73,172,242,255),(20,57,119,255))
-            background = 'assets/fortnite_rare.png'
+            background = 'assets/fortnite_rare_rounded.png'
         elif itemrarity == "epic":
             color = (199,81,248,255)
             gradient = ((177,91,226,255),(75,36,131,255))
-            background = 'assets/fortnite_epic.png'
+            background = 'assets/fortnite_epic_rounded.png'
         elif itemrarity == "legendary":
             color = (230,126,34,255)
             gradient = ((211,120,65,255),(120,55,29,255))
-            background = 'assets/fortnite_legendary.png'
+            background = 'assets/fortnite_legendary_rounded.png'
         try:
             self.background = PIL.Image.open(background)
             if self.background.width != self.size or self.background.height != self.size:
@@ -123,7 +123,7 @@ class ItemImage:
         item = createImageFromUrl(itemimageurl).resize((self.size,self.size))
         self.background.paste(item,(0,0),item)
         self.darkenRect(draw,(0,top),(self.size,self.size),35)
-        self.round(25)
+        # self.round(25)
         self.borderedText(draw,(left,top),itemname,largefont,(255,255,255),(0,0,0))
         textwidth = 10 + smallheight + smallfont.getsize(itemprice)[0]
         left = round((self.size - textwidth) / 2)
