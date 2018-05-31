@@ -1,6 +1,7 @@
 from .module import Module, Command, parse_user_at
 from dataretrieval import aiofnotes, meta
 from imagegeneration import shop, stats
+from utils import strings
 import traceback
 from datetime import datetime
 import discord
@@ -66,6 +67,11 @@ class Stats(Command):
             args = command[len('stats'):].strip()
         else:
             args = command.strip()
+        type = 'regular'
+        match = strings.startmatches(args, ['s4','season4','cs','currentseason'])
+        if match is not None:
+            args = args[len(match):]
+            type = 'curr_season'
         platform, name = yield from parse_fortnite_user(args, msg.author.id, msg.server.id, self.sql)
         try:
             logger.debug('Stats command name: %s platform %s', name, platform)

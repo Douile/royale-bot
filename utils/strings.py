@@ -35,3 +35,11 @@ def strDec(dec):
     if string.endswith('.'):
         string = string[:-1]
     return string
+def startmatches(string, matches):
+    search_string = string.lower().strip()
+    doesMatch = None
+    for match in matches:
+        if search_string.startswith(match.lower().strip()):
+            doesMatch = match
+            break
+    return doesMatch
