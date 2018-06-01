@@ -374,13 +374,13 @@ def commandHandler(command, msg):
     if output.noPermission != None:
         yield from noPermission(msg,output.noPermission,serversettings)
     if output.file != None:
-        response = yield from client.send_file(msg.channel,output.file,content=output.content,embed=output.embed)
+        response = yield from client.send_file(msg.channel,output.file,content=output.content)
     elif output.embeds != None:
         for embed in output.embeds:
             response = yield from client.send_message(msg.channel,embed=embed)
     elif output.content != None or output.embed != None:
         try:
-            response = yield from client.send_message(msg.channel,content=output.content)
+            response = yield from client.send_message(msg.channel,content=output.content,embed=output.embed)
         except discord.errors.HTTPException:
             logger.error(traceback.format_exc())
             if output.embed != None:
