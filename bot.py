@@ -374,7 +374,7 @@ def commandHandler(command, msg):
     if output.noPermission != None:
         yield from noPermission(msg,output.noPermission,serversettings)
     if output.file != None:
-        response = yield from client.send_file(msg.channel,output.file,content=output.content)
+        response = yield from client.send_file(msg.channel,output.file,content=output.content,embed=output.embed)
     elif output.embeds != None:
         for embed in output.embeds:
             response = yield from client.send_message(msg.channel,embed=embed)

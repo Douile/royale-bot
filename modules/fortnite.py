@@ -46,6 +46,7 @@ class Shop(Command):
                 file = yield from shop.generate(shopdata,bgs_s,msg.server.id)
                 self.typing = True
                 self.file = file
+                self.embed = ShopEmbed(test,file)
                 self.content = "Data from <https://fnbr.co>"
                 self.settings = {'latest_shop': file}
             else:
@@ -216,6 +217,11 @@ class PatchNotes(Command):
         else:
             self.content = 'Sorry <@!{author}> we were unable to get the patch notes'
 
+class ShopEmbed(discord.Embed):
+    def __init__(self,date,filename):
+        super().__init__(title=date)
+        fileurl = 'attachment://{}'.format(filename)
+        self.set_image(url=fileurl)
 class StatusEmbed(discord.Embed):
     def __init__(self,online=False,message=''):
         if online == True:
