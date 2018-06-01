@@ -380,7 +380,7 @@ def commandHandler(command, msg):
             response = yield from client.send_message(msg.channel,embed=embed)
     elif output.content != None or output.embed != None:
         try:
-            response = yield from client.send_message(msg.channel,content=output.content,embed=output.embed)
+            response = yield from client.send_message(msg.channel,content=output.content)
         except discord.errors.HTTPException:
             logger.error(traceback.format_exc())
             if output.embed != None:
