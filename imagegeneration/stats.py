@@ -80,12 +80,13 @@ class Background:
         return image
 
 class Overlay:
-    def __init__(self,color=None):
+    def __init__(self,color=None,cs=False):
         self.size = DEFAULT_SIZE
         if color == None:
             self.color = DEFAULT_COLOR
         else:
             self.color = color
+        self.currentSeason = cs
     @asyncio.coroutine
     def generate(self,data):
         image = PIL.Image.new('RGBA',self.size,(0,0,0,0))
@@ -95,7 +96,7 @@ class Overlay:
         size_x_large = padding_x*12
         size_y_small = padding_y*5
         size_y_large = padding_y*12
-        overview = Overview((size_x_large,size_y_small))
+        overview = Overview((size_x_large,size_y_small), self.currentSeason)
         overview_image = yield from overview.generate(data)
         image.paste(overview_image,(padding_x,padding_y),overview_image)
         performance = Performance((size_x_small,size_y_small))
@@ -112,7 +113,7 @@ class Overview:
         self.color = DEFAULT_COLOR
         self.padding = 15
     @asyncio.coroutine
-    def generate(self,data):
+    def generate(self,data, cs):
         userdata = data.userdata
         lifetimestats = data.lifetime
         lifetime = Map(lifetimestats,True)
@@ -304,6 +305,10 @@ class PerformanceImage(ImageGenerator):
     def __init__(self):
         super().__init__()
         self.addOverlay(Performance(DEFAULT_SIZE))
+class CurrentSeasonStatsImage(ImageGenerator):
+    def __init__(self):
+        super().__init__()
+        self.addOverlay(Overlay(cs=True))
 
 class StatsData:
     def __init__(self,data):
@@ -387,15 +392,20 @@ class StatsData:
                         self.kd = self.kills/(self.matches-self.wins)
     class Stats:
         def __init__(self,data):
-            solo = data.get('p2',None)
-            duo = data.get('p10',None)
-            squad = data.get('p9',None)
-            if solo != None:
-                self.solo = self.Stat(solo)
-            if duo != None:
-                self.duo = self.Stat(duo)
-            if squad != None:
-                self.squad = self.Stat(squad)
+            self.solo = data.get('p2')
+            self.duo = data.get('p10')
+            self.squad = data.get('p9')
+            self.curr_solo = data.get('curr_p2')
+            self.curr_duo = data.get('curr_p10')
+            self.curr_squad = data.get('curr_p9')
+            self.prev_solo = data.get('prior_p2')
+            self.prev_duo = data.get('prior_p10')
+            self.prev_squad = data.get('prior_p9')
+            attributes = [a for a in dir(self) if not a.startswith('__') and not callable(a)]
+            for attr in attributes:
+                attribute = getattr(self, attr)
+                if attribute is not None:
+                    setattr(self, attr, Stat(attribute))
         class Stat:
             def __init__(self,data):
                 self.score = self.getStat(data,'score')
@@ -439,6 +449,25 @@ def generate(KEY_TN,player,platform,backgrounds=[]):
         stat_data = StatsData(stats_data)
         if stat_data.error == None:
             statsimage = StatsImage()
+            if len(backgrounds) > 0:
+                url = random.choice(backgrounds)
+                LOGGER.debug('Chosen background: %s', url)
+                statsimage.setBackground(url=url)
+            image = yield from statsimage.generate(stat_data)
+        else:
+            image = None
+    else:
+        image = None
+    return image
+
+@asyncio.coroutine
+def generate_season(KEY_TN, player, platform, backgrounds=[]):
+    LOGGER.debug('backgrounds: %s', str(backgrounds))
+    stats_data = yield from stats.stats(KEY_TN,player,platform)
+    if stats_data['status'] == 200:
+        stat_data = StatsData(stats_data)
+        if stat_data.error == None:
+            statsimage = CurrentSeasonStatsImage()
             if len(backgrounds) > 0:
                 url = random.choice(backgrounds)
                 LOGGER.debug('Chosen background: %s', url)
