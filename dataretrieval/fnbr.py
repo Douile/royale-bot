@@ -192,6 +192,7 @@ class Item():
             self.png = self.load('png',json['images'])
             self.gallery = self.load('gallery',json['images'])
             self.featured = self.load('featured',json['images'],False)
+        self.seen = None
     def load(self,name,json,default=""):
         if name in json:
             value =  json[name]
