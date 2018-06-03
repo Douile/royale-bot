@@ -222,7 +222,7 @@ def generate(shopdata,backgrounds=[],serverid=None):
             if item.seen is not None:
                 count = item.seen.occurrences
             else:
-                count = None
+                count = -1
             if item.icon != '' and item.icon != False and item.icon != 'False':
                 im = ItemImage(item.name,item.price,priceIcon,item.rarity,item.icon,512,count) # i need to create a function for this
             elif item.png != '' and item.png != False and item.png != 'False':
