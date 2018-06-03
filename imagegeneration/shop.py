@@ -236,7 +236,10 @@ def generate(shopdata,backgrounds=[],serverid=None):
                 priceIcon = item.priceIconLink
             else:
                 priceIcon = backupprice
-            count = item.seen.occurrences
+            if item.seen is not None:
+                count = item.seen.occurrences
+            else:
+                count = -1
             if item.icon != '' and item.icon != False and item.icon != 'False':
                 im = ItemImage(item.name,item.price,priceIcon,item.rarity,item.icon,512,count)
             elif item.png != '' and item.png != False and item.png != 'False':
