@@ -315,116 +315,116 @@ class StatsData:
         if type(data) is dict:
             self.error = data.get('error',None)
             if self.error == None:
-                self.userdata = self.UserData(data)
-                self.lifetime = self.LifetimeStats(data.get('lifeTimeStats',[]))
-                self.matches = self.Matches(data.get('recentMatches',[]))
-                self.stats = self.Stats(data.get('stats',{}))
+                self.userdata = UserData(data)
+                self.lifetime = LifetimeStats(data.get('lifeTimeStats',[]))
+                self.matches = Matches(data.get('recentMatches',[]))
+                self.stats = Stats(data.get('stats',{}))
             # p2 solo p10 duo p9 squads
         else:
             raise RuntimeError('You must pass a dict argument')
-    class UserData:
+class UserData:
+    def __init__(self,data):
+        self.account_id = data.get('accountId','')
+        self.platform_id = data.get('platformId',0)
+        self.platform = data.get('platformNameLong','')
+        self.name = data.get('epicUserHandle','')
+    def __iter__(self):
+        yield 'account_id', self.account_id
+        yield 'platform_id', self.platform_id
+        yield 'platform', self.platform
+        yield 'name', self.name
+class LifetimeStats:
+    def __init__(self,data):
+        if type(data) is list:
+            for item in data:
+                key = item.get('key','')
+                value = item.get('value','')
+                if key == 'Top 3':
+                    self.top_3 = value
+                elif key == 'Top 5s':
+                    self.top_5s = value
+                elif key == 'Top 3s':
+                    self.top_3s = value
+                elif key == 'Top 6s':
+                    self.top_6s = value
+                elif key == 'Top 12s':
+                    self.top_12s = value
+                elif key == 'Top 25s':
+                    self.top_25s = value
+                elif key == 'Score':
+                    self.score = value
+                elif key == 'Matches Played':
+                    self.matches = value
+                elif key == 'Wins':
+                    self.wins = value
+                elif key == 'Kills':
+                    self.kills = value
+                elif key == 'K/d':
+                    self.kd = value
+        if getattr(self,'matches',None) != None and getattr(self,'wins',None) != None:
+            self.win_percent = round((int(self.wins)/int(self.matches))*100,2)
+    def __iter__(self):
+        yield 'score', getattr(self,'score',None)
+        yield 'matches', getattr(self,'matches',None)
+        yield 'wins', getattr(self,'wins',None)
+        yield 'kills', getattr(self,'kills',None)
+        yield 'kd', getattr(self,'kd',None)
+        yield 'win_percent', getattr(self,'win_percent',None)
+class Matches(list):
+    def __init__(self,data):
+        if type(data) is list:
+            for match in data:
+                self.append(self.Match(match))
+    class Match:
         def __init__(self,data):
-            self.account_id = data.get('accountId','')
-            self.platform_id = data.get('platformId',0)
-            self.platform = data.get('platformNameLong','')
-            self.name = data.get('epicUserHandle','')
-        def __iter__(self):
-            yield 'account_id', self.account_id
-            yield 'platform_id', self.platform_id
-            yield 'platform', self.platform
-            yield 'name', self.name
-    class LifetimeStats:
-        def __init__(self,data):
-            if type(data) is list:
-                for item in data:
-                    key = item.get('key','')
-                    value = item.get('value','')
-                    if key == 'Top 3':
-                        self.top_3 = value
-                    elif key == 'Top 5s':
-                        self.top_5s = value
-                    elif key == 'Top 3s':
-                        self.top_3s = value
-                    elif key == 'Top 6s':
-                        self.top_6s = value
-                    elif key == 'Top 12s':
-                        self.top_12s = value
-                    elif key == 'Top 25s':
-                        self.top_25s = value
-                    elif key == 'Score':
-                        self.score = value
-                    elif key == 'Matches Played':
-                        self.matches = value
-                    elif key == 'Wins':
-                        self.wins = value
-                    elif key == 'Kills':
-                        self.kills = value
-                    elif key == 'K/d':
-                        self.kd = value
-            if getattr(self,'matches',None) != None and getattr(self,'wins',None) != None:
-                self.win_percent = round((int(self.wins)/int(self.matches))*100,2)
-        def __iter__(self):
-            yield 'score', getattr(self,'score',None)
-            yield 'matches', getattr(self,'matches',None)
-            yield 'wins', getattr(self,'wins',None)
-            yield 'kills', getattr(self,'kills',None)
-            yield 'kd', getattr(self,'kd',None)
-            yield 'win_percent', getattr(self,'win_percent',None)
-    class Matches(list):
-        def __init__(self,data):
-            if type(data) is list:
-                for match in data:
-                    self.append(self.Match(match))
-        class Match:
-            def __init__(self,data):
-                self.id = data.get('id',0)
-                self.playlist = data.get('playlist','')
-                self.kills = data.get('kills',0)
-                self.matches = data.get('matches',0)
-                self.score = data.get('score',0)
-                self.platform = data.get('platform',0)
-                self.time = data.get('dateCollected','')
-                self.wins = data.get('top1',0)
-                if self.matches != None and self.kills != None and self.wins != None:
-                    if self.matches == self.wins:
-                        self.kd = self.kills
-                    else:
-                        self.kd = self.kills/(self.matches-self.wins)
-    class Stats:
-        def __init__(self,data):
-            self.solo = data.get('p2')
-            self.duo = data.get('p10')
-            self.squad = data.get('p9')
-            self.curr_solo = data.get('curr_p2')
-            self.curr_duo = data.get('curr_p10')
-            self.curr_squad = data.get('curr_p9')
-            self.prev_solo = data.get('prior_p2')
-            self.prev_duo = data.get('prior_p10')
-            self.prev_squad = data.get('prior_p9')
-            attributes = [a for a in dir(self) if not a.startswith('__') and not callable(a)]
-            for attr in attributes:
-                attribute = getattr(self, attr)
-                if attribute is not None:
-                    setattr(self, attr, Stat(attribute))
-        class Stat:
-            def __init__(self,data):
-                self.score = self.getStat(data,'score')
-                self.kd = self.getStat(data,'kd')
-                self.win_percent = self.getStat(data,'winRatio')
-                self.matches = self.getStat(data,'matches')
-                self.kills = self.getStat(data,'kills')
-                self.kills_per_game = self.getStat(data,'kpg')
-                self.score_per_match = self.getStat(data,'scorePerMatch')
-                self.wins = self.getStat(data,'top1')
-                self.rating = self.getStat(data,'trnRating')
-            @staticmethod
-            def getStat(data,key):
-                d = data.get(key,None)
-                if d != None:
-                    o = d.get('value','')
+            self.id = data.get('id',0)
+            self.playlist = data.get('playlist','')
+            self.kills = data.get('kills',0)
+            self.matches = data.get('matches',0)
+            self.score = data.get('score',0)
+            self.platform = data.get('platform',0)
+            self.time = data.get('dateCollected','')
+            self.wins = data.get('top1',0)
+            if self.matches != None and self.kills != None and self.wins != None:
+                if self.matches == self.wins:
+                    self.kd = self.kills
                 else:
-                    o = ''
-                return o
+                    self.kd = self.kills/(self.matches-self.wins)
+class Stats:
+    def __init__(self,data):
+        self.solo = data.get('p2')
+        self.duo = data.get('p10')
+        self.squad = data.get('p9')
+        self.curr_solo = data.get('curr_p2')
+        self.curr_duo = data.get('curr_p10')
+        self.curr_squad = data.get('curr_p9')
+        self.prev_solo = data.get('prior_p2')
+        self.prev_duo = data.get('prior_p10')
+        self.prev_squad = data.get('prior_p9')
+        attributes = [a for a in dir(self) if not a.startswith('__') and not callable(a)]
+        for attr in attributes:
+            attribute = getattr(self, attr)
+            if attribute is not None:
+                setattr(self, attr, Stat(attribute))
+    class Stat:
+        def __init__(self,data):
+            self.score = self.getStat(data,'score')
+            self.kd = self.getStat(data,'kd')
+            self.win_percent = self.getStat(data,'winRatio')
+            self.matches = self.getStat(data,'matches')
+            self.kills = self.getStat(data,'kills')
+            self.kills_per_game = self.getStat(data,'kpg')
+            self.score_per_match = self.getStat(data,'scorePerMatch')
+            self.wins = self.getStat(data,'top1')
+            self.rating = self.getStat(data,'trnRating')
+        @staticmethod
+        def getStat(data,key):
+            d = data.get(key,None)
+            if d != None:
+                o = d.get('value','')
+            else:
+                o = ''
+            return o
 
 class Map(dict):
     def __init__(self,ob,format_dec=False):
