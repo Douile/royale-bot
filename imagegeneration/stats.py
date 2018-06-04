@@ -405,7 +405,7 @@ class Stats:
         for attr in attributes:
             attribute = getattr(self, attr)
             if attribute is not None:
-                setattr(self, attr, Stat(attribute))
+                setattr(self, attr, self.Stat(attribute))
     class Stat:
         def __init__(self,data):
             self.score = self.getStat(data,'score')
