@@ -392,20 +392,15 @@ class Matches(list):
                     self.kd = self.kills/(self.matches-self.wins)
 class Stats:
     def __init__(self,data):
-        self.solo = data.get('p2')
-        self.duo = data.get('p10')
-        self.squad = data.get('p9')
-        self.curr_solo = data.get('curr_p2')
-        self.curr_duo = data.get('curr_p10')
-        self.curr_squad = data.get('curr_p9')
-        self.prev_solo = data.get('prior_p2')
-        self.prev_duo = data.get('prior_p10')
-        self.prev_squad = data.get('prior_p9')
-        attributes = [a for a in dir(self) if not a.startswith('__') and not callable(a)]
-        for attr in attributes:
-            attribute = getattr(self, attr)
-            if attribute is not None:
-                setattr(self, attr, self.Stat(attribute))
+        self.solo = self.Stat(data.get('p2',{}))
+        self.duo = self.Stat(data.get('p10',{}))
+        self.squad = self.Stat(data.get('p9',{}))
+        self.curr_solo = self.Stat(data.get('curr_p2',{}))
+        self.curr_duo = self.Stat(data.get('curr_p10',{}))
+        self.curr_squad = self.Stat(data.get('curr_p9',{}))
+        self.prev_solo = self.Stat(data.get('prior_p2',{}))
+        self.prev_duo = self.Stat(data.get('prior_p10',{}))
+        self.prev_squad = self.Stat(data.get('prior_p9',{}))
     class Stat:
         def __init__(self,data):
             self.score = self.getStat(data,'score')
