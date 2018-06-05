@@ -142,36 +142,37 @@ class ShopAndSeen:
 # responses
 class APIResponse():
     def __init__(self,response,json):
-        self.headers = response.headers
-        self.json = json
-        try:
-            self.status = self.json['status']
-        except KeyError:
-            self.status = response.status
-        url = response.url
-        if self.status != 200:
-            self.type = ERROR_TYPE
+        self.type = NONE_TYPE
+        self.data = None
+        if json is not None:
+            self.headers = response.headers
+            self.json = json
             try:
-                self.error = self.json['error']
+                self.status = self.json['status']
             except KeyError:
-                self.error = response.reason
-        elif '/images' in url:
-                self.type = IMAGE_TYPE
-                self.data = ImageResponse(self.json)
-        elif '/shop' in url:
-                self.type = SHOP_TYPE
-                self.data = ShopResponse(self.json)
-        elif '/stats' in url:
-            self.type = STATS_TYPE
-            self.data = StatResponse(self.json)
-        elif '/seen' in url:
-            self.type = SEEN_TYPE
-            self.data = SeenResponse(self.json)
-        elif '/list' in url:
-            self.type = LIST_TYPE
-            self.data = ItemListResponse(response.text)
-        else:
-            self.type = NONE_TYPE
+                self.status = response.status
+            url = response.url
+            if self.status != 200:
+                self.type = ERROR_TYPE
+                try:
+                    self.error = self.json['error']
+                except KeyError:
+                    self.error = response.reason
+            elif '/images' in url:
+                    self.type = IMAGE_TYPE
+                    self.data = ImageResponse(self.json)
+            elif '/shop' in url:
+                    self.type = SHOP_TYPE
+                    self.data = ShopResponse(self.json)
+            elif '/stats' in url:
+                self.type = STATS_TYPE
+                self.data = StatResponse(self.json)
+            elif '/seen' in url:
+                self.type = SEEN_TYPE
+                self.data = SeenResponse(self.json)
+            elif '/list' in url:
+                self.type = LIST_TYPE
+                self.data = ItemListResponse(response.text)
 class ShopResponse():
     def __init__(self,json={}):
         self.featured = []
