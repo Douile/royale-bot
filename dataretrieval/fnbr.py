@@ -98,27 +98,28 @@ class Seen(APIRequest):
         return BASEURL + self.endpoint + self.item_id + self.parseArguments()
     @asycio.coroutine
     def send(self):
-    	client = aiohttp.ClientSession(headers=[('User-Agent',USER_AGENT)])
-    	token = None
-    	main = yield from client.get('https://fnbr.co')
-    	if main.status == 200:
-    		text = yield from main.text()
-    		html = bs4.BeautifulSoup(text,'html.parser')
-    		tags = html.find_all('meta',{'name':'csrf-token'})
-    		if len(tags) > 0:
-    			token = tags[0].attrs['content']
-    	main.close()
-    	print(token)
-    	json = None
+        client = aiohttp.ClientSession(headers=[('User-Agent',USER_AGENT)])
+        token = None
+        main = yield from client.get('https://fnbr.co')
+        if main.status == 200:
+            text = yield from main.text()
+            html = bs4.BeautifulSoup(text,'html.parser')
+            tags = html.find_all('meta',{'name':'csrf-token'})
+            if len(tags) > 0:
+            	token = tags[0].attrs['content']
+        main.close()
+        print(token)
+        json = None
+        response = None
         if token is not None:
-        	url = 'https://fnbr.co/api/seen/{}'.format(item_id)
-        	headers = {'csrf-token':token}
-        	response = yield from client.get(url,headers=headers)
+            url = 'https://fnbr.co/api/seen/{}'.format(item_id)
+            headers = {'csrf-token':token}
+            response = yield from client.get(url,headers=headers)
             json = yield from response.json()
-        	response.close()
-    	yield from client.close()
+            response.close()
+        yield from client.close()
         self.response = APIResponse(response, json)
-	    return self.response
+        return self.response
 class ShopAndSeen:
     def __init__(self, apikey):
         self.key = apikey
