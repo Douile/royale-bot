@@ -110,12 +110,12 @@ class Seen(APIRequest):
     	main.close()
     	print(token)
     	json = None
-    	if token is not None:
-    		url = 'https://fnbr.co/api/seen/{}'.format(item_id)
-    		headers = {'csrf-token':token}
-    		response = yield from client.get(url,headers=headers)
+        if token is not None:
+        	url = 'https://fnbr.co/api/seen/{}'.format(item_id)
+        	headers = {'csrf-token':token}
+        	response = yield from client.get(url,headers=headers)
             json = yield from response.json()
-    		response.close()
+        	response.close()
     	yield from client.close()
         self.response = APIResponse(response, json)
 	    return self.response
