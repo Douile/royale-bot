@@ -112,7 +112,7 @@ class Seen(APIRequest):
         json = None
         response = None
         if token is not None:
-            url = 'https://fnbr.co/api/seen/{}'.format(item_id)
+            url = self.url()
             headers = {'csrf-token':token}
             response = yield from client.get(url,headers=headers)
             json = yield from response.json()
