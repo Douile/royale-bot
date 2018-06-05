@@ -100,6 +100,7 @@ class Seen(APIRequest):
         return BASEURL + self.endpoint + self.item_id + self.parseArguments()
     @asyncio.coroutine
     def send(self):
+        global CSRF_TOKEN
         client = aiohttp.ClientSession(headers=[('User-Agent',USER_AGENT)])
         if CSRF_TOKEN is None:
             main = yield from client.get('https://fnbr.co')
