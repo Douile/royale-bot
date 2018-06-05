@@ -21,7 +21,7 @@ LIST_TYPE = "list"
 SEEN_TYPE = "seen"
 
 CSRF_TOKEN = None
-CSRF_COOKIE = aiohttp.AbstractCookieJar()
+CSRF_COOKIE = aiohttp.CookieJar()
 # requests
 class APIRequest():
     def __init__(self,key,endpoint,arguments={}):
