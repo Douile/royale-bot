@@ -118,7 +118,10 @@ class Seen(APIRequest):
             url = self.url()
             headers = {'csrf-token':CSRF_TOKEN}
             response = yield from client.get(url,headers=headers)
-            json = yield from response.json()
+            try:
+                json = yield from response.json()
+            except JSONDecodeError:
+                json = None
             response.close()
         yield from client.close()
         self.response = APIResponse(response, json)
