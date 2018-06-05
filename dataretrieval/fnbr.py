@@ -1,8 +1,12 @@
-import requests
+import aiohttp
+import asyncio
 from urllib.parse import quote_plus
 import re
+import bs4
 
 # constants
+USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:60.0) Gecko/20100101 Firefox/60.0'
+
 BASEURL = "https://fnbr.co/api"
 VALID_IMAGE_TYPES = ['emote','glider','emoji','loading','outfit','pickaxe','skydive','umbrella','misc']
 VALID_IMAGE_LIMIT_MIN = 1
@@ -31,9 +35,14 @@ class APIRequest():
         if len(args) > 0:
             args = "?" + args
         return args
+    @asyncio.coroutine
     def send(self):
+        client = aiohtp.clientSession()
         headers = {'x-api-key':self.key}
-        self.response = APIResponse(requests.get(url=self.url(),headers=headers))
+        response_data = yield from client.get(url=self.url(),headers=headers)
+        json = yield from response_data.json()
+        self.response = APIResponse(response_data, json)
+        yield from client.close()
         return self.response
 class Images(APIRequest):
     def __init__(self,key,search=None,type=None,limit=None):
@@ -73,57 +82,85 @@ class ItemList(APIRequest):
         self.urltouse = "https://fnbr.co/list"
     def url(self):
         return self.urltouse
+    @asyncio.coroutine
     def send(self):
-        self.response = requests.get(self.url())
-        return APIResponse(self.response)
+        client = aiohtp.clientSession()
+        response_data = yield from client.get(url=self.url())
+        json = yield from response_data.json()
+        self.response = APIResponse(response_data, json)
+        yield from client.close()
+        return self.response
 class Seen(APIRequest):
     def __init__(self, id=''):
         super().__init__(None,"/seen/",{})
         self.item_id = id
     def url(self):
         return BASEURL + self.endpoint + self.item_id + self.parseArguments()
+    @asycio.coroutine
+    def send(self):
+    	client = aiohttp.ClientSession(headers=[('User-Agent',USER_AGENT)])
+    	token = None
+    	main = yield from client.get('https://fnbr.co')
+    	if main.status == 200:
+    		text = yield from main.text()
+    		html = bs4.BeautifulSoup(text,'html.parser')
+    		tags = html.find_all('meta',{'name':'csrf-token'})
+    		if len(tags) > 0:
+    			token = tags[0].attrs['content']
+    	main.close()
+    	print(token)
+    	json = None
+    	if token is not None:
+    		url = 'https://fnbr.co/api/seen/{}'.format(item_id)
+    		headers = {'csrf-token':token}
+    		response = yield from client.get(url,headers=headers)
+            json = yield from response.json()
+    		response.close()
+    	yield from client.close()
+        self.response = APIResponse(response, json)
+	    return self.response
 class ShopAndSeen:
     def __init__(self, apikey):
         self.key = apikey
+    @asyncio.coroutine
     def send(self):
         shop = Shop(self.key)
-        data = shop.send()
+        data = yield from shop.send()
         if data.type == SHOP_TYPE:
             for item in data.data.daily+data.data.featured:
                 seen = Seen(item.id)
-                item.seen = seen.send().data
+                seen_data = yield from seen.send()
+                item.seen = seen_data.data
         return data
 # responses
 class APIResponse():
-    def __init__(self,response):
+    def __init__(self,response,json):
         self.headers = response.headers
-        try:
-            self.json = response.json()
-        except ValueError:
-            self.json = {}
+        self.json = json
         try:
             self.status = self.json['status']
         except KeyError:
-            self.status = response.status_code
+            self.status = response.status
+        url = response.request_info.url
         if self.status != 200:
             self.type = ERROR_TYPE
             try:
                 self.error = self.json['error']
             except KeyError:
                 self.error = response.reason
-        elif '/images' in response.url:
+        elif '/images' in url:
                 self.type = IMAGE_TYPE
                 self.data = ImageResponse(self.json)
-        elif '/shop' in response.url:
+        elif '/shop' in url:
                 self.type = SHOP_TYPE
                 self.data = ShopResponse(self.json)
-        elif '/stats' in response.url:
+        elif '/stats' in url:
             self.type = STATS_TYPE
             self.data = StatResponse(self.json)
-        elif '/seen' in response.url:
+        elif '/seen' in url:
             self.type = SEEN_TYPE
             self.data = SeenResponse(self.json)
-        elif '/list' in response.url:
+        elif '/list' in url:
             self.type = LIST_TYPE
             self.data = ItemListResponse(response.text)
         else:

@@ -142,7 +142,7 @@ def autoshop(fnbr_key): # add fnbr not accessable fallback
                     nextshop = time.mktime(datetime.now().utctimetuple())
                 if now >= nextshop:
                     if shopdata == None:
-                        shopdata = shop.getShopData(fnbr_key)
+                        shopdata = yield from shop.getShopData(fnbr_key)
                     if shopdata.type == 'shop':
                         rawtime = shop.getTime(shopdata.data.date)
                         bgs = server.get('backgrounds',{})

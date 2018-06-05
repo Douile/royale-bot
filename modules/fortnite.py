@@ -38,7 +38,7 @@ class Shop(Command):
     def run(self,command,msg,settings):
         logger = logging.getLogger('shop-command')
         try:
-            shopdata = shop.getShopData(self.fnbr_key)
+            shopdata = yield from shop.getShopData(self.fnbr_key)
             if shopdata.status == 200:
                 bgs = settings.get('backgrounds',{})
                 bgs_s = bgs.get('shop',[])

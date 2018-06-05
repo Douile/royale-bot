@@ -272,9 +272,11 @@ def generate(shopdata,backgrounds=[],serverid=None):
         if not isfile(fname):
             overlay.save(fname)
     return newname
+@asyncio.coroutine
 def getShopData(apikey):
     print("Getting shop data")
-    shopdata = fnbr.Shop(apikey).send()
+    shopdata_req = fnbr.ShopAndSeen(apikey)
+    shop_data = yield from shopdata_req.send()
     return shopdata
 def getTime(isotime):
     return datetime.strptime(isotime, "%Y-%m-%dT%H:%M:%S.%fZ")
