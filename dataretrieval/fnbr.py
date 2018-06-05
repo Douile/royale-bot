@@ -96,7 +96,7 @@ class Seen(APIRequest):
         self.item_id = id
     def url(self):
         return BASEURL + self.endpoint + self.item_id + self.parseArguments()
-    @asycio.coroutine
+    @asyncio.coroutine
     def send(self):
         client = aiohttp.ClientSession(headers=[('User-Agent',USER_AGENT)])
         token = None
