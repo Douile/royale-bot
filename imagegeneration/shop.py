@@ -135,6 +135,8 @@ class ItemImage:
         if count > 0:
             if count == 1:
                 count = 'NEW'
+            else:
+                count = '{} DAYS'.format(count)
             countimg = CountImage(count).out()
             x = self.background.width - countimg.width - 10
             y = 10
