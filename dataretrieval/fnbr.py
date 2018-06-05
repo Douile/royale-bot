@@ -37,7 +37,7 @@ class APIRequest():
         return args
     @asyncio.coroutine
     def send(self):
-        client = aiohttp.clientSession()
+        client = aiohttp.ClientSession()
         headers = {'x-api-key':self.key}
         response_data = yield from client.get(url=self.url(),headers=headers)
         json = yield from response_data.json()
@@ -84,7 +84,7 @@ class ItemList(APIRequest):
         return self.urltouse
     @asyncio.coroutine
     def send(self):
-        client = aiohttp.clientSession()
+        client = aiohttp.ClientSession()
         response_data = yield from client.get(url=self.url())
         json = yield from response_data.json()
         self.response = APIResponse(response_data, json)
