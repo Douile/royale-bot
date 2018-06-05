@@ -278,7 +278,7 @@ def generate(shopdata,backgrounds=[],serverid=None):
 def getShopData(apikey):
     print("Getting shop data")
     shopdata_req = fnbr.ShopAndSeen(apikey)
-    shop_data = yield from shopdata_req.send()
+    shopdata = yield from shopdata_req.send()
     return shopdata
 def getTime(isotime):
     return datetime.strptime(isotime, "%Y-%m-%dT%H:%M:%S.%fZ")
