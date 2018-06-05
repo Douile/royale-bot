@@ -21,6 +21,7 @@ LIST_TYPE = "list"
 SEEN_TYPE = "seen"
 
 CSRF_TOKEN = None
+CSRF_COOKIE = aiohttp.AbstractCookieJar()
 # requests
 class APIRequest():
     def __init__(self,key,endpoint,arguments={}):
@@ -101,7 +102,8 @@ class Seen(APIRequest):
     @asyncio.coroutine
     def send(self):
         global CSRF_TOKEN
-        client = aiohttp.ClientSession(headers=[('User-Agent',USER_AGENT)])
+        global CSRF_COOKIE
+        client = aiohttp.ClientSession(headers=[('User-Agent',USER_AGENT)],cookie_jar=CSRF_COOKIE)
         if CSRF_TOKEN is None:
             main = yield from client.get('https://fnbr.co')
             if main.status == 200:
