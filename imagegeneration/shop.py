@@ -182,8 +182,8 @@ class CountImage:
         count = str(count)
         font = PIL.ImageFont.truetype(FONT, 36)
         textsize = font.getsize(count)
-        if textsize[0] > size[0]-4:
-            size = (textsize[0]+4,size[1])
+        if textsize[0] > size[0]-10:
+            size = (textsize[0]+10,size[1])
         self.background = PIL.Image.new('RGBA', size, (0,0,0,0))
         draw = PIL.ImageDraw.Draw(self.background)
         draw.ellipse([(0,0),self.background.size],fill=red)
