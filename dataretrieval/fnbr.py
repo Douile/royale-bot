@@ -142,7 +142,7 @@ class APIResponse():
             self.status = self.json['status']
         except KeyError:
             self.status = response.status
-        url = response.request_info.url
+        url = response.url
         if self.status != 200:
             self.type = ERROR_TYPE
             try:
