@@ -120,7 +120,7 @@ class Seen(APIRequest):
             response = yield from client.get(url,headers=headers)
             try:
                 json = yield from response.json()
-            except JSONDecodeError:
+            except:
                 json = None
             response.close()
         yield from client.close()
