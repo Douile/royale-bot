@@ -290,7 +290,7 @@ def dbl_api():
         yield from client.wait_until_ready()
         while not client.is_closed:
             try:
-                yield from dbl_client.post_server_count(client.shard_id,client.shard_count)
+                yield from dbl_client.post_server_count(client.shard_count,client.shard_id)
                 logger.info('Posted server count to dbl')
             except:
                 error = traceback.format_exc()
@@ -312,7 +312,7 @@ def count_users(client_class):
 @asyncio.coroutine
 def on_ready():
     logger = logging.getLogger()
-    logger.info("Discord client logged in: %s %s %d/%d", client.user.name, client.user.id, client.shard_count, client.shard_id)
+    logger.info("Discord client logged in: %s %s %d/%d", client.user.name, client.user.id, client.shard_id, client.shard_count)
     yield from client.edit_profile(username=BOT_NAME)
     yield from client.change_presence(game=discord.Game(name="Est. 2018 @mention for help",type=0),status="online",afk=False)
     defaultmodule.client_id = client.user.id
