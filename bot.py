@@ -312,7 +312,7 @@ def count_users(client_class):
 @asyncio.coroutine
 def on_ready():
     logger = logging.getLogger()
-    logger.info("Discord client logged in: %s %s %d/%d", client.user.name, client.user.id, client.shard_id, client.shard_count)
+    logger.info("Discord client logged in: %s %s %d/%d", client.user.name, client.user.id, client.shard_count, client.shard_id)
     yield from client.edit_profile(username=BOT_NAME)
     yield from client.change_presence(game=discord.Game(name="Est. 2018 @mention for help",type=0),status="online",afk=False)
     defaultmodule.client_id = client.user.id
@@ -372,7 +372,6 @@ def commandHandler(command, msg):
         if output.empty:
             for i in range(0,len(cmodules)):
                 output = yield from cmodules[i]._run_alias(output,command,msg,serversettings)
-    output.debug(logger)
     if len(output.queue) > 0:
         client.queued_actions += output.queue
         logger.debug('Added queued action')
