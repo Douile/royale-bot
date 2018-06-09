@@ -13,7 +13,7 @@ requests = "==2.18.4"
 Pillow = "==5.1.0"
 google-api-python-client = "==1.6.7"
 instagram_private_api = {git = "https://git@github.com/ping/instagram_private_api.git", ref = "1.5.5"}
-dblpy = "*"
+dbl = {git = "https://github.com/Douile/DBL-Python-Library.git"}
 
 [dev-packages]
 

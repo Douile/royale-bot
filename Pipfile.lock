@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "d829d757df9e71343f2db37e302df37efeaceee35dff6cf96843ee6822d24b25"
+            "sha256": "2b764c2187106e2e2a09eede9a65cbdad8a52c2b696a7dd69307a6a3eae9bfdc"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -60,6 +60,9 @@
                 "sha256:fc323ffcaeaed0e0a02bf4d117757b98aed530d9ed4531e3e15460124c106691"
             ],
             "version": "==3.0.4"
+        },
+        "dbl": {
+            "git": "https://github.com/Douile/DBL-Python-Library.git"
         },
         "discord.py": {
             "git": "https://github.com/Rapptz/discord.py/archive/rewrite.zip"
