@@ -16,3 +16,8 @@ def dict_get(self):
     return data
 
 Message.id_dict = property(dict_get)
+
+def guild_count(self):
+    return len(self.servers)
+
+Client.guild_count = property(guild_count)
