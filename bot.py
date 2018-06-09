@@ -290,7 +290,7 @@ def dbl_api():
         yield from client.wait_until_ready()
         while not client.is_closed:
             try:
-                yield from dbl_client.post_server_count()
+                yield from dbl_client.post_server_count(client.shard_id,client.shard_count)
                 logger.info('Posted server count to dbl')
             except:
                 error = traceback.format_exc()
