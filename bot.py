@@ -286,6 +286,7 @@ def dbl_api():
     logger = logging.getLogger('dbl_api')
     if KEY_DBL is not None:
         dbl_client = dbl.Client(client,KEY_DBL)
+        logger.info('dbl updater started: {}'.format(KEY_DBL))
         yield from client.wait_until_ready()
         while not client.is_closed:
             try:
