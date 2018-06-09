@@ -1,4 +1,5 @@
 import discord_wrapper as discord
+import dbl
 import asyncio
 import json
 import os
@@ -34,6 +35,7 @@ LINE_COUNT = linecount.count_project()
 KEY_DISCORD = getEnv("KEY_DISCORD")
 KEY_FNBR = getEnv("KEY_FNBR")
 KEY_TRACKERNETWORK = getEnv("KEY_TRACKERNETWORK")
+KEY_DBL = getEnv("KEY_DBL")
 DATABASE_URL = getEnv("DATABASE_URL")
 BOT_NAME = getEnv("BOT_NAME", "FortniteData")
 TICKER_TIME = int(getEnv("TICKER_TIME", 30))
@@ -279,6 +281,23 @@ def ticker():
             yield from client.change_presence(game=game)
             yield from asyncio.sleep(TICKER_TIME)
 
+@asyncio.coroutine
+def dbl_api():
+    logger = logging.getLogger('dbl_api')
+    if KEY_DBL is not None:
+        dbl_client = dbl.Client(client,KEY_DBL)
+        yield from client.wait_until_ready()
+        while not client.is_closed:
+            try:
+                yield from dbl_client.post_server_count()
+                logger.info('Posted server count to dbl')
+            except:
+                error = traceback.format_exc()
+                logger.error('Error posting server count: {}'.format(error))
+            yield from asyncio.sleep(1800)
+    else:
+        logger.info('DBL api key not found')
+
 
 @asyncio.coroutine
 def count_users(client_class):
@@ -416,7 +435,7 @@ defaultmodule = default.DefaultModule(cmodules, VERSION)
 def close():
     asyncio.ensure_future(client.close())
 client.loop.add_signal_handler(signal.SIGTERM, close)
-if SHARD_COUNT > 4:
+if SHARD_COUNT > 5:
     if SHARD_NO == 0:
         client.loop.create_task(autoshop(KEY_FNBR))
     elif SHARD_NO == 1:
@@ -427,6 +446,8 @@ if SHARD_COUNT > 4:
         client.loop.create_task(handle_queue())
     elif SHARD_NO == 4:
         client.loop.create_task(ticker())
+    elif SHARD_NO == 5:
+        client.loop.create_task(dbl_api())
 else:
     client.loop.create_task(autoshop(KEY_FNBR))
     client.loop.create_task(autostatus())
