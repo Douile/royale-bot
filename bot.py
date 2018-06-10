@@ -30,7 +30,7 @@ def getEnv(name,default=None):
     return value
 
 # constants
-LINE_COUNT = linecount.count_project()
+LINE_COUNT = linecount.countlines('.')
 
 KEY_DISCORD = getEnv("KEY_DISCORD")
 KEY_FNBR = getEnv("KEY_FNBR")

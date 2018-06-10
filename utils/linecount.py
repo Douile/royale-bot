@@ -1,6 +1,21 @@
 import os
 from os.path import join
 
+def countlines(start):
+    lines = 0
+    for thing in os.listdir(start):
+        thing = os.path.join(start, thing)
+        if os.path.isfile(thing):
+            if thing.endswith('.py'):
+                with open(thing, 'r') as f:
+                    newlines = f.readlines()
+                    for line in newlines:
+                        line = line.strip()
+                        if not line.startswith('#') and len(line) > 0:
+                            lines += 1
+        if os.path.isdir(thing):
+            lines += countlines(thing)
+    return lines
 
 def count_lines(lines):
     file_line_count = 0
