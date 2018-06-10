@@ -73,7 +73,7 @@ class Stats(Command):
             args = args[len(match):]
             type = 'curr_season'
         platform, name = yield from parse_fortnite_user(args, msg.author.id, msg.server.id, self.sql)
-        if len(name.trim()) > 0:
+        if len(name.strip()) > 0:
             try:
                 logger.debug('Stats command name: %s platform %s', name, platform)
                 bgs = settings.get('backgrounds',{})
