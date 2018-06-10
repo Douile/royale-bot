@@ -14,7 +14,8 @@ def countlines(start):
                         if not line.startswith('#') and len(line) > 0:
                             lines += 1
         if os.path.isdir(thing):
-            lines += countlines(thing)
+            if not this.startswith('.'):
+                lines += countlines(thing)
     return lines
 
 def count_lines(lines):
