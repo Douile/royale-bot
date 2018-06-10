@@ -302,13 +302,17 @@ def dbl_api():
         logger.info('dbl updater started: {}'.format(KEY_DBL))
         yield from client.wait_until_ready()
         while not client.is_closed:
+            sleeptime = 1800
             try:
                 yield from dbl_client.post_server_count(client.shard_count,client.shard_id)
                 logger.info('Posted server count to dbl')
+            except dbl.errors.Forbidden:
+                logger.warning('Forbidden to update server count')
+                sleeptime = 30
             except:
                 error = traceback.format_exc()
                 logger.error('Error posting server count: {}'.format(error))
-            yield from asyncio.sleep(1800)
+            yield from asyncio.sleep(sleeptime)
     else:
         logger.info('DBL api key not found')
 
