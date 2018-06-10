@@ -165,7 +165,7 @@ def autoshop(fnbr_key): # add fnbr not accessable fallback
                         except:
                             error = traceback.format_exc()
                             logger.error('Error sending shop: %s', error)
-                        yield from asyncio.sleep(1)
+                        yield from asyncio.sleep(0.5)
                     else:
                         logger.error('Error getting shop data %s: %s', str(shopdata.error), str(shopdata.json))
                         shopdata = None
@@ -215,7 +215,7 @@ def autostatus():
                     channel = discord.Object(last_status_channel)
                     try:
                         old_message = yield from client.get_message(channel, last_status_msg)
-                    except (NotFound, Forbidden, HTTPException):
+                    except (discord.errors.NotFound, discord.errors.Forbidden):
                         old_message = None
                     except:
                         old_message = None
@@ -238,7 +238,7 @@ def autostatus():
                 except:
                     error = traceback.format_exc()
                     logger.error('Error updating server info %s', error)
-                yield from asyncio.sleep(1)
+                yield from asyncio.sleep(0.5)
         yield from asyncio.sleep(60*2)
 
 @asyncio.coroutine
@@ -262,7 +262,7 @@ def autonews():
             if 'autonews' in server['channels']:
                 for embed in embeds:
                     yield from client.send_message(discord.Object(server['channels']['autonews']),embed=embed)
-                yield from asyncio.sleep(1)
+                yield from asyncio.sleep(0.5)
         yield from asyncio.sleep(60*10)
 
 @asyncio.coroutine
