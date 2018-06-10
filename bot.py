@@ -141,7 +141,7 @@ def autoshop(fnbr_key): # add fnbr not accessable fallback
                 if 'next_shop' in server:
                     nextshop = server['next_shop']
                 if nextshop == None:
-                    nextshop = time.mktime(datetime.now().utctimetuple())
+                    nextshop = time.mktime(datetime.utcnow().utctimetuple())
                 if now >= nextshop:
                     if shopdata == None:
                         shopdata = yield from shop.getShopData(fnbr_key)
@@ -151,9 +151,14 @@ def autoshop(fnbr_key): # add fnbr not accessable fallback
                         bgs_s = bgs.get('shop',[])
                         file = yield from shop.generate(shopdata,bgs_s,serverid)
                         content = "Data from <https://fnbr.co/>"
-                        yield from client.send_file(discord.Object(server['channels']['autoshop']),file,content=content)
-                        nextshoptime = round(time.mktime(rawtime.utctimetuple()) + (60*60*24))
-                        client.database.set_server_info(serverid,next_shop=nextshoptime,latest_shop=file)
+                        try:
+                            yield from client.send_file(discord.Object(server['channels']['autoshop']),file,content=content)
+                            nextshoptime = round(time.mktime(rawtime.utctimetuple()) + (60*60*24))
+                            client.database.set_server_info(serverid,next_shop=nextshoptime,latest_shop=file)
+                        except:
+                            error = traceback.format_exc()
+                            logger.error('Error sending shop: %s', error)
+                        yield from asyncio.sleep(1)
                     else:
                         logger.error('Error getting shop data %s: %s', str(shopdata.error), str(shopdata.json))
                         shopdata = None
@@ -226,6 +231,7 @@ def autostatus():
                 except:
                     error = traceback.format_exc()
                     logger.error('Error updating server info %s', error)
+                yield from asyncio.sleep(1)
         yield from asyncio.sleep(60*2)
 
 @asyncio.coroutine
@@ -249,6 +255,7 @@ def autonews():
             if 'autonews' in server['channels']:
                 for embed in embeds:
                     yield from client.send_message(discord.Object(server['channels']['autonews']),embed=embed)
+                yield from asyncio.sleep(1)
         yield from asyncio.sleep(60*10)
 
 @asyncio.coroutine
