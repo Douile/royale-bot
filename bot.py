@@ -151,10 +151,14 @@ def autoshop(fnbr_key): # add fnbr not accessable fallback
                         bgs_s = bgs.get('shop',[])
                         file = yield from shop.generate(shopdata,bgs_s,serverid)
                         content = "Data from <https://fnbr.co/>"
+                        nextshoptime = round(time.mktime(rawtime.utctimetuple()) + (60*60*24))
                         try:
                             yield from client.send_file(discord.Object(server['channels']['autoshop']),file,content=content)
-                            nextshoptime = round(time.mktime(rawtime.utctimetuple()) + (60*60*24))
                             client.database.set_server_info(serverid,next_shop=nextshoptime,latest_shop=file)
+                        except (discord.errors.Forbidden, discord.errors.NotFound):
+                            logger.info('Forbidden or not found on server: {}'.format(serverid))
+                            client.database.set_server_info(serverid,next_shop=nextshoptime,latest_shop=file)
+                            client.database.set_server_channel(serverid,'autoshop',None)
                         except:
                             error = traceback.format_exc()
                             logger.error('Error sending shop: %s', error)
