@@ -73,20 +73,23 @@ class Stats(Command):
             args = args[len(match):]
             type = 'curr_season'
         platform, name = yield from parse_fortnite_user(args, msg.author.id, msg.server.id, self.sql)
-        try:
-            logger.debug('Stats command name: %s platform %s', name, platform)
-            bgs = settings.get('backgrounds',{})
-            bgs_s = bgs.get('stat',[])
-            statsimage = yield from stats.generate(self.tn_key,name,platform,bgs_s)
-            if statsimage == None:
-                self.content = '<@!{author}> User not found'
-            else:
-                self.typing = True
-                statsimage.save('generatedstats.png')
-                self.file = 'generatedstats.png'
-        except Exception as e:
-            self.content = "Error getting stats"
-            logger.error(traceback.format_exc())
+        if len(name.trim()) > 0:
+            try:
+                logger.debug('Stats command name: %s platform %s', name, platform)
+                bgs = settings.get('backgrounds',{})
+                bgs_s = bgs.get('stat',[])
+                statsimage = yield from stats.generate(self.tn_key,name,platform,bgs_s)
+                if statsimage == None:
+                    self.content = '<@!{author}> User not found'
+                else:
+                    self.typing = True
+                    statsimage.save('generatedstats.png')
+                    self.file = 'generatedstats.png'
+            except Exception as e:
+                self.content = "Error getting stats"
+                logger.error(traceback.format_exc())
+        else:
+            self.content = '<@!{author}> you must link your account using {prefix}link [username], or just enter your name in this command.'
 class Matches(Command):
     def __init__(self,tn_key,sql):
         super().__init__(name='matches',permission='stats')
