@@ -80,7 +80,7 @@ class Command:
             logging.getLogger('module').error('Error running command %s', error)
             self.noPermission = 'error'
         if self.content != None:
-            self.content = self.content.format_map(Map({'author':msg.author.id,'channel':msg.channel.id,'server':msg.server.id}))
+            self.content = self.content.format_map(Map({'author':msg.author.id,'channel':msg.channel.id,'server':msg.server.id,'prefix':settings['prefix']}))
         return self
     def reset(self):
         self.content = None
