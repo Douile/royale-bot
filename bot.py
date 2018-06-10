@@ -204,7 +204,8 @@ def autostatus():
             error = traceback.format_exc()
             logger.error('Error compiling embed %s', error)
         logger.debug('Embed built')
-        for serverid in client.database.servers():
+        for server_d in client.servers:
+            serverid = server_d.id
             server = client.database.server_info(serverid,channels=True)
             if 'autostatus' in server['channels']:
                 last_status_msg = server.get('last_status_msg', None)
