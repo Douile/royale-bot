@@ -46,7 +46,6 @@ class Shop(Command):
                 file = yield from shop.generate(shopdata,bgs_s,msg.server.id)
                 self.typing = True
                 self.file = file
-                self.embed = ShopEmbed(test,file)
                 self.content = "Data from <https://fnbr.co>"
                 self.settings = {'latest_shop': file}
             else:
