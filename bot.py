@@ -159,6 +159,8 @@ def autoshop(fnbr_key): # add fnbr not accessable fallback
                             logger.info('Forbidden or not found on server: {}'.format(serverid))
                             client.database.set_server_info(serverid,next_shop=nextshoptime,latest_shop=file)
                             client.database.set_server_channel(serverid,'autoshop',None)
+                            serverob = client.get_server(serverid)
+                            yield from client.send_message(serverob.owner,content='I was unable to access the autoshop channel you set in your server `{}`. I have deleted the channel from my database.'.format(serverob.name))
                         except:
                             error = traceback.format_exc()
                             logger.error('Error sending shop: %s', error)
