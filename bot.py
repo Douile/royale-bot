@@ -294,29 +294,21 @@ def ticker():
             yield from client.change_presence(game=game)
             yield from asyncio.sleep(TICKER_TIME)
 
-# @asyncio.coroutine
-async def dbl_api():
+@asyncio.coroutine
+def dbl_api():
     logger = logging.getLogger('dbl_api')
     if KEY_DBL is not None:
         dbl_client = dbl.Client(client,KEY_DBL)
         logger.info('dbl updater started: {}'.format(KEY_DBL))
         await client.wait_until_ready()
-        # while not client.is_closed:
-        #     try:
-        #         yield from dbl_client.post_server_count(client.shard_count,client.shard_id)
-        #         logger.info('Posted server count to dbl')
-        #     except:
-        #         error = traceback.format_exc()
-        #         logger.error('Error posting server count: {}'.format(error))
-        #     yield from asyncio.sleep(1800)
-        while True:
+        while not client.is_closed:
             try:
-                await dbl_client.post_server_count()
-                logger.info('Posted server count ({})'.format(len(client.servers)))
-            except Exception as e:
-                logger.exception('Failed to post server count\n{}: {}'.format(type(e).__name__, e))
-            await asyncio.sleep(1800)
-
+                yield from dbl_client.post_server_count(client.shard_count,client.shard_id)
+                logger.info('Posted server count to dbl')
+            except:
+                error = traceback.format_exc()
+                logger.error('Error posting server count: {}'.format(error))
+            yield from asyncio.sleep(1800)
     else:
         logger.info('DBL api key not found')
 
@@ -475,4 +467,5 @@ else:
     client.loop.create_task(autonews())
     client.loop.create_task(handle_queue())
     client.loop.create_task(ticker())
+    client.loop.create_task(dbl_api())
 client.run(KEY_DISCORD)
