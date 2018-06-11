@@ -36,7 +36,7 @@ def fetch_patch_notes(limit=5,offset=0,detail=True):
                 note = {
                   'title': blog['title'],
                   'author': blog['author'],
-                  'image': blog['shareImage'],
+                  'image': blog['image'],
                   'date': blog['date'],
                   'short': html2text.html2text(blog['short']),
                   'slug': blog['slug'],
