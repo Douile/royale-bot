@@ -192,6 +192,8 @@ class Database(Postgres):
         else:
             exists = True
         return exists
+    def delete_server(self,server_id):
+        self.run("DELETE FROM server_data WHERE server_id=%(id)s",parameters={'id':server_id})
 
     # server backgrounds
     def add_server_background(self,server_id,background_url=None,type=None):
