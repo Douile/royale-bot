@@ -128,7 +128,7 @@ client.database = sql.Database(defaults_database, url=DATABASE_URL)
 builtins.client = client
 
 @asyncio.coroutine
-def autoshop(fnbr_key): # add fnbr not accessable fallback
+def autoshop(): # add fnbr not accessable fallback
     logger = logging.getLogger('autoshop')
     yield from client.wait_until_ready()
     vote_link = 'https://discordbots.org/bot/{}/vote'.format(client.id)
@@ -142,10 +142,10 @@ def autoshop(fnbr_key): # add fnbr not accessable fallback
                 if 'next_shop' in server:
                     nextshop = server['next_shop']
                 if nextshop == None:
-                    nextshop = time.mktime(datetime.utcnow().utctimetuple())
+                    nextshop = time.mktime(datetime.now().utctimetuple())
                 if now >= nextshop:
                     if shopdata == None:
-                        shopdata = yield from shop.getShopData(fnbr_key)
+                        shopdata = yield from shop.getShopData(KEY_FNBR)
                     if shopdata.type == 'shop':
                         rawtime = shop.getTime(shopdata.data.date)
                         bgs = server.get('backgrounds',{})
@@ -468,7 +468,7 @@ if SHARD_COUNT > 5:
     elif SHARD_NO == 5:
         client.loop.create_task(dbl_api())
 else:
-    client.loop.create_task(autoshop(KEY_FNBR))
+    client.loop.create_task(autoshop())
     client.loop.create_task(autostatus())
     client.loop.create_task(autonews())
     client.loop.create_task(handle_queue())
