@@ -151,7 +151,7 @@ def autoshop(fnbr_key): # add fnbr not accessable fallback
                         bgs = server.get('backgrounds',{})
                         bgs_s = bgs.get('shop',[])
                         file = yield from shop.generate(shopdata,bgs_s,serverid)
-                        content = "Data from <https://fnbr.co/>\nVote for this bot here: <{}>".format(vote_link)
+                        content = "Data from <https://fnbr.co/>\nVote for this bot here: <{0}>".format(vote_link)
                         nextshoptime = round(time.mktime(rawtime.utctimetuple()) + (60*60*24))
                         try:
                             yield from client.send_file(discord.Object(server['channels']['autoshop']),file,content=content)
@@ -165,7 +165,7 @@ def autoshop(fnbr_key): # add fnbr not accessable fallback
                         except:
                             error = traceback.format_exc()
                             logger.error('Error sending shop: %s', error)
-                        yield from asyncio.sleep(0.5)
+                        yield from asyncio.sleep(1)
                     else:
                         logger.error('Error getting shop data %s: %s', str(shopdata.error), str(shopdata.json))
                         shopdata = None
@@ -239,7 +239,7 @@ def autostatus():
                 except:
                     error = traceback.format_exc()
                     logger.error('Error updating server info %s', error)
-                yield from asyncio.sleep(0.5)
+                yield from asyncio.sleep(1)
         yield from asyncio.sleep(60*2)
 
 @asyncio.coroutine
@@ -263,7 +263,7 @@ def autonews():
             if 'autonews' in server['channels']:
                 for embed in embeds:
                     yield from client.send_message(discord.Object(server['channels']['autonews']),embed=embed)
-                yield from asyncio.sleep(0.5)
+                yield from asyncio.sleep(1)
         yield from asyncio.sleep(60*10)
 
 @asyncio.coroutine
