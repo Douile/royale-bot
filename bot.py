@@ -131,6 +131,7 @@ builtins.client = client
 def autoshop(): # add fnbr not accessable fallback
     logger = logging.getLogger('autoshop')
     yield from client.wait_until_ready()
+    vote_link = 'https://discordbots.org/bot/{0}/vote'.format(client.id)
     logger.info('Autoshop started')
     while not client.is_closed:
         shopdata = None
@@ -150,7 +151,7 @@ def autoshop(): # add fnbr not accessable fallback
                         bgs = server.get('backgrounds',{})
                         bgs_s = bgs.get('shop',[])
                         file = yield from shop.generate(shopdata,bgs_s,serverid)
-                        content = "Data from <https://fnbr.co/>\nVote for this bot here:"
+                        content = "Data from <https://fnbr.co/>\nVote for this bot here: <{0}>".format(vote_link)
                         nextshoptime = round(time.mktime(rawtime.utctimetuple()) + (60*60*24))
                         try:
                             yield from client.send_file(discord.Object(server['channels']['autoshop']),file,content=content)
