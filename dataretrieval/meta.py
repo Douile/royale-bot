@@ -73,7 +73,7 @@ def getPatchNotes(limit=5,offset=0,detail=True):
                 url = 'https://www.epicgames.com/fortnite/en-US/news/{0}'.format(blog['slug'])
                 note = {'title':blog['title'],
                 'author':blog['author'],
-                'image':blog['shareImage'],
+                'image':blog['image'],
                 'date':blog['date'],
                 'short':html2text.html2text(blog['short']),
                 'slug':blog['slug'],
