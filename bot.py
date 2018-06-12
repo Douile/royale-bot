@@ -135,7 +135,7 @@ def autoshop(): # add fnbr not accessable fallback
     logger.info('Autoshop started')
     while not client.is_closed:
         shopdata = None
-        for serverd in client.database.servers:
+        for serverd in client.servers:
             serverid = serverd.id
             server = client.database.server_info(serverid,backgrounds=True,channels=True)
             if 'autoshop' in server['channels']:
