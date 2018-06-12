@@ -200,8 +200,14 @@ def autostatus():
         #    cache = json.loads(cache_raw['status'])
         # else:
         #    cache = {}
-        data = yield from meta.getStatus()
-        logger.debug('Fetched status data (online: %s, services: %s)', data['online'], data['services'])
+        try:
+            data = yield from meta.getStatus()
+            logger.debug('Fetched status data (online: %s, services: %s)', data['online'], data['services'])
+        except:
+            error = traceback.format_exc()
+            logger.error('Error getting server status')
+            yield from asyncio.sleep(5)
+            continue
         # changed = changes(cache,data)
         # client.database.set_cache("status", json.dumps(data), once=True)
         # servicechange = []
