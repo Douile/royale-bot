@@ -131,7 +131,7 @@ builtins.client = client
 def autoshop(): # add fnbr not accessable fallback
     logger = logging.getLogger('autoshop')
     yield from client.wait_until_ready()
-    vote_link = 'https://discordbots.org/bot/{0}/vote'.format(client.id)
+    vote_link = 'https://discordbots.org/bot/{0}/vote'.format(client.user.id)
     logger.info('Autoshop started')
     while not client.is_closed:
         shopdata = None
