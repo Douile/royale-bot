@@ -54,8 +54,11 @@ class Background:
         if self.color != None:
             image = PIL.Image.new('RGBA',self.size,color=self.color)
         elif self.url != None:
-            image = yield from self.collectImage(self.url)
-            image = yield from self.reCropImage(image,self.size)
+            try:
+                image = yield from self.collectImage(self.url)
+                image = yield from self.reCropImage(image,self.size)
+            except:
+                image = PIL.Image.new('RGBA',self.size,color=self.color)
         return image
     @staticmethod
     @asyncio.coroutine
