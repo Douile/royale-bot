@@ -58,7 +58,7 @@ class Background:
                 image = yield from self.collectImage(self.url)
                 image = yield from self.reCropImage(image,self.size)
             except:
-                image = PIL.Image.new('RGBA',self.size,color=self.color)
+                image = PIL.Image.new('RGBA',self.size,color=(0,0,0,0))
         return image
     @staticmethod
     @asyncio.coroutine
