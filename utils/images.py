@@ -98,4 +98,5 @@ class Background:
             nw = round(image.width / rh)
             nh = size[1]
         image = image.resize((nw,nh))
+        logging.getLogger('bg-resize').debug('Resized background o:(%d,%d) r:(%d,%d) n:(%d,%d)',image.width,image.height,rw,rh,nw,nh)
         return image
