@@ -81,7 +81,7 @@ class Stats(Command):
                 statsimage = yield from stats.generate(self.tn_key,name,platform,bgs_s)
                 if statsimage == None:
                     if linked:
-                        self.content = 'User not found using your linked account: `{0}` (`{1}`). You might need to update your linked account using `{prefix}link [username]`'.format(name,platform)
+                        self.content = 'User not found using your linked account: `{0}` (`{1}`). You might need to update your linked account using `{2}link [username]`'.format(name,platform,'{prefix}')
                     else:
                         self.content = 'User not found: `{0}` (`{1}`)'.format(name,platform)
                 else:
@@ -90,13 +90,13 @@ class Stats(Command):
                     self.file = 'generatedstats.png'
             except Exception as e:
                 if linked:
-                    self.content = "Error getting stats with your linked account: `{0}` (`{1}`). You might need to update your linked account using the `{prefix}link [username]` command.".format(name,platform)
+                    self.content = "Error getting stats with your linked account: `{0}` (`{1}`). You might need to update your linked account using the `{2}link [username]` command.".format(name,platform,'{prefix}')
                 else:
                     self.content = "Error getting stats for `{0}` (`{1}`)".format(name,platform)
                 logger.error(traceback.format_exc())
         else:
             if linked:
-                self.content = 'Your linked account name `{0}` (`{1}`) is too short please relink using `{prefix}link [username]`'.format(name,platform)
+                self.content = 'Your linked account name `{0}` (`{1}`) is too short please relink using `{2}link [username]`'.format(name,platform,'{prefix}')
             else:
                 self.content = '<@!{author}> you must link your account using {prefix}link [username], or just enter your name in this command.'
 class Matches(Command):
