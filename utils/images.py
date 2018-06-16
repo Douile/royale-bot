@@ -103,4 +103,12 @@ class Background:
             nh = size[1]
         image = image.resize((nw,nh))
         logging.getLogger('bg-resize').debug('Resized background o:(%d,%d) r:(%d,%d) n:(%d,%d)',image.width,image.height,rw,rh,nw,nh)
+        if image.width > size[0]:
+            left = round((image.width - size[0]) / 2)
+            right = left + size[0]
+            image.crop((left,0,right,image.height))
+        if image.height > size[1]:
+            top = round((image.height - size[1]) / 2)
+            bottom = top + size[1]
+            image.crop((0,top,image.width,bottom))
         return image
