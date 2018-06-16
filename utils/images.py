@@ -95,7 +95,7 @@ class Background:
         #     image = image.resize(size)
         rw = image.width / size[0]
         rh = image.height / size[1]
-        if rw > rh:
+        if rh > rw:
             nh = round(image.height / rw)
             nw = size[0]
         else:
