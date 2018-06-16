@@ -3,6 +3,7 @@ import asyncio
 import aiohttp
 from io import BytesIO
 import PIL.Image
+import traceback
 
 def radial_gradient(draw,width,height,color_inner,color_outer): # will overite everything in image
     """Creates a radial gradient on an image. Might be slow"""
@@ -58,6 +59,8 @@ class Background:
                 image = yield from self.collectImage(self.url)
                 image = yield from self.reCropImage(image,self.size)
             except:
+                error = traceback.format_exc()
+                logging.getLogger('bg-generator').error('Error collecting image: %s', error)
                 image = PIL.Image.new('RGBA',self.size,color=(0,0,0,0))
         return image
     @staticmethod
