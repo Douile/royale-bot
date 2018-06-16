@@ -93,7 +93,7 @@ class Stats(Command):
                 logger.error(traceback.format_exc())
         else:
             if linked:
-                self.content 'Your linked account name `{0}` (`{1}`) is too short please relink using `{prefix}link [username]`'
+                self.content = 'Your linked account name `{0}` (`{1}`) is too short please relink using `{prefix}link [username]`'.format(name,platform)
             else:
                 self.content = '<@!{author}> you must link your account using {prefix}link [username], or just enter your name in this command.'
 class Matches(Command):
