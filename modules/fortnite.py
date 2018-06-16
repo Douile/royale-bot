@@ -72,7 +72,7 @@ class Stats(Command):
         if match is not None:
             args = args[len(match):]
             type = 'curr_season'
-        platform, name = yield from parse_fortnite_user(args, msg.author.id, msg.server.id, self.sql)
+        platform, name, linked = yield from parse_fortnite_user(args, msg.author.id, msg.server.id, self.sql)
         if len(name.strip()) > 0:
             try:
                 logger.debug('Stats command name: %s platform %s', name, platform)
@@ -86,10 +86,16 @@ class Stats(Command):
                     statsimage.save('generatedstats.png')
                     self.file = 'generatedstats.png'
             except Exception as e:
-                self.content = "Error getting stats"
+                if linked:
+                    self.content = "Error getting stats with your linked account: `{0}` (`{1}`). You might need to update your linked account using the `{prefix}link [username]` command.".format(name,platform)
+                else:
+                    self.content = "Error getting stats for `{0}` (`{1}`)".format(name,platform)
                 logger.error(traceback.format_exc())
         else:
-            self.content = '<@!{author}> you must link your account using {prefix}link [username], or just enter your name in this command.'
+            if linked:
+                self.content 'Your linked account name `{0}` (`{1}`) is too short please relink using `{prefix}link [username]`'
+            else:
+                self.content = '<@!{author}> you must link your account using {prefix}link [username], or just enter your name in this command.'
 class Matches(Command):
     def __init__(self,tn_key,sql):
         super().__init__(name='matches',permission='stats')
@@ -321,6 +327,7 @@ class StatsEmbed(discord.Embed):
 
 @asyncio.coroutine
 def parse_fortnite_user(args, author, server, sql):
+    linked = False
     try:
         s = args.index(' ')
         platform = args[:s].lower()
@@ -339,12 +346,14 @@ def parse_fortnite_user(args, author, server, sql):
         data = sql.get_link(author)
         if data != None:
             name = data['user_nickname']
+            linked = True
     else:
         try:
             user = parse_user_at(name,server)
             data = sql.get_link(user.id)
             if data != None:
                 name = data['user_nickname']
+                linked = True
         except RuntimeError:
             pass
-    return platform, name
+    return platform, name, linked
