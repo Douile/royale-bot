@@ -108,10 +108,10 @@ class Background:
             left = round((image.width - size[0]) / 2)
             right = left + size[0]
             logger.debug('Cropped horizontal ow: %d left: %d right: %d',image.width,left,right)
-            image.crop((left,0,right,image.height))
+            image = image.crop((left,0,right,image.height))
         if image.height > size[1]:
             top = round((image.height - size[1]) / 2)
             bottom = top + size[1]
             logger.debug('Cropped vertical oh: %d top: %d bottom: %d',image.height,top,bottom)
-            image.crop((0,top,image.width,bottom))
+            image = image.crop((0,top,image.width,bottom))
         return image
