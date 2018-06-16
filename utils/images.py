@@ -68,7 +68,7 @@ class Background:
     @asyncio.coroutine
     def collectImage(url):
         session = aiohttp.ClientSession()
-        response = yield from session.get(url)
+        response = yield from session.get(url,headers={'Accept':'image/*'})
         content = yield from response.read()
         response.close()
         yield from session.close()
