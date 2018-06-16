@@ -80,7 +80,10 @@ class Stats(Command):
                 bgs_s = bgs.get('stat',[])
                 statsimage = yield from stats.generate(self.tn_key,name,platform,bgs_s)
                 if statsimage == None:
-                    self.content = '<@!{author}> User not found'
+                    if linked:
+                        self.content = 'User not found using your linked account: `{0}` (`{1}`). You might need to update your linked account using `{prefix}link [username]`'.format(name,platform)
+                    else:
+                        self.content = 'User not found: `{0}` (`{1}`)'.format(name,platform)
                 else:
                     self.typing = True
                     statsimage.save('generatedstats.png')
