@@ -48,6 +48,8 @@ if len(sys.argv) > 2:
     except ValueError:
         pass
 VERSION = {'name': BOT_NAME, 'version_name': '1.0.0', 'revison': getEnv('HEROKU_RELEASE_VERSION', 'v1'), 'description': getEnv('HEROKU_SLUG_DESCRIPTION', ''), 'lines': LINE_COUNT, 'shards': SHARD_COUNT}
+RATE_LIMIT_TIME = 0.5
+
 
 # functions
 def checkPermissions(channel,type,settings):
@@ -177,7 +179,7 @@ def autoshop(): # add fnbr not accessable fallback
                         except:
                             error = traceback.format_exc()
                             logger.error('Error sending shop: %s', error)
-                        yield from asyncio.sleep(1)
+                        yield from asyncio.sleep(RATE_LIMIT_TIME)
                     else:
                         logger.error('Error getting shop data %s: %s', str(shopdata.error), str(shopdata.json))
                         shopdata = None
@@ -195,6 +197,7 @@ def autostatus():
     yield from client.wait_until_ready()
     logger.info('Autostatus started')
     while not client.is_closed:
+        update_time = 120
         # cache_raw = client.database.get_cache("status", once=True)
         # if 'status' in cache_raw:
         #    cache = json.loads(cache_raw['status'])
@@ -257,8 +260,10 @@ def autostatus():
                 except:
                     error = traceback.format_exc()
                     logger.error('Error updating server info %s', error)
-                yield from asyncio.sleep(1)
-        yield from asyncio.sleep(60*2)
+                update_time -= RATE_LIMIT_TIME
+                yield from asyncio.sleep(RATE_LIMIT_TIME)
+        if update_time > 0:
+            yield from asyncio.sleep(update_time)
 
 @asyncio.coroutine
 def autonews():
@@ -266,6 +271,7 @@ def autonews():
     yield from client.wait_until_ready()
     logger.info('Autonews started')
     while not client.is_closed:
+        update_time = 300
         cache = client.database.get_cache("news",once=False)
         if cache == None:
             cache = []
@@ -282,8 +288,10 @@ def autonews():
             if 'autonews' in server['channels']:
                 for embed in embeds:
                     yield from client.send_message(discord.Object(server['channels']['autonews']),embed=embed)
-                yield from asyncio.sleep(1)
-        yield from asyncio.sleep(60*10)
+                update_time -= RATE_LIMIT_TIME
+                yield from asyncio.sleep(RATE_LIMIT_TIME)
+        if update_time > 0:
+            yield from asyncio.sleep(update_time)
 
 @asyncio.coroutine
 def handle_queue():
