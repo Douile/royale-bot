@@ -77,7 +77,7 @@ class Background:
     @staticmethod
     @asyncio.coroutine
     def reCropImage(image,size):
-        logger = logging.getLogger('bg-resize')
+        logger = logging.getLogger('bg-generator')
         # if image.height / size[1] > image.width / size[0]:
         #     width = size[0]
         #     height = round(size[1] / image.width * image.height)
