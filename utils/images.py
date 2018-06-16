@@ -78,22 +78,6 @@ class Background:
     @asyncio.coroutine
     def reCropImage(image,size):
         logger = logging.getLogger('bg-generator')
-        # if image.height / size[1] > image.width / size[0]:
-        #     width = size[0]
-        #     height = round(size[1] / image.width * image.height)
-        #     image = image.resize((width,height))
-        #     top = (height - size[1])/2
-        #     bottom = height - top
-        #     image = image.crop((0,top,width,bottom))
-        # elif image.width / size[0] > image.height / size[1]:
-        #     height = size[1]
-        #     width = round(size[0] / image.height * image.width)
-        #     image = image.resize((width,height))
-        #     left = (width - size[0])/2
-        #     right = width - left
-        #     image = image.crop((left,0,right,height))
-        # elif image.width / size[0] == image.height / size[1]:
-        #     image = image.resize(size)
         rw = image.width / size[0]
         rh = image.height / size[1]
         if rh > rw:
