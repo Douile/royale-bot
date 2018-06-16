@@ -98,7 +98,7 @@ class Stats(Command):
             if linked:
                 self.content = 'Your linked account name `{0}` (`{1}`) is too short please relink using `{2}link [username]`'.format(name,platform,'{prefix}')
             else:
-                self.content = '<@!{author}> you must link your account using {prefix}link [username], or just enter your name in this command.'
+                self.content = '<@!{author}> you must link your account using `{prefix}link [username]`, or just enter your name in this command.'
 class Matches(Command):
     def __init__(self,tn_key,sql):
         super().__init__(name='matches',permission='stats')
