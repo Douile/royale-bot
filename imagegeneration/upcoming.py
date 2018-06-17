@@ -12,6 +12,8 @@ import logging
 from dataretrieval import fnbr
 from .shop import ItemImage
 
+FONT = "assets/burbank.ttf"
+
 class UpcomingImage:
     def __init__(self, size=200, padding=20, fontsize=40, rowsize=5, icount=5, background=None):
         self.size = size
