@@ -3,6 +3,7 @@ import asyncio
 from urllib.parse import quote_plus
 import re
 import bs4
+import logging
 
 # constants
 USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:60.0) Gecko/20100101 Firefox/60.0'
@@ -114,7 +115,7 @@ class Seen(APIRequest):
                 if len(tags) > 0:
                 	CSRF_TOKEN = tags[0].attrs['content']
             main.close()
-            print(CSRF_TOKEN)
+            logging.getLogger('fnbr').debug('New csrf token: %s',CSRF_TOKEN)
         json = None
         response = None
         if CSRF_TOKEN is not None:
