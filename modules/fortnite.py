@@ -16,7 +16,7 @@ class FortniteModule(Module):
         self.commands = {
             'shop': Shop(fnbr_key),
             'stats': Stats(tn_key,sql),
-            'matches': Matches(tn_key,sql),
+            'upcoming': Upcoming(fnbr_key),
             'setbackground': SetBackgrounds(),
             'news': News(),
             'servers': Servers(),
@@ -55,6 +55,30 @@ class Shop(Command):
         except Exception as e:
             self.content = "Error generating image"
             logger.error(traceback.format_exc())
+class Upcoming(Command):
+    def __init__(self,fnbr_key):
+        super().__init__(name="upcoming",description='Print currently found upcoming fortnite items. `{prefix}upcoming`')
+        self.permission = 'shop'
+        self.fnbr_key = fnbr_key
+    @asyncio.coroutine
+    def run(self,command,msg,settings):
+        logger = logging.getLogger('upcomming-command')
+        try:
+            data = yield from upcoming.getData(self.fnbr_key)
+            if data.status == 200:
+                bgs = settings.get('backgrounds',{})
+                bgs_s = bgs.get('shop',[])
+                logger.debug('Generating shop')
+                file = yield from upcoming.generate(data,bgs_s,msg.server.id)
+                self.typing = True
+                self.file = file
+                self.content = "Data from <https://fnbr.co>"
+            else:
+                self.content = "Sorry there was an api error: {0}. All data from <https://fnbr.co>".format(shopdata.status)
+        except Exception as e:
+            self.content = "Error generating image"
+            logger.error(traceback.format_exc())
+
 class Stats(Command):
     def __init__(self,tn_key,sql):
         super().__init__(name='stats',description='Gets the fortnite stats of a player. `{prefix}stats [platform] [player]` if you do not set platform it will default to pc, if you are linked and do not enter a player name it will default to your linked account, you can also @metion another linked user to default to their linked account.',permission='stats',aliases=['{prefix}'])

@@ -20,6 +20,7 @@ IMAGE_TYPE = "image"
 SHOP_TYPE = "shop"
 LIST_TYPE = "list"
 SEEN_TYPE = "seen"
+UPCOMING_TYPE = "upcoming"
 
 CSRF_TOKEN = None
 CSRF_COOKIE = aiohttp.CookieJar()
@@ -77,6 +78,9 @@ class Images(APIRequest):
 class Shop(APIRequest):
     def __init__(self,key):
         super().__init__(key,"/shop",{})
+class Upcoming(APIRequest):
+    def __init__(self,key):
+        super().__init__(key,'/upcoming',{})
 class Stat(APIRequest):
     def __init__(self,key):
         super().__init__(key,"/stats",{})
@@ -167,11 +171,14 @@ class APIResponse():
                 except KeyError:
                     self.error = response.reason
             elif '/images' in url:
-                    self.type = IMAGE_TYPE
-                    self.data = ImageResponse(self.json)
+                self.type = IMAGE_TYPE
+                self.data = ImageResponse(self.json)
             elif '/shop' in url:
-                    self.type = SHOP_TYPE
-                    self.data = ShopResponse(self.json)
+                self.type = SHOP_TYPE
+                self.data = ShopResponse(self.json)
+            elif '/upcoming' in url:
+                self.type = UPCOMING_TYPE
+                self.data = UpcomingResponse(self.json)
             elif '/stats' in url:
                 self.type = STATS_TYPE
                 self.data = StatResponse(self.json)
@@ -190,6 +197,11 @@ class ShopResponse():
         for i in range(0,len(json['data']['daily'])):
             self.daily.append(Item(json['data']['daily'][i]))
         self.date = json['data']['date']
+class UpcomingResponse():
+    def __init__(self,json={}):
+        self.items = []
+        for item_raw in json.get('data',[]):
+            self.items.append(Item(item_raw))
 class StatResponse():
     def __init__(self,json={}):
         self.totalCosmetics = json['totalCosmetics']
