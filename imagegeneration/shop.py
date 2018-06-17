@@ -54,7 +54,7 @@ class ShopImage:
             cleft = left
             for image in set:
                 r = image.resize((self.size,self.size))
-                print('Image at ',cleft,ctop)
+                logging.getLogger('shop-generator').debug('Item image at (%d,%d)',cleft,ctop)
                 self.background.paste(r,(round(cleft),round(ctop)),r)
                 cleft += self.size + self.padding
             ctop += self.size + self.padding
