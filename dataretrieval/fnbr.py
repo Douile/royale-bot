@@ -97,6 +97,7 @@ class Seen(APIRequest):
     def __init__(self, id=''):
         super().__init__(None,"/seen/",{})
         self.item_id = id
+        self.retries = 0
     def url(self):
         return BASEURL + self.endpoint + self.item_id + self.parseArguments()
     @asyncio.coroutine
@@ -120,6 +121,10 @@ class Seen(APIRequest):
             url = self.url()
             headers = {'csrf-token':CSRF_TOKEN}
             response = yield from client.get(url,headers=headers)
+            while response.status != 200 and self.retries < 5:
+                yield from asyncio.sleep(0.1)
+                self.retries += 1
+                response = yield from client.get(url,headers=headers)
             try:
                 json = yield from response.json()
             except:
