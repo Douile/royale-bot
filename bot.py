@@ -287,7 +287,11 @@ def autonews():
             server = client.database.server_info(serverid,channels=True)
             if 'autonews' in server['channels']:
                 for embed in embeds:
-                    yield from client.send_message(discord.Object(server['channels']['autonews']),embed=embed)
+                    try:
+                        yield from client.send_message(discord.Object(server['channels']['autonews']),embed=embed)
+                    except:
+                        error = traceback.format_exc()
+                        logger.error('Unable to send news update: %s',error)
                 update_time -= RATE_LIMIT_TIME
                 yield from asyncio.sleep(RATE_LIMIT_TIME)
         if update_time > 0:
