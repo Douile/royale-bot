@@ -271,10 +271,10 @@ class Database(Postgres):
             user_data = None
         print('Got link {}: {}'.format(user_id,user_data))
         return user_data
-    def set_link(self,user_id,user_nick):
+    def set_link(self,user_id,user_nick,user_plat):
         print('Setting link {} {}'.format(user_id,user_nick))
-        self.run('INSERT INTO user_links (user_id,user_nickname) VALUES (%(id)s,%(nick)s) ON CONFLICT (user_id)\
-        DO UPDATE SET user_nickname = %(nick)s',parameters={'id':user_id,'nick':user_nick})
+        self.run('INSERT INTO user_links (user_id,user_nickname,user_platform) VALUES (%(id)s,%(nick)s,%(plat)s) ON CONFLICT (user_id)\
+        DO UPDATE SET user_nickname = %(nick)s, user_platform=%(plat)s',parameters={'id':user_id,'nick':user_nick,'plat':user_plat})
     def delete_link(self,user_id):
         print('Deleting link {}'.format(user_id))
         self.run('DELETE FROM user_links WHERE user_id=%(id)s',parameters={'id':user_id})
