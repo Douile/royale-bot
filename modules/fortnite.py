@@ -350,6 +350,7 @@ def parse_fortnite_user(args, author=None, server=None, sql=None):
             data = sql.get_link(author)
             if data != None:
                 name = data['user_nickname']
+                platform = data['user_platform']
                 linked = True
         else:
             try:
@@ -357,6 +358,7 @@ def parse_fortnite_user(args, author=None, server=None, sql=None):
                 data = sql.get_link(user.id)
                 if data != None:
                     name = data['user_nickname']
+                    platform = data['user_platform']
                     linked = True
             except RuntimeError:
                 pass
