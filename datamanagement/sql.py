@@ -171,7 +171,7 @@ class Database(Postgres):
                 info['channels'][channel['channel_type']] = channel['channel_id']
         return info
     def set_server_info(self,server_id,**kwargs):
-        print("set_server_info: server_id: {server_id}, server_name: {server_name}, last_help_msg: {last_help_msg}, last_help_channel: {last_help_channel}, next_shop: {next_shop}, latest_shop: {latest_shop}, prefix: {prefix}, last_status_msg: {last_status_msg}, last_status_channel: {last_status_channel}".format_map(ArgMap(kwargs)))
+        #print("set_server_info: server_id: {server_id}, server_name: {server_name}, last_help_msg: {last_help_msg}, last_help_channel: {last_help_channel}, next_shop: {next_shop}, latest_shop: {latest_shop}, prefix: {prefix}, last_status_msg: {last_status_msg}, last_status_channel: {last_status_channel}".format_map(ArgMap(kwargs)))
         if not self.is_server(server_id):
             self.run("INSERT INTO server_data (server_id) VALUES (%(id)s)",parameters={'id':server_id})
         cols = ServerData().column_names

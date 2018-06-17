@@ -262,6 +262,7 @@ def autostatus():
                     logger.error('Error updating server info %s', error)
                 update_time -= RATE_LIMIT_TIME
                 yield from asyncio.sleep(RATE_LIMIT_TIME)
+        logger.info('Autostatus update complete checking again in %ds',update_time)
         if update_time > 0:
             yield from asyncio.sleep(update_time)
 
@@ -294,6 +295,7 @@ def autonews():
                         logger.error('Unable to send news update: %s',error)
                 update_time -= RATE_LIMIT_TIME
                 yield from asyncio.sleep(RATE_LIMIT_TIME)
+        logger.info('Auto news update complete checking again in %ds',update_time)
         if update_time > 0:
             yield from asyncio.sleep(update_time)
 
