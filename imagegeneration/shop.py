@@ -8,6 +8,7 @@ from random import choice
 from utils import arrays, integers, images
 import asyncio
 from os.path import isfile
+import logging
 
 from dataretrieval import fnbr
 
