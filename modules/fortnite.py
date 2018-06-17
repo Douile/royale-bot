@@ -75,6 +75,7 @@ class Stats(Command):
         user = yield from parse_fortnite_user(args, msg.author.id, msg.server.id, self.sql)
         name = user.get('name')
         platform = user.get('platform')
+        linked = user.get('linked')
         if len(name.strip()) > 0:
             try:
                 logger.debug('Stats command name: %s platform %s', name, platform)
