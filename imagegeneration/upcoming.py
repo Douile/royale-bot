@@ -32,20 +32,30 @@ class UpcomingImage:
     def generate(self,items):
         self.background = yield from self.background_generator.generate()
         yield from self.drawImages(items)
+        yield from self.drawText()
         return self.background
     @asyncio.coroutine
     def drawImages(self, items):
         sets = arrays.split(items,self.rowsize)
-        ctop = self.fheight+self.padding
+        ctop = self.fheight+self.padding*2
         for set in sets:
             width = (len(set)*self.size)+((len(set)-1)*self.padding)
             cleft = self.padding
             for image in set:
                 r = image.resize((self.size,self.size))
-                logging.getLogger('shop-generator').debug('Item image at (%d,%d)',cleft,ctop)
+                logging.getLogger('upcoming-generator').debug('Item image at (%d,%d)',cleft,ctop)
                 self.background.paste(r,(round(cleft),round(ctop)),r)
                 cleft += self.size + self.padding
             ctop += self.size + self.padding
+    @asyncio.coroutine
+    def drawText(self):
+        color = (255,255,255,255)
+        text = 'Upcoming items'
+        width = self.font.getsize(text)[0]
+        left = round((self.background.width-width)/2)
+        top = round(self.padding/2)
+        draw = PIL.ImageDraw.Draw(self.background)
+        draw.text((left,top),text,font=self.font,fill=color)
 
 @asyncio.coroutine
 def generate(data,backgrounds=[],serverid=None):
@@ -81,7 +91,7 @@ def generate(data,backgrounds=[],serverid=None):
     return fname
 @asyncio.coroutine
 def getData(apikey):
-    print("Getting shop data")
+    print("Getting upcoming data")
     req = fnbr.Upcoming(apikey)
     data = yield from req.send()
     return data
