@@ -139,7 +139,7 @@ class Link(Command):
     def run(self,command,msg,settings):
         command_size = len('link ')
         if len(command) > command_size:
-            user = parse_fortnite_user(command[command_size:])
+            user = yield from parse_fortnite_user(command[command_size:])
             name = user.get('name')
             platform = user.get('platform')
             if len(name.strip()) > 0:
