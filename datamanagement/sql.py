@@ -113,6 +113,7 @@ class Links(Table):
         self.add_column('_id',type='int',primary_key=True,generate=True)
         self.add_column('user_id',type='text',unique=True)
         self.add_column('user_nickname',type='text')
+        self.add_column('user_platform',type='text')
 
 class Database(Postgres):
     def __init__(self,defaults=False,*,url):
