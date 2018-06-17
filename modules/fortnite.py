@@ -72,7 +72,9 @@ class Stats(Command):
         if match is not None:
             args = args[len(match):]
             type = 'curr_season'
-        platform, name, linked = yield from parse_fortnite_user(args, msg.author.id, msg.server.id, self.sql)
+        user = yield from parse_fortnite_user(args, msg.author.id, msg.server.id, self.sql)
+        name = user.get('name')
+        platform = user.get('platform')
         if len(name.strip()) > 0:
             try:
                 logger.debug('Stats command name: %s platform %s', name, platform)
@@ -111,7 +113,9 @@ class Matches(Command):
             args = command[len('matches'):].strip()
         else:
             args = command.strip()
-        platform, name = yield from parse_fortnite_user(args, msg.author.id, msg.server.id, self.sql)
+        user = yield from parse_fortnite_user(args, msg.author.id, msg.server.id, self.sql)
+        name = user.get('name')
+        platform = user.get('platform')
         try:
             logger.debug('Stats command name: %s platform %s', name, platform)
             bgs = settings.get('backgrounds',{})
@@ -135,7 +139,9 @@ class Link(Command):
     def run(self,command,msg,settings):
         command_size = len('link ')
         if len(command) > command_size:
-            name, platform, linked = parse_fortnite_user(command[command_size:])
+            user = parse_fortnite_user(command[command_size:])
+            name = user.get('name')
+            platform = user.get('platform')
             if len(name.strip()) > 0:
                 self.content = '<@!{2}> Your account is now linked to `{0}` (`{1}`)'.format(name,platform,'{author}')
                 try:
@@ -362,4 +368,4 @@ def parse_fortnite_user(args, author=None, server=None, sql=None):
                     linked = True
             except RuntimeError:
                 pass
-    return platform, name, linked
+    return {'platform':platform, 'name':name, 'linked':linked}
