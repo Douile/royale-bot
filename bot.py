@@ -19,7 +19,7 @@ from dataretrieval import meta
 from imagegeneration import shop
 from datamanagement import sql
 from utils import linecount
-from utils.times import minute_string as parse_second_time
+from utils.times import day_string as parse_second_time
 
 def getEnv(name,default=None):
     value = os.environ.get(name,None)

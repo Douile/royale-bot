@@ -30,3 +30,13 @@ def minute_string(timeSecs):
     seconds = timeSecs - (minutes*60)
     string = '{0}m {1}s'.format(minutes,seconds)
     return string
+
+def day_string(timeSecs):
+    minutes = floor(timeSecs/60)
+    seconds = timeSecs - (minutes)*60
+    hours = floor(minutes/60)
+    minutes -= hours*60
+    days = floor(hours/24)
+    hours -= days*24
+    string = '{0}d {1}h {2}m {3}s'.format(days,hours,minutes,seconds)
+    return string
