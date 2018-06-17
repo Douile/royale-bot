@@ -19,6 +19,7 @@ from dataretrieval import meta
 from imagegeneration import shop
 from datamanagement import sql
 from utils import linecount
+from utils.times import minute_string as parse_second_time
 
 def getEnv(name,default=None):
     value = os.environ.get(name,None)
@@ -188,7 +189,7 @@ def autoshop(): # add fnbr not accessable fallback
             time_until_next = 1
         else:
             time_until_next += 60
-        logger.info("Autoshop now:%d next:%d", now, nextshop)
+        logger.info("Autoshop now:%d next:%d updating in: %s", now, nextshop, parse_second_time(nextshop-now))
         yield from asyncio.sleep(time_until_next)
 
 @asyncio.coroutine
@@ -262,7 +263,7 @@ def autostatus():
                     logger.error('Error updating server info %s', error)
                 update_time -= RATE_LIMIT_TIME
                 yield from asyncio.sleep(RATE_LIMIT_TIME)
-        logger.info('Autostatus update complete checking again in %ds',update_time)
+        logger.info('Autostatus update complete checking again in %s', parse_second_time(update_time))
         if update_time > 0:
             yield from asyncio.sleep(update_time)
 
@@ -295,7 +296,7 @@ def autonews():
                         logger.error('Unable to send news update: %s',error)
                 update_time -= RATE_LIMIT_TIME
                 yield from asyncio.sleep(RATE_LIMIT_TIME)
-        logger.info('Auto news update complete checking again in %ds',update_time)
+        logger.info('Auto news update complete checking again in %s', parse_second_time(update_time))
         if update_time > 0:
             yield from asyncio.sleep(update_time)
 

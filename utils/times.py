@@ -1,5 +1,6 @@
 from datetime import datetime
 from time import mktime
+from math import floor
 
 def isotime(string):
     if string.endswith('Z'):
@@ -23,3 +24,9 @@ def morning():
 def tommorow():
     m = morning()
     return m + 60*60*24
+
+def minute_string(timeSecs):
+    minutes = floor(timeSecs/60)
+    seconds = timeSecs - (minutes*60)
+    string = '{0}m {1}s'.format(minutes,seconds)
+    return string
