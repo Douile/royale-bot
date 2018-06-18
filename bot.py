@@ -64,9 +64,9 @@ def checkPermissions(channel,type,settings):
         p = False
     return p
 def get_prefix(settings):
-    prefix = settings.get('prefix','!')
+    prefix = settings.get('prefix','!rb ')
     if prefix == None:
-        prefix = '!'
+        prefix = '!rb '
     return prefix
 
 def changes(original={},new={}):

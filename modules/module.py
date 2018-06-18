@@ -145,7 +145,7 @@ class QueueAction:
 
 
 def get_prefix(settings):
-    prefix = settings.get('prefix','!')
+    prefix = settings.get('prefix','!rb ')
     if prefix == None:
         prefix = '!rb '
     return prefix
