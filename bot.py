@@ -374,6 +374,13 @@ def on_ready():
 
 @client.event
 @asyncio.coroutine
+def on_server_remove(server):
+    yield from client.database.delete_server(server.id)
+    loggging.getLogger(__name__).info('Deleted server %s (%s)',server.name,server.id)
+
+
+@client.event
+@asyncio.coroutine
 def on_server_join(server):
     client.database.set_server_info(server.id,server_name=server.name)
 
