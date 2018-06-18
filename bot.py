@@ -31,12 +31,13 @@ def getEnv(name,default=None):
     return value
 
 # constants
-LINE_COUNT = linecount.countlines('.')
+LINE_COUNT = 0
 
+SENTRY_URL = getEnv('SENTRY_URL','')
 KEY_DISCORD = getEnv("KEY_DISCORD")
 KEY_FNBR = getEnv("KEY_FNBR")
 KEY_TRACKERNETWORK = getEnv("KEY_TRACKERNETWORK")
-KEY_DBL = getEnv("KEY_DBL")
+KEY_DBL = getEnv("KEY_DBL",None)
 DATABASE_URL = getEnv("DATABASE_URL")
 BOT_NAME = getEnv("BOT_NAME", "FortniteData")
 TICKER_TIME = int(getEnv("TICKER_TIME", 30))
@@ -106,16 +107,15 @@ logging_config = {
             'class':'logging.StreamHandler',
             'formatter': 'verbose'
         },
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'formatter': 'verbose',
-            'filename': 'logs/bot.log'
+        'sentry': {
+            'level':'WARNING',
+            'class':'raven.handlers.logging.SentryHandler',
+            'dsn':SENTRY_URL
         }
     },
     'root': {
         'level': 'DEBUG',
-        'handlers': ['console', 'file'],
+        'handlers': ['console', 'sentry'],
     }
 }
 logging.config.dictConfig(logging_config)
