@@ -20,7 +20,7 @@ class FortniteModule(Module):
             'setbackground': SetBackgrounds(),
             'news': News(),
             'servers': Servers(),
-            'patchnotes': PatchNotes(),
+            #'patchnotes': PatchNotes(),
             'link': Link(sql),
             'unlink': UnLink(sql)
         }
