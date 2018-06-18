@@ -147,7 +147,7 @@ class QueueAction:
 def get_prefix(settings):
     prefix = settings.get('prefix','!')
     if prefix == None:
-        prefix = '!'
+        prefix = '!rb '
     return prefix
 
 def parse_user_at(text,serverid):
