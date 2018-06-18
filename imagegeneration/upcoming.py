@@ -58,7 +58,8 @@ class UpcomingImage:
         draw.text((left,top),text,font=self.font,fill=color)
 
 @asyncio.coroutine
-def generate(data,backgrounds=[],serverid=None):
+def generate_image(apikey):
+    data = yield from getData(apikey)
     items = []
     backupprice = 'https://image.fnbr.co/price/icon_vbucks.png'
     for item in data.data.items:
@@ -80,18 +81,17 @@ def generate(data,backgrounds=[],serverid=None):
         else:
             im = ItemImage(item.name,item.price,priceIcon,item.rarity,item.priceIconLink,512,count)
         items.append(im.out())
-    if len(backgrounds) > 0:
-        background = choice(backgrounds)
-    else:
-        background = None
-    image_generator = UpcomingImage(size=300, padding=40, fontsize=40, rowsize=5, icount=len(items), background=background)
+    image_generator = UpcomingImage(size=300, padding=40, fontsize=40, rowsize=5, icount=len(items), background=None)
     image = yield from image_generator.generate(items)
-    fname = 'upcoming.png'
-    image.save(fname)
-    return fname
+    return image
 @asyncio.coroutine
 def getData(apikey):
     print("Getting upcoming data")
     req = fnbr.Upcoming(apikey)
     data = yield from req.send()
     return data
+
+@asyncio.coroutine
+def generate(apikey,serverid,backgrounds):
+    f = yield from images.daily_cache_generator(generate_image,serverid,backgrounds,'upcoming',apikey)
+    return f

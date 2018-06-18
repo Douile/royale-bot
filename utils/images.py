@@ -3,6 +3,8 @@ import asyncio
 import aiohttp
 from io import BytesIO
 import PIL.Image
+from os.path import isfile
+from .times import morning
 import traceback
 import logging
 
@@ -99,3 +101,26 @@ class Background:
             logger.debug('Cropped vertical oh: %d top: %d bottom: %d',image.height,top,bottom)
             image = image.crop((0,top,image.width,bottom))
         return image
+
+@asyncio.coroutine
+def daily_cache_generator(generator,serverid,backgrounds,basename,*genargs): # improve efficiency
+    filename_overlay = '{0}-{1}.png'.format(basename,morning())
+    if isfile(filename_overlay):
+        overlay = PIL.Image.open(filename_overlay)
+    else:
+        overlay = yield from generator(*genargs)
+        overlay.save(filename_overlay)
+    if len(backgrounds) > 0:
+        filename_server = '{0}-{1}.png'.format(filename_overlay[:-4],serverid)
+        if isfile(filename_server):
+            filename_final = filename_server
+        else:
+            background = choice(backgrounds)
+            background_generator = Background((overlay.width,overlay.height),url=background)
+            output = yield from background_generator.generate()
+            output.paste(overlay,(0,0),overlay)
+            output.save(filename_server)
+            filename_final = filename_server
+    else:
+        filename_final = filename_overlay
+    return filename_final

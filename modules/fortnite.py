@@ -38,20 +38,27 @@ class Shop(Command):
     def run(self,command,msg,settings):
         logger = logging.getLogger('shop-command')
         try:
-            shopdata = yield from shop.getShopData(self.fnbr_key)
-            if shopdata.status == 200:
-                bgs = settings.get('backgrounds',{})
-                bgs_s = bgs.get('shop',[])
-                logger.debug('Generating shop')
-                file = yield from shop.generate(shopdata,bgs_s,msg.server.id)
-                self.typing = True
-                self.file = file
-                self.content = "Data from <https://fnbr.co>"
-                self.settings = {'latest_shop': file}
-            else:
-                self.content = "Sorry there was an api error: {0}. All data from <https://fnbr.co>".format(shopdata.status)
-                if 'latest_shop' in settings and settings['latest_shop'] != '':
-                    self.file = settings['latest_shop']
+            # shopdata = yield from shop.getShopData(self.fnbr_key)
+            # if shopdata.status == 200:
+            #     bgs = settings.get('backgrounds',{})
+            #     bgs_s = bgs.get('shop',[])
+            #     logger.debug('Generating shop')
+            #     file = yield from shop.generate(shopdata,bgs_s,msg.server.id)
+            #     self.typing = True
+            #     self.file = file
+            #     self.content = "Data from <https://fnbr.co>"
+            #     self.settings = {'latest_shop': file}
+            # else:
+            #     self.content = "Sorry there was an api error: {0}. All data from <https://fnbr.co>".format(shopdata.status)
+            #     if 'latest_shop' in settings and settings['latest_shop'] != '':
+            #         self.file = settings['latest_shop']
+            logger.debug('Generating')
+            bgs = settings.get('backgrounds',{})
+            bgs_s = bgs.get('shop',[])
+            file = yield from shop.generate(self.fnbr_key,msg.server.id,bgs_s)
+            self.typing = True
+            self.file = file
+            self.content = "Data from <https://fnbr.co>"
         except Exception as e:
             self.content = "Error generating image"
             logger.error(traceback.format_exc())
@@ -64,17 +71,24 @@ class Upcoming(Command):
     def run(self,command,msg,settings):
         logger = logging.getLogger('upcomming-command')
         try:
-            data = yield from upcoming.getData(self.fnbr_key)
-            if data.status == 200:
-                bgs = settings.get('backgrounds',{})
-                bgs_s = bgs.get('shop',[])
-                logger.debug('Generating shop')
-                file = yield from upcoming.generate(data,bgs_s,msg.server.id)
-                self.typing = True
-                self.file = file
-                self.content = "Data from <https://fnbr.co>"
-            else:
-                self.content = "Sorry there was an api error: {0}. All data from <https://fnbr.co>".format(shopdata.status)
+            # data = yield from upcoming.getData(self.fnbr_key)
+            # if data.status == 200:
+            #     bgs = settings.get('backgrounds',{})
+            #     bgs_s = bgs.get('shop',[])
+            #     logger.debug('Generating shop')
+            #     file = yield from upcoming.generate(data,bgs_s,msg.server.id)
+            #     self.typing = True
+            #     self.file = file
+            #     self.content = "Data from <https://fnbr.co>"
+            # else:
+            #     self.content = "Sorry there was an api error: {0}. All data from <https://fnbr.co>".format(shopdata.status)
+            logger.debug('Generating')
+            bgs = settings.get('backgrounds',{})
+            bgs_s = bgs.get('shop',[])
+            file = yield from upcoming.generate(self.fnbr_key,msg.server.id,bgs_s)
+            self.typing = True
+            self.file = file
+            self.content = "Data from <https://fnbr.co>"
         except Exception as e:
             self.content = "Error generating image"
             logger.error(traceback.format_exc())

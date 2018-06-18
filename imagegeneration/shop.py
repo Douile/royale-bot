@@ -5,7 +5,7 @@ from io import BytesIO
 import requests
 from datetime import datetime
 from random import choice
-from utils import arrays, integers, images
+from utils import arrays, integers, images, times
 import asyncio
 from os.path import isfile
 import logging
@@ -208,80 +208,60 @@ def createImageFromUrl(url):
 
 # generate
 @asyncio.coroutine
-def generate(shopdata,backgrounds=[],serverid=None):
+def generate_image(apikey):
     print("Generating image")
     featured = []
     daily = []
+    shopdata = yield from getShopData(apikey)
     time = getTime(shopdata.data.date)
     date = time.strftime("%A %d %B")
-    fname = filename(time)
-    if isfile(fname):
-        overlay = PIL.Image.open(fname)
-    else:
-        backupprice = 'https://image.fnbr.co/price/icon_vbucks.png'
-        for item in shopdata.data.featured:
-            if item.priceIconLink != 'false' and item.priceIconLink != False and item.priceIconLink != 'False':
-                backupprice = item.priceIconLink
-                priceIcon = item.priceIconLink
-            else:
-                priceIcon = backupprice
-            if item.seen is not None:
-                count = item.seen.occurrences
-            else:
-                count = -1
-            if item.featured != '' and item.featured != False and item.featured != 'False':
-                im = ItemImage(item.name,item.price,priceIcon,item.rarity,item.featured,512,count)
-            elif item.icon != '' and item.icon != False and item.icon != 'False':
-                im = ItemImage(item.name,item.price,priceIcon,item.rarity,item.icon,512,count) # i need to create a function for this
-            elif item.png != '' and item.png != False and item.png != 'False':
-                im = ItemImage(item.name,item.price,priceIcon,item.rarity,item.png,512,count)
-            else:
-                im = ItemImage(item.name,item.price,priceIcon,item.rarity,item.priceIconLink,512,count)
-            featured.append(im.out())
-        for item in shopdata.data.daily:
-            if item.priceIconLink != 'false' and item.priceIconLink != False and item.priceIconLink != 'False':
-                backupprice = item.priceIconLink
-                priceIcon = item.priceIconLink
-            else:
-                priceIcon = backupprice
-            if item.seen is not None:
-                count = item.seen.occurrences
-            else:
-                count = -1
-            if item.featured != '' and item.featured != False and item.featured != 'False':
-                im = ItemImage(item.name,item.price,priceIcon,item.rarity,item.featured,512,count)
-            elif item.icon != '' and item.icon != False and item.icon != 'False':
-                im = ItemImage(item.name,item.price,priceIcon,item.rarity,item.icon,512,count)
-            elif item.png != '' and item.png != False and item.png != 'False':
-                im = ItemImage(item.name,item.price,priceIcon,item.rarity,item.png,512,count)
-            else:
-                im = ItemImage(item.name,item.price,priceIcon,item.rarity,item.priceIconLink,512,count)
-            daily.append(im.out())
-        if len(shopdata.data.featured) > 4:
-            size = 5
+
+    backupprice = 'https://image.fnbr.co/price/icon_vbucks.png'
+    for item in shopdata.data.featured:
+        if item.priceIconLink != 'false' and item.priceIconLink != False and item.priceIconLink != 'False':
+            backupprice = item.priceIconLink
+            priceIcon = item.priceIconLink
         else:
-            size = 4
-        out = ShopImage(size=300, padding=40, fontsize=40, rowsize=size, fcount=len(shopdata.data.featured), dcount=len(shopdata.data.daily), date=date, background=None)
-        overlay = yield from out.generate(featured,daily,fname)
-    if len(backgrounds) == 1:
-        background = backgrounds[0]
-    elif len(backgrounds) > 0:
-        background = choice(backgrounds)
+            priceIcon = backupprice
+        if item.seen is not None:
+            count = item.seen.occurrences
+        else:
+            count = -1
+        if item.featured != '' and item.featured != False and item.featured != 'False':
+            im = ItemImage(item.name,item.price,priceIcon,item.rarity,item.featured,512,count)
+        elif item.icon != '' and item.icon != False and item.icon != 'False':
+            im = ItemImage(item.name,item.price,priceIcon,item.rarity,item.icon,512,count) # i need to create a function for this
+        elif item.png != '' and item.png != False and item.png != 'False':
+            im = ItemImage(item.name,item.price,priceIcon,item.rarity,item.png,512,count)
+        else:
+            im = ItemImage(item.name,item.price,priceIcon,item.rarity,item.priceIconLink,512,count)
+        featured.append(im.out())
+    for item in shopdata.data.daily:
+        if item.priceIconLink != 'false' and item.priceIconLink != False and item.priceIconLink != 'False':
+            backupprice = item.priceIconLink
+            priceIcon = item.priceIconLink
+        else:
+            priceIcon = backupprice
+        if item.seen is not None:
+            count = item.seen.occurrences
+        else:
+            count = -1
+        if item.featured != '' and item.featured != False and item.featured != 'False':
+            im = ItemImage(item.name,item.price,priceIcon,item.rarity,item.featured,512,count)
+        elif item.icon != '' and item.icon != False and item.icon != 'False':
+            im = ItemImage(item.name,item.price,priceIcon,item.rarity,item.icon,512,count)
+        elif item.png != '' and item.png != False and item.png != 'False':
+            im = ItemImage(item.name,item.price,priceIcon,item.rarity,item.png,512,count)
+        else:
+            im = ItemImage(item.name,item.price,priceIcon,item.rarity,item.priceIconLink,512,count)
+        daily.append(im.out())
+    if len(shopdata.data.featured) > 4:
+        size = 5
     else:
-        background = None
-    if background == None:
-        output = overlay
-        output.save(fname)
-        newname = fname
-    else:
-        background_generator = images.Background((overlay.width,overlay.height),url=background)
-        output = yield from background_generator.generate()
-        output.paste(overlay,(0,0),overlay)
-        newname = '{0}-{1}.png'.format(fname[:-4],serverid)
-        output.save(newname)
-        if not isfile(fname):
-            overlay.save(fname)
-    return newname
+        size = 4
+    out = ShopImage(size=300, padding=40, fontsize=40, rowsize=size, fcount=len(shopdata.data.featured), dcount=len(shopdata.data.daily), date=date, background=None)
+    overlay = yield from out.generate(featured,daily,fname)
+    return overlay
 @asyncio.coroutine
 def getShopData(apikey):
     print("Getting shop data")
@@ -292,3 +272,8 @@ def getTime(isotime):
     return datetime.strptime(isotime, "%Y-%m-%dT%H:%M:%S.%fZ")
 def filename(time):
     return "{0}.png".format(time.strftime("%Y%m%d%H%M"))
+
+@asyncio.coroutine
+def generate(apikey,serverid,backgrounds):
+    f = yield from images.daily_cache_generator(generate_image,serverid,backgrounds,'shop',apikey)
+    return f
