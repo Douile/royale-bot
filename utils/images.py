@@ -5,6 +5,7 @@ from io import BytesIO
 import PIL.Image
 from os.path import isfile
 from .times import morning
+from random import choice
 import traceback
 import logging
 

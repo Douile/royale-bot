@@ -75,7 +75,7 @@ class ShopImage:
     def save(self,name):
         self.background.save(name)
     @asyncio.coroutine
-    def generate(self,featured,daily,name):
+    def generate(self,featured,daily):
         self.background = yield from self.background_generator.generate()
         yield from self.setFeatured(featured)
         yield from self.setDaily(daily)
@@ -260,7 +260,7 @@ def generate_image(apikey):
     else:
         size = 4
     out = ShopImage(size=300, padding=40, fontsize=40, rowsize=size, fcount=len(shopdata.data.featured), dcount=len(shopdata.data.daily), date=date, background=None)
-    overlay = yield from out.generate(featured,daily,fname)
+    overlay = yield from out.generate(featured,daily)
     return overlay
 @asyncio.coroutine
 def getShopData(apikey):
