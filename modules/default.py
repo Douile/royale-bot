@@ -2,6 +2,9 @@ from .module import Module, Command, checkPermissions, QueueAction, get_prefix, 
 import discord
 import asyncio
 import traceback
+from utils import getEnv
+
+DEFAULT_PREFIX = getEnv("DEFAULT_PREFIX","!")
 
 class DefaultModule(Module):
     def __init__(self,modules=[],version='',client_id=''):
@@ -35,9 +38,9 @@ class Help(Command):
         self.reset()
         self.is_help = True
         admin = msg.author.admin
-        prefix = settings.get('prefix','!')
+        prefix = settings.get('prefix',DEFAULT_PREFIX)
         if prefix == None:
-            prefix = "!"
+            prefix = DEFAULT_PREFIX
         try:
             cmd = command.split(" ")[0].lower()
             if cmd.count('-u') > 0:
