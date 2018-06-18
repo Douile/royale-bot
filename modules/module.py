@@ -2,6 +2,9 @@ import asyncio
 from discord import Object
 import traceback
 import logging
+from utils import getEnv
+
+DEFAULT_PREFIX = getEnv("DEFAULT_PREFIX","!")
 
 class Module:
     def __init__(self,name="",description="",category=None,client_id=''):
@@ -145,9 +148,9 @@ class QueueAction:
 
 
 def get_prefix(settings):
-    prefix = settings.get('prefix','!rb ')
+    prefix = settings.get('prefix',DEFAULT_PREFIX)
     if prefix == None:
-        prefix = '!rb '
+        prefix = DEFAULT_PREFIX
     return prefix
 
 def parse_user_at(text,serverid):
