@@ -40,6 +40,7 @@ KEY_DBL = getEnv("KEY_DBL")
 DATABASE_URL = getEnv("DATABASE_URL")
 BOT_NAME = getEnv("BOT_NAME", "FortniteData")
 TICKER_TIME = int(getEnv("TICKER_TIME", 30))
+DEFAULT_PREFIX = getEnv("DEFAULT_PREFIX","!")
 SHARD_NO = 0
 SHARD_COUNT = 1
 if len(sys.argv) > 2:
@@ -388,11 +389,11 @@ def on_server_update(before,after):
 def on_message(msg):
     settings = client.database.server_info(msg.server.id)
     if settings == None:
-        prefix = "!"
+        prefix = DEFAULT_PREFIX
     else:
         prefix = settings.get("prefix")
         if prefix == None:
-            prefix = "!"
+            prefix = DEFAULT_PREFIX
     if not msg.author.bot:
         if msg.content.startswith(prefix):
             command = msg.content[len(prefix):]
