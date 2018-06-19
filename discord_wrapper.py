@@ -17,7 +17,12 @@ def dict_get(self):
 
 Message.id_dict = property(dict_get)
 
-def guild_count(self):
-    return len(self.servers)
+def in_server(self,serverid):
+    found = False
+    for server in self.servers:
+        if server.id == serverid:
+            found = True
+            break
+    return found
 
-Client.guild_count = property(guild_count)
+Client.in_server = property(in_server)

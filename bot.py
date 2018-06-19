@@ -355,6 +355,18 @@ def dbl_api():
 
 
 @asyncio.coroutine
+def server_deleter():
+    logger = logging.getLogger('server_deleter')
+    delete_time = 60*60*2
+    yield from client.wait_until_ready()
+    logger.info('Started')
+    while not client.is_closed:
+        servers = client.database.servers()
+        for serverid in servers:
+            if client.in_server(serverid)
+
+
+@asyncio.coroutine
 def count_users(client_class):
     users = 0
     for server in client_class.servers:
@@ -370,13 +382,6 @@ def on_ready():
     yield from client.edit_profile(username=BOT_NAME)
     yield from client.change_presence(game=discord.Game(name="Est. 2018 @mention for help",type=0),status="online",afk=False)
     defaultmodule.client_id = client.user.id
-
-
-@client.event
-@asyncio.coroutine
-def on_server_remove(server):
-    yield from client.database.delete_server(server.id)
-    loggging.getLogger(__name__).info('Deleted server %s (%s)',server.name,server.id)
 
 
 @client.event
