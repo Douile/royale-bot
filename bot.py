@@ -156,7 +156,7 @@ def autoshop(): # add fnbr not accessable fallback
                         bgs = server.get('backgrounds',{})
                         bgs_s = bgs.get('shop',[])
                         try:
-                            file = yield from shop.generate(KEY_FNBR,server_id,bgs_s)
+                            file = yield from shop.generate(KEY_FNBR,serverid,bgs_s)
                         except:
                             error = traceback.format_exc()
                             logger.error('Error generating image: %s',error)
