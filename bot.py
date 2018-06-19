@@ -205,25 +205,14 @@ def autostatus():
     logger.info('Autostatus started')
     while not client.is_closed:
         update_time = 120
-        # cache_raw = client.database.get_cache("status", once=True)
-        # if 'status' in cache_raw:
-        #    cache = json.loads(cache_raw['status'])
-        # else:
-        #    cache = {}
         try:
             data = yield from meta.getStatus()
             logger.debug('Fetched status data (online: %s, services: %s)', data['online'], data['services'])
         except:
             error = traceback.format_exc()
-            logger.error('Error getting server status')
+            logger.error('Error getting server status: %s',error)
             yield from asyncio.sleep(5)
             continue
-        # changed = changes(cache,data)
-        # client.database.set_cache("status", json.dumps(data), once=True)
-        # servicechange = []
-        # for s in changed['services']:
-        #    if changed['services'][s] is True:
-        #        servicechange.append(s)
         try:
             embed = fortnite.StatusEmbed(data['online'],data['message'])
             for s in data['services']:
