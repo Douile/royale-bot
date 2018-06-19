@@ -1,7 +1,7 @@
 from .module import Module, Command, parse_user_at
 from dataretrieval import aiofnotes, meta
 from imagegeneration import shop, stats, upcoming
-from utils import strings
+from utils import strings, arrays
 import traceback
 from datetime import datetime
 import discord
@@ -209,7 +209,7 @@ class UnLink(Command):
 class SetBackgrounds(Command):
     def __init__(self):
         self.background_types = ['shop','stat','upcoming']
-        super().__init__(name='setbackground',description='Sets the backgrounds for all images generated. Seperate urls with a space. If you want a blank backround don\'t include any urls. `{prefix}setbackground(s) [type] [url 2] [url 3]...`. `type` must be one of '+str(self.background_types))
+        super().__init__(name='setbackground',description='Sets the backgrounds for all images generated. Seperate urls with a space. If you want a blank backround don\'t include any urls. `{prefix}setbackground(s) [type] [url 2] [url 3]...`. `type` must be one of '+arrays.message_string(self.background_types,'all'))
         self.permission = 'admin'
     def run(self,command,msg,settings):
         self.reset()
@@ -227,7 +227,7 @@ class SetBackgrounds(Command):
             self.settings = {'backgrounds': {type:backgrounds}}
             self.content = '<@!{1}> Set backgrounds for `{0}`'.format(type,'{author}')
         else:
-            self.content = '<@!{1}> Unable to set backgrounds you must include a type. One of: {0}'.format(self.background_types,'{author}')
+            self.content = '<@!{1}> Unable to set backgrounds you must include a type. One of: {0}'.format(arrays.message_string(self.background_types,'all'),'{author}')
 class News(Command):
     def __init__(self):
         super().__init__(name='news',description='Print the current news in fortnite battle royale. `{prefix}news`')
