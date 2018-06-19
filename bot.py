@@ -368,6 +368,18 @@ def dbl_api():
 
 
 @asyncio.coroutine
+def server_deleter():
+    logger = logging.getLogger('server_deleter')
+    delete_time = 60*60*2
+    yield from client.wait_until_ready()
+    logger.info('Started')
+    while not client.is_closed:
+        servers = client.database.servers()
+        for serverid in servers:
+            if client.in_server(serverid)
+
+
+@asyncio.coroutine
 def count_users(client_class):
     users = 0
     for server in client_class.servers:
