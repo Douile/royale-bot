@@ -64,8 +64,7 @@ class Shop(Command):
             logger.error(traceback.format_exc())
 class Upcoming(Command):
     def __init__(self,fnbr_key):
-        super().__init__(name="upcoming",description='Print currently found upcoming fortnite items. `{prefix}upcoming`')
-        self.permission = 'shop'
+        super().__init__(name="upcoming",description='Print currently found upcoming fortnite items. `{prefix}upcoming`',permission='upcoming')
         self.fnbr_key = fnbr_key
     @asyncio.coroutine
     def run(self,command,msg,settings):
@@ -84,7 +83,7 @@ class Upcoming(Command):
             #     self.content = "Sorry there was an api error: {0}. All data from <https://fnbr.co>".format(shopdata.status)
             logger.debug('Generating')
             bgs = settings.get('backgrounds',{})
-            bgs_s = bgs.get('shop',[])
+            bgs_s = bgs.get('upcoming',[])
             file = yield from upcoming.generate(self.fnbr_key,msg.server.id,bgs_s)
             self.typing = True
             self.file = file
@@ -125,6 +124,8 @@ class Stats(Command):
                         self.content = 'User not found using your linked account: `{0}` (`{1}`). You might need to update your linked account using `{2}link [username]`'.format(name,platform,'{prefix}')
                     else:
                         self.content = 'User not found: `{0}` (`{1}`)'.format(name,platform)
+                        if platform != 'pc':
+                            self.content += '. Console players require a linked epic games account to view their stats. In order to link your epic games account visit <https://fortnite.com> and login. You must use your epic games username to view stats.'
                 else:
                     self.typing = True
                     statsimage.save('generatedstats.png')
@@ -207,7 +208,7 @@ class UnLink(Command):
             self.content = '<@!{author}> Sorry there was an error unlinking your account'
 class SetBackgrounds(Command):
     def __init__(self):
-        self.background_types = ['shop','stat']
+        self.background_types = ['shop','stat','upcoming']
         super().__init__(name='setbackground',description='Sets the backgrounds for all images generated. Seperate urls with a space. If you want a blank backround don\'t include any urls. `{prefix}setbackground(s) [type] [url 2] [url 3]...`. `type` must be one of '+str(self.background_types))
         self.permission = 'admin'
     def run(self,command,msg,settings):

@@ -137,7 +137,7 @@ class Channels(Command):
             self.embed.add_field(name=channeltype,value=value,inline=False)
 class SetPrefix(Command):
     def __init__(self):
-        super().__init__(name='setprefix',description='Set the command prefix. `{prefix}setprefix "[prefix]"`.')
+        super().__init__(name='setprefix',description='Set the command prefix. `{prefix}setprefix "[prefix]"`. In order to have a space at the beginning or end of your prefix you must put "" around it. e.g. `".rb "`')
         self.permission = 'admin'
     def run(self,command,msg,settings):
         self.reset()
