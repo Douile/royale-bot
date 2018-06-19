@@ -155,7 +155,7 @@ def autoshop(): # add fnbr not accessable fallback
                         rawtime = shop.getTime(shopdata.data.date)
                         bgs = server.get('backgrounds',{})
                         bgs_s = bgs.get('shop',[])
-                        file = yield from shop.generate(KEY_FNBR,bgs_s,serverid)
+                        file = yield from shop.generate(KEY_FNBR,server_id,bgs_s)
                         content = "Data from <https://fnbr.co/>\nVote for this bot here: <{0}>".format(vote_link)
                         nextshoptime = round(time.mktime(rawtime.utctimetuple()) + (60*60*24))
                         try:
