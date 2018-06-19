@@ -223,8 +223,11 @@ class SetBackgrounds(Command):
                 backgrounds = urls[2:]
             else:
                 backgrounds = urls[1:]
-        self.settings = {'backgrounds': {type:backgrounds}}
-        self.content = '<@!{author}> Set backgrounds'
+        if type is not None:
+            self.settings = {'backgrounds': {type:backgrounds}}
+            self.content = '<@!{1}> Set backgrounds for `{0}`'.format(type,'{author}')
+        else:
+            self.content = '<@!{1}> Unable to set backgrounds you must include a type. One of: {0}'.format(self.background_types,'{author}')
 class News(Command):
     def __init__(self):
         super().__init__(name='news',description='Print the current news in fortnite battle royale. `{prefix}news`')
