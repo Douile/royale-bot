@@ -266,7 +266,10 @@ def generate_image(apikey):
 def getShopData(apikey):
     print("Getting shop data")
     shopdata_req = fnbr.ShopAndSeen(apikey)
-    shopdata = yield from shopdata_req.send()
+    try:
+        shopdata = yield from shopdata_req.send()
+    except:
+        shopdata = None
     return shopdata
 def getTime(isotime):
     return datetime.strptime(isotime, "%Y-%m-%dT%H:%M:%S.%fZ")
