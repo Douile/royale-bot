@@ -105,7 +105,7 @@ class Background:
 
 @asyncio.coroutine
 def daily_cache_generator(generator,serverid,backgrounds,basename,*genargs): # improve efficiency
-    filename_overlay = '{0}-{1}.png'.format(basename,morning())
+    filename_overlay = '{0}-{1}.png'.format(basename,round(morning()))
     if isfile(filename_overlay):
         overlay = PIL.Image.open(filename_overlay)
     else:
