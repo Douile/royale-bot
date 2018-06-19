@@ -363,7 +363,8 @@ def server_deleter():
     while not client.is_closed:
         servers = client.database.servers()
         for serverid in servers:
-            if client.in_server(serverid)
+            if client.in_server(serverid):
+                pass
 
 
 @asyncio.coroutine
