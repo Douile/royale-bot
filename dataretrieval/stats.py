@@ -15,7 +15,6 @@ def apiSession(apikey):
 @asyncio.coroutine
 def stats(key,player='',platform='pc'):
     url = 'https://api.fortnitetracker.com/v1/profile/{0}/{1}'.format(platform,player)
-    print(url)
     session = yield from apiSession(key)
     response = yield from fetch(session, url)
     if response.status == 200:
