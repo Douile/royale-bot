@@ -130,7 +130,7 @@ class Stats(Command):
                 else:
                     self.typing = True
                     statsimage.save('generatedstats.png')
-                    self.content = urllib.parse.quote('<https://fortnitetracker.com/profile/{1}/{0}>'.format(name,platform))
+                    self.content = '<https://{}>'.format(urllib.parse.quote('fortnitetracker.com/profile/{1}/{0}'.format(name,platform)))
                     self.file = 'generatedstats.png'
             except Exception as e:
                 if linked:
