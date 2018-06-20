@@ -132,6 +132,16 @@ client.database = sql.Database(defaults_database, url=DATABASE_URL)
 builtins.client = client
 
 @asyncio.coroutine
+def debugger(function):
+    logger = logging.getLogger('debugger')
+    while 1:
+        try:
+            yield from function()
+        except:
+            error = traceback.format_exc()
+            logger.error('Debugging error %s restarting...',error)
+
+@asyncio.coroutine
 def autoshop(): # add fnbr not accessable fallback
     logger = logging.getLogger('autoshop')
     yield from client.wait_until_ready()
@@ -510,8 +520,8 @@ if SHARD_COUNT > 5:
     elif SHARD_NO == 5:
         client.loop.create_task(dbl_api())
 else:
-    client.loop.create_task(autoshop())
-    client.loop.create_task(autostatus())
+    client.loop.create_task(debugger(autoshop()))
+    client.loop.create_task(debugger(autostatus()))
     client.loop.create_task(autonews())
     client.loop.create_task(handle_queue())
     client.loop.create_task(ticker())
