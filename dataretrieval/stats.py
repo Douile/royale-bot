@@ -41,3 +41,19 @@ def getStats(key,name='',platform=''):
         print(response.headers)
     data = {'name':response.status,'platform':''}
     return data
+
+@asyncio.coroutine
+def console_search(platform,query):
+    url = 'https://fortnitetracker.com/profile/search?q={0}({1})'.format(platform,query)
+    session = aiohttp.ClientSession()
+    response = yield from session.get(url, allow_redirects=False)
+    yield from session.close()
+    location = response.headers.get('Location')
+    if location is not None:
+        t = location.split('/')
+        platform = t[1]
+        profile = t[2]
+    else:
+        platform = None
+        profile = None
+    return {'platform':platform,'profile':profile}

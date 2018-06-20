@@ -508,7 +508,7 @@ def close():
 client.loop.add_signal_handler(signal.SIGTERM, close)
 if SHARD_COUNT > 5:
     if SHARD_NO == 0:
-        client.loop.create_task(autoshop(KEY_FNBR))
+        client.loop.create_task(autoshop())
     elif SHARD_NO == 1:
         client.loop.create_task(autostatus())
     elif SHARD_NO == 2:
