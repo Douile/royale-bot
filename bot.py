@@ -484,7 +484,7 @@ def noPermission(msg,type,settings):
     if type == 'error':
         m = '<@!{0}> Sorry an error occured'.format(msg.author.id)
     elif type in settings['channels']:
-        m = '<@!{0}> Please use the set {1*} channel <#{2}>'.format(msg.author.id,type,settings['channels'][type])
+        m = '<@!{0}> Please use the set {1} channel <#{2}>'.format(msg.author.id,type,settings['channels'][type])
     elif type == 'setchannel' or type == 'resetchannels':
         m = '<@!{0}> You must be an administrator to change channel settings'.format(msg.author.id)
     elif type == 'error':
