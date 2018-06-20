@@ -521,7 +521,7 @@ if SHARD_COUNT > 5:
         client.loop.create_task(dbl_api())
 else:
     client.loop.create_task(autoshop(KEY_FNBR))
-    client.loop.create_task(debugger(autostatus)
+    client.loop.create_task(debugger(autostatus))
     client.loop.create_task(autonews())
     client.loop.create_task(handle_queue())
     client.loop.create_task(ticker())
