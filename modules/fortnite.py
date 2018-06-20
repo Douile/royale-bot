@@ -143,6 +143,8 @@ class Stats(Command):
                 self.content = 'Your linked account name `{0}` (`{1}`) is too short please relink using `{2}link [username]`'.format(name,platform,'{prefix}')
             else:
                 self.content = '<@!{author}> you must link your account using `{prefix}link [username]`, or just enter your name in this command.'
+        if name.includes('shop') or name.includes('help') or name.includes('setprefix'):
+            self.content += ' If your trying to use a command your prefix is: `{prefix}` e.g. `{prefix}setprefix ".rb "`'
 class Matches(Command):
     def __init__(self,tn_key,sql):
         super().__init__(name='matches',permission='stats')
