@@ -6,6 +6,7 @@ import traceback
 from datetime import datetime
 import discord
 import asyncio
+import urllib
 import logging
 
 logger = logging.getLogger('bot.fortnite')
@@ -129,7 +130,7 @@ class Stats(Command):
                 else:
                     self.typing = True
                     statsimage.save('generatedstats.png')
-                    self.content = '<https://fortnitetracker.com/profile/{1}/{0}>'.format(name,platform)
+                    self.content = urllib.quote('<https://fortnitetracker.com/profile/{1}/{0}>'.format(name,platform))
                     self.file = 'generatedstats.png'
             except Exception as e:
                 if linked:
