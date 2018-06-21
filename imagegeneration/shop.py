@@ -9,6 +9,7 @@ from utils import arrays, integers, images, times
 import asyncio
 from os.path import isfile
 import logging
+import traceback
 
 from dataretrieval import fnbr
 
@@ -270,7 +271,8 @@ def getShopData(apikey):
     try:
         shopdata = yield from shopdata_req.send()
     except:
-        logger.error('Error getting shop data')
+        error = traceback.format_exc()
+        logger.error('Error getting shop data: %s',error)
         shopdata = None
     return shopdata
 def getTime(isotime):
