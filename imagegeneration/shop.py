@@ -264,11 +264,13 @@ def generate_image(apikey):
     return overlay
 @asyncio.coroutine
 def getShopData(apikey):
-    print("Getting shop data")
+    logger = logging.getLogger('shop-data')
+    logger.debug("Getting shop data")
     shopdata_req = fnbr.ShopAndSeen(apikey)
     try:
         shopdata = yield from shopdata_req.send()
     except:
+        logger.error('Error getting shop data')
         shopdata = None
     return shopdata
 def getTime(isotime):
