@@ -149,7 +149,8 @@ def autoshop(): # add fnbr not accessable fallback
     logger.info('Autoshop started')
     while not client.is_closed:
         shopdata = None
-        for serverd in client.servers:
+        servers = client.servers
+        for serverd in servers:
             serverid = serverd.id
             server = client.database.server_info(serverid,backgrounds=True,channels=True)
             if 'autoshop' in server['channels']:
@@ -231,7 +232,8 @@ def autostatus():
             error = traceback.format_exc()
             logger.error('Error compiling embed %s', error)
         logger.debug('Embed built')
-        for server_d in client.servers:
+        servers = client.servers
+        for server_d in servers:
             serverid = server_d.id
             server = client.database.server_info(serverid,channels=True)
             if 'autostatus' in server['channels']:
@@ -289,7 +291,8 @@ def autonews():
             if not msg['title'] in cache:
                 embeds.append(fortnite.NewsEmbed(msg,data['updated']))
                 client.database.set_cache("news",msg['title'],once=False)
-        for serverd in client.servers:
+        servers = client.servers
+        for serverd in servers:
             serverid = serverd.id
             server = client.database.server_info(serverid,channels=True)
             if 'autonews' in server['channels']:
