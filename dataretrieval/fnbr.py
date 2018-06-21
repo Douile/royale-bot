@@ -125,11 +125,11 @@ class Seen(APIRequest):
         # if CSRF_TOKEN is not None:
         url = self.url()
         # headers = {'csrf-token':CSRF_TOKEN}
-        response = yield from client.get(url,headers=headers)
+        response = yield from client.get(url)
         while response.status != 200 and self.retries < 5:
             yield from asyncio.sleep(0.1)
             self.retries += 1
-            response = yield from client.get(url,headers=headers)
+            response = yield from client.get(url)
         try:
             json = yield from response.json()
         except:
