@@ -109,32 +109,32 @@ class Seen(APIRequest):
     def send(self):
         global CSRF_TOKEN
         global CSRF_COOKIE
-        client = aiohttp.ClientSession(headers=[('User-Agent',USER_AGENT)],cookie_jar=CSRF_COOKIE)
-        if CSRF_TOKEN is None:
-            main = yield from client.get('https://fnbr.co')
-            if main.status == 200:
-                text = yield from main.text()
-                html = bs4.BeautifulSoup(text,'html.parser')
-                tags = html.find_all('meta',{'name':'csrf-token'})
-                if len(tags) > 0:
-                	CSRF_TOKEN = tags[0].attrs['content']
-            main.close()
-            logging.getLogger('fnbr').debug('New csrf token: %s',CSRF_TOKEN)
-        json = None
-        response = None
-        if CSRF_TOKEN is not None:
-            url = self.url()
-            headers = {'csrf-token':CSRF_TOKEN}
+        client = aiohttp.ClientSession(headers=[('User-Agent',USER_AGENT)])
+        # if CSRF_TOKEN is None:
+        #     main = yield from client.get('https://fnbr.co')
+        #     if main.status == 200:
+        #         text = yield from main.text()
+        #         html = bs4.BeautifulSoup(text,'html.parser')
+        #         tags = html.find_all('meta',{'name':'csrf-token'})
+        #         if len(tags) > 0:
+        #         	CSRF_TOKEN = tags[0].attrs['content']
+        #     main.close()
+        #     logging.getLogger('fnbr').debug('New csrf token: %s',CSRF_TOKEN)
+        # json = None
+        # response = None
+        # if CSRF_TOKEN is not None:
+        url = self.url()
+        # headers = {'csrf-token':CSRF_TOKEN}
+        response = yield from client.get(url,headers=headers)
+        while response.status != 200 and self.retries < 5:
+            yield from asyncio.sleep(0.1)
+            self.retries += 1
             response = yield from client.get(url,headers=headers)
-            while response.status != 200 and self.retries < 5:
-                yield from asyncio.sleep(0.1)
-                self.retries += 1
-                response = yield from client.get(url,headers=headers)
-            try:
-                json = yield from response.json()
-            except:
-                json = None
-            response.close()
+        try:
+            json = yield from response.json()
+        except:
+            json = None
+        response.close()
         yield from client.close()
         self.response = APIResponse(response, json)
         return self.response
