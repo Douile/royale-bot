@@ -100,7 +100,7 @@ class Stats(Command):
         self.sql = sql
     @asyncio.coroutine
     def run(self,command,msg,settings):
-        logger = logging.getLogger('matches')
+        logger = logging.getLogger('stats')
         if command.startswith('stats'):
             args = command[len('stats'):].strip()
         else:
