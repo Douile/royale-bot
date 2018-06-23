@@ -251,19 +251,42 @@ class Main:
         fg = (255,255,255,255)
         columnsize = round(self.size[0]/7)
         rowsize = round(self.size[1]/4)
+        draw.rectangle([(4,4),(columnsize-4,rowsize-4)],fill=DEFAULT_COLOR)
         if cs:
             rows = ['curr_SOLO','curr_DUO','curr_SQUAD']
+            top = 'Current'
+            bot = 'season'
+            sizetop = font.getsize(top)
+            sizebot = font.getsize(bot)
+            top = round((rowsize-sizetop[1]-sizebot[1])/2)
+            left = round((columnsize-sizetop[0])/2)
+            draw.text((left,top),top,font=font)
+            top += sizetop[1]
+            left = round((columnsize-sizebot[0])/2)
+            draw.text((left,top),bot,font=font)
         else:
             rows = ['SOLO','DUO','SQUAD']
+            text = 'Overall'
+            size = font.getsize(text)
+            left = round((columnsize-size[0])/2)
+            top = round((rowsize-size[1])/2)
+            draw.text((left,top),text,font=font)
         columns = ['KD','WINS','KILLS','WIN%','MATCHES','RATING']
         for i in range(1,4):
             row = rows[i-1]
             draw.rectangle([(4,rowsize*i+4),(columnsize-4,rowsize*(i+1)-4)],fill=DEFAULT_COLOR)
-            width = font.getsize(row)[0]
-            height = font.getsize(row)[1]
-            top = round((rowsize*i)+((rowsize-height)/2))
-            left = round((columnsize-width)/2)
-            draw.text((left,top),row,fill=fg,font=font)
+            if row.find('SOLO') > -1:
+                text = 'solos'
+            elif row.find('DUO') > -1:
+                text = 'duos'
+            elif row.find('SQUAD') > -1:
+                text = 'squads'
+            else:
+                text = ''
+            size = font.getsize(text)
+            top = round((rowsize*i)+((rowsize-size[1])/2))
+            left = round((columnsize-size[0])/2)
+            draw.text((left,top),text,fill=fg,font=font)
         left = columnsize
         for column in columns:
             draw.rectangle([(left+4,4),(left+columnsize-4,rowsize-4)],fill=DEFAULT_COLOR)
