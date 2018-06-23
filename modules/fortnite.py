@@ -106,9 +106,9 @@ class Stats(Command):
         else:
             args = command.strip()
         type = 'regular'
-        match = strings.startmatches(args, ['s4','season4','cs','currentseason'])
+        match = strings.startmatches(args, ['cs','currentseason'])
         if match is not None:
-            args = args[len(match):]
+            args = args[len(match):].strip()
             type = 'curr_season'
         user = yield from parse_fortnite_user(args, msg.author.id, msg.server.id, self.sql)
         name = user.get('name')
