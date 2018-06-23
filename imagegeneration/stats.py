@@ -263,6 +263,7 @@ class Main:
             draw.text((left,top),row,fill=fg,font=font)
         left = columnsize
         for column in columns:
+            draw.rectangle([(left+4,4),(left+columnsize-4,rowsize-4)],fill=DEFAULT_COLOR)
             textsize = font.getsize(column)
             top = round((rowsize-textsize[1])/2)
             rleft = round(left + ((columnsize-textsize[0])/2))
