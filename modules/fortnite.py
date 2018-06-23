@@ -119,8 +119,11 @@ class Stats(Command):
                 logger.debug('Stats command name: %s platform %s', name, platform)
                 bgs = settings.get('backgrounds',{})
                 bgs_s = bgs.get('stat',[])
-                statsimage = yield from stats.generate(self.tn_key,name,platform,bgs_s)
-                if statsimage == None:
+                if type == 'regular':
+                    statsimage = yield from stats.generate(self.tn_key,name,platform,bgs_s)
+                elif type == 'curr_season':
+                    statsimage = yield from stats.generate_season(self.tn_key,name,platform,bgs_s)
+                if statsimage is None:
                     if linked:
                         self.content = 'User not found using your linked account: `{0}` (`{1}`). You might need to update your linked account using `{2}link [username]`'.format(name,platform,'{prefix}')
                     else:
