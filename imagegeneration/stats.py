@@ -243,7 +243,7 @@ class Main:
         self.color = (0,0,0,0)
         self.padding = 15
     @asyncio.coroutine
-    def generate(self,data):
+    def generate(self,data,cs=False):
         stats = data.stats
         image = PIL.Image.new('RGBA',self.size,self.color)
         draw = PIL.ImageDraw.Draw(image)
@@ -251,7 +251,10 @@ class Main:
         fg = (255,255,255,255)
         columnsize = round(self.size[0]/7)
         rowsize = round(self.size[1]/4)
-        rows = ['SOLO','DUO','SQUAD']
+        if cs:
+            rows = ['curr_SOLO','curr_DUO','curr_SQUAD']
+        else:
+            rows = ['SOLO','DUO','SQUAD']
         columns = ['KD','WINS','KILLS','WIN%','MATCHES','RATING']
         for i in range(1,4):
             row = rows[i-1]
