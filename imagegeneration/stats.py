@@ -116,7 +116,7 @@ class Overview:
     def generate(self,data, cs):
         userdata = data.userdata
         stats = data.lifetime
-        statsmap = Map(lifetimestats,True)
+        statsmap = Map(stats,True)
         image = PIL.Image.new('RGBA',self.size,self.color)
         draw = PIL.ImageDraw.Draw(image)
         fontsize = round(self.size[1]/2)-self.padding*2
