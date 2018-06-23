@@ -115,17 +115,17 @@ class Overview:
     @asyncio.coroutine
     def generate(self,data, cs):
         userdata = data.userdata
-        lifetimestats = data.lifetime
-        lifetime = Map(lifetimestats,True)
+        stats = data.lifetime
+        statsmap = Map(lifetimestats,True)
         image = PIL.Image.new('RGBA',self.size,self.color)
         draw = PIL.ImageDraw.Draw(image)
         fontsize = round(self.size[1]/2)-self.padding*2
         font = PIL.ImageFont.truetype(DEFAULT_FONT,size=fontsize)
         font_small = PIL.ImageFont.truetype(DEFAULT_FONT,size=round(fontsize/2))
         draw.text((self.padding,self.padding),userdata.name,fill=(255,255,255,255),font=font)
-        statstext = 'KD {kd} | WINS {wins} | WIN% {win_percent}'.format_map(lifetime)
+        statstext = 'KD {kd} | WINS {wins} | WIN% {win_percent}'.format_map(statsmap)
         draw.text((self.padding,fontsize+self.padding*3),statstext,fill=(255,255,255,255),font=font)
-        extra = 'MATCHES {matches}\nSCORE {score}'.format_map(lifetime)
+        extra = 'MATCHES {matches}\nSCORE {score}'.format_map(statsmap)
         extrasize = font_small.getsize(extra.split('\n')[0])
         extrasizewidth = integers.max(extrasize[0],font_small.getsize(extra.split('\n')[1])[0])
         extrasize = (extrasizewidth,extrasize[1]*2 + 5)
@@ -240,7 +240,7 @@ class Performance:
 class Main:
     def __init__(self,size):
         self.size = size
-        self.color = DEFAULT_COLOR
+        self.color = (0,0,0,0)
         self.padding = 15
     @asyncio.coroutine
     def generate(self,data):
@@ -255,14 +255,14 @@ class Main:
         columns = ['KD','WINS','KILLS','WIN%','MATCHES','RATING']
         for i in range(1,4):
             row = rows[i-1]
+            draw.rectangle([(rowsize,rowsize*i),(rowsize*2,rowize*(i+1))],fill=(0,0,0,100))
             width = font.getsize(row)[0]
             height = font.getsize(row)[1]
             top = round((rowsize*i)+((rowsize-height)/2))
-            left = round((rowsize-width)/2)
+            left = round((columnsize-width)/2)
             draw.text((left,top),row,fill=fg,font=font)
         left = columnsize
         for column in columns:
-            draw.line([(left,0),(left,self.size[1])],fill=fg,width=2)
             textsize = font.getsize(column)
             top = round((rowsize-textsize[1])/2)
             rleft = round(left + ((columnsize-textsize[0])/2))
