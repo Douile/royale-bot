@@ -255,7 +255,7 @@ class Main:
         columns = ['KD','WINS','KILLS','WIN%','MATCHES','RATING']
         for i in range(1,4):
             row = rows[i-1]
-            draw.rectangle([(rowsize,rowsize*i),(rowsize*2,rowsize*(i+1))],fill=(0,0,0,100))
+            draw.rectangle([(1,rowsize*i+1),(columnsize-1,rowsize*(i+1)-1)],fill=DEFAULT_COLOR)
             width = font.getsize(row)[0]
             height = font.getsize(row)[1]
             top = round((rowsize*i)+((rowsize-height)/2))
