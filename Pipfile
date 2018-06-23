@@ -15,6 +15,7 @@ google-api-python-client = "==1.6.7"
 instagram_private_api = {git = "https://git@github.com/ping/instagram_private_api.git", ref = "1.5.5"}
 dbl = {git = "https://github.com/Douile/DBL-Python-Library.git"}
 raven = "*"
+analytics-python = "*"
 
 [dev-packages]
 
