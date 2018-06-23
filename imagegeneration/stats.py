@@ -254,16 +254,16 @@ class Main:
         draw.rectangle([(4,4),(columnsize-4,rowsize-4)],fill=DEFAULT_COLOR)
         if cs:
             rows = ['curr_SOLO','curr_DUO','curr_SQUAD']
-            top = 'Current'
-            bot = 'season'
-            sizetop = font.getsize(top)
-            sizebot = font.getsize(bot)
+            toptext = 'Current'
+            bottext = 'season'
+            sizetop = font.getsize(toptext)
+            sizebot = font.getsize(bottext)
             top = round((rowsize-sizetop[1]-sizebot[1])/2)
             left = round((columnsize-sizetop[0])/2)
-            draw.text((left,top),top,font=font)
+            draw.text((left,top),toptext,font=font)
             top += sizetop[1]
             left = round((columnsize-sizebot[0])/2)
-            draw.text((left,top),bot,font=font)
+            draw.text((left,top),bottext,font=font)
         else:
             rows = ['SOLO','DUO','SQUAD']
             text = 'Overall'
