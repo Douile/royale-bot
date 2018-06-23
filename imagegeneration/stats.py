@@ -273,7 +273,7 @@ class Main:
             top = rowsize
             for row in rows:
                 stat = getattr(stats,row.lower(),None)
-                draw.rectange([(left+4,top+4),(left+columnsize-4,top+rowsize-4)],fill=DEFAULT_COLOR)
+                draw.rectangle([(left+4,top+4),(left+columnsize-4,top+rowsize-4)],fill=DEFAULT_COLOR)
                 if stat != None:
                     value = getattr(stat,c,'0')
                     if value.strip() == '':
