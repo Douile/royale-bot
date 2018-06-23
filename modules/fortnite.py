@@ -95,7 +95,7 @@ class Upcoming(Command):
 
 class Stats(Command):
     def __init__(self,tn_key,sql):
-        super().__init__(name='stats',description='Gets the fortnite stats of a player. `{prefix}stats [platform] [player]` if you do not set platform it will default to pc, if you are linked and do not enter a player name it will default to your linked account, you can also @metion another linked user to default to their linked account.',permission='stats',aliases=['{prefix}'])
+        super().__init__(name='stats',description='Gets the fortnite stats of a player. `{prefix}stats [cs]? [platform] [player]` .If you do not set platform it will default to pc. If you are linked and do not enter a player name it will default to your linked account, you can also @metion another linked user to default to their linked account. If you type `cs` at the start of the command you will get stats for the current season.',permission='stats',aliases=['{prefix}'])
         self.tn_key = tn_key
         self.sql = sql
     @asyncio.coroutine
