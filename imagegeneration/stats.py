@@ -103,7 +103,7 @@ class Overlay:
         performance_image = yield from performance.generate(data)
         image.paste(performance_image,(padding_x*2+size_x_large,padding_y),performance_image)
         main = Main((size_x_small+size_x_large+padding_x,size_y_large))
-        main_image = yield from main.generate(data)
+        main_image = yield from main.generate(data, self.currentSeason)
         image.paste(main_image,(padding_x,padding_y*2+size_y_small),main_image)
         return image
 
