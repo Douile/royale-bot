@@ -27,6 +27,8 @@ KEY_TRACKERNETWORK = getEnv("KEY_TRACKERNETWORK")
 KEY_DBL = getEnv("KEY_DBL",None)
 DATABASE_URL = getEnv("DATABASE_URL")
 
+RATE_LIMIT_TIME = 0.25
+
 # logging
 logging_config = {
     'version': 1,
