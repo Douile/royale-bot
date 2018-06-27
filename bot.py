@@ -128,7 +128,7 @@ else:
 
 client = discord.Client(shard_id=SHARD_NO,shard_count=SHARD_COUNT)
 client.queued_actions = []
-client.database = sql.Database(defaults_database, url=DATABASE_URL)
+client.database = sql.Database(False, url=DATABASE_URL)
 builtins.client = client
 
 @asyncio.coroutine
@@ -509,24 +509,24 @@ defaultmodule = default.DefaultModule(cmodules, VERSION)
 def close():
     asyncio.ensure_future(client.close())
 client.loop.add_signal_handler(signal.SIGTERM, close)
-if SHARD_COUNT > 5:
-    if SHARD_NO == 0:
-        client.loop.create_task(autoshop())
-    elif SHARD_NO == 1:
-        client.loop.create_task(autostatus())
-    elif SHARD_NO == 2:
-        client.loop.create_task(autonews())
-    elif SHARD_NO == 3:
-        client.loop.create_task(handle_queue())
-    elif SHARD_NO == 4:
-        client.loop.create_task(ticker())
-    elif SHARD_NO == 5:
-        client.loop.create_task(dbl_api())
-else:
-    client.loop.create_task(debugger(autoshop))
-    client.loop.create_task(debugger(autostatus))
-    client.loop.create_task(autonews())
-    client.loop.create_task(handle_queue())
-    client.loop.create_task(ticker())
-    client.loop.create_task(dbl_api())
+# if SHARD_COUNT > 5:
+#     if SHARD_NO == 0:
+#         client.loop.create_task(autoshop())
+#     elif SHARD_NO == 1:
+#         client.loop.create_task(autostatus())
+#     elif SHARD_NO == 2:
+#         client.loop.create_task(autonews())
+#     elif SHARD_NO == 3:
+#         client.loop.create_task(handle_queue())
+#     elif SHARD_NO == 4:
+#         client.loop.create_task(ticker())
+#     elif SHARD_NO == 5:
+#         client.loop.create_task(dbl_api())
+# else:
+#     client.loop.create_task(debugger(autoshop))
+#     client.loop.create_task(debugger(autostatus))
+#     client.loop.create_task(autonews())
+client.loop.create_task(handle_queue())
+client.loop.create_task(ticker())
+client.loop.create_task(dbl_api())
 client.run(KEY_DISCORD)
