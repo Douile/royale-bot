@@ -190,7 +190,7 @@ def autoshop(): # add fnbr not accessable fallback
                                     error = traceback.format_exc()
                                     logger.error('Error updating database: {0}'.format(error))
                                 try:
-                                    yield from client.send_message(serverob.owner,content='I was unable to access the autoshop channel you set in your server `{0}`. I have deleted the channel from my database.'.format(serverob.name))
+                                    yield from client.send_message(serverdata.owner,content='I was unable to access the autoshop channel you set in your server `{0}`. I have deleted the channel from my database.'.format(serverdata.name))
                                 except:
                                     error = traceback.format_exc()
                                     logger.error('Error sending message to owner: {0}'.format(error))
