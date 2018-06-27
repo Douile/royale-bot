@@ -51,7 +51,7 @@ if len(sys.argv) > 2:
     except ValueError:
         pass
 VERSION = {'name': BOT_NAME, 'version_name': '1.1.0', 'revison': getEnv('HEROKU_RELEASE_VERSION', 'v1'), 'description': getEnv('HEROKU_SLUG_DESCRIPTION', ''), 'lines': LINE_COUNT, 'shards': SHARD_COUNT}
-RATE_LIMIT_TIME = 0.5
+RATE_LIMIT_TIME = 0.25
 
 
 # functions
