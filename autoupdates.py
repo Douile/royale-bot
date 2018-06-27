@@ -3,6 +3,7 @@ import dbl
 import asyncio
 import logging
 import logging.config
+import os
 
 from dataretrieval import meta
 from imagegeneration import shop
