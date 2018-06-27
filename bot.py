@@ -523,9 +523,9 @@ client.loop.add_signal_handler(signal.SIGTERM, close)
 #     elif SHARD_NO == 5:
 #         client.loop.create_task(dbl_api())
 # else:
-#     client.loop.create_task(debugger(autoshop))
-#     client.loop.create_task(debugger(autostatus))
-#     client.loop.create_task(autonews())
+client.loop.create_task(debugger(autoshop))
+client.loop.create_task(debugger(autostatus))
+client.loop.create_task(autonews())
 client.loop.create_task(handle_queue())
 client.loop.create_task(ticker())
 client.loop.create_task(dbl_api())
