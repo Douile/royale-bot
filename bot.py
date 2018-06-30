@@ -20,7 +20,7 @@ from imagegeneration import shop
 from datamanagement import sql
 from utils import linecount
 from utils.times import day_string as parse_second_time
-from utils.discord import count_users
+from utils.discord import count_client_users
 
 def getEnv(name,default=None):
     value = os.environ.get(name,None)
@@ -335,12 +335,11 @@ def ticker():
     logger.info('Ticker started')
     while not client.is_closed:
         for ticker in ticker_text:
-            user_count = yield from count_users(client)
             ticker_f = ticker
             if ticker.find('{server_count}') >= 0:
                 ticker_f = ticker_f.replace('{server_count}',str(len(client.servers)))
             if ticker.find('{user_count}') >= 0:
-                ticker_f = ticker_f.replace('{user_count}',str(count_users(client)))
+                ticker_f = ticker_f.replace('{user_count}',str(count_client_users(client)))
             game = discord.Game(name=ticker_f,type=0)
             yield from client.change_presence(game=game)
             yield from asyncio.sleep(TICKER_TIME)

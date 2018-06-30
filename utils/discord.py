@@ -1,5 +1,5 @@
 
-def count_users(client):
+def count_client_users(client):
     users = []
     for server in client.servers:
         for member in server.members:
