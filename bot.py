@@ -136,7 +136,7 @@ builtins.client = client
 def debugger(function):
     logger = logging.getLogger('debugger')
     count = 0
-    while not client.is_closed and count < 40:
+    while not client.is_closed and count < 50:
         try:
             yield from function()
         except:
@@ -338,9 +338,9 @@ def ticker():
             user_count = yield from count_users(client)
             ticker_f = ticker
             if ticker.find('{server_count}') >= 0:
-                ticker_f = ticker_f.replace('{server_count}',len(client.servers))
+                ticker_f = ticker_f.replace('{server_count}',str(len(client.servers)))
             if ticker.find('{user_count}') >= 0:
-                ticker_f = ticker_f.replace('{user_count}',count_users(client))
+                ticker_f = ticker_f.replace('{user_count}',str(count_users(client)))
             game = discord.Game(name=ticker_f,type=0)
             yield from client.change_presence(game=game)
             yield from asyncio.sleep(TICKER_TIME)
