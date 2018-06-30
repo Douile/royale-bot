@@ -135,12 +135,14 @@ builtins.client = client
 @asyncio.coroutine
 def debugger(function):
     logger = logging.getLogger('debugger')
-    while 1:
+    count = 0
+    while not client.is_closed and count < 40:
         try:
             yield from function()
         except:
             error = traceback.format_exc()
             logger.error('Debugging error %s restarting...',error)
+            count += 1
 
 @asyncio.coroutine
 def autoshop(): # add fnbr not accessable fallback
