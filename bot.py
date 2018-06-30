@@ -20,6 +20,7 @@ from imagegeneration import shop
 from datamanagement import sql
 from utils import linecount
 from utils.times import day_string as parse_second_time
+from utils.discord import count_users
 
 def getEnv(name,default=None):
     value = os.environ.get(name,None)
@@ -327,13 +328,16 @@ def handle_queue():
 @asyncio.coroutine
 def ticker():
     logger = logging.getLogger('ticker')
-    ticker_text = ['Est. 2018 @mention for help','Powering {server_count} communities','discord.me/fortniteroyale']
+    ticker_text = ['Est. 2018 @mention for help','Powering {server_count} communities','{user_count} unique users']
     yield from client.wait_until_ready()
     logger.info('Ticker started')
     while not client.is_closed:
         for ticker in ticker_text:
             user_count = yield from count_users(client)
-            ticker_f = ticker.format_map({'server_count':len(client.servers)})
+            if ticker.find('{server_count}') >= 0:
+                ticker = ticker.replace('{server_count}',len(client.servers))
+            if ticker.find('{user_count}') >= 0:
+                ticker = ticker.replace('{user_count}',count_users(client))
             game = discord.Game(name=ticker_f,type=0)
             yield from client.change_presence(game=game)
             yield from asyncio.sleep(TICKER_TIME)
