@@ -17,7 +17,7 @@ def count_client_users_unique(client):
                 users.append(member.id)
     return len(users)
 
-@asyncio.countine
+@asyncio.corountine
 def count_client_users_fast(client):
     users = 0
     for server in client.servers:
