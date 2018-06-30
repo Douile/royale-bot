@@ -339,7 +339,8 @@ def ticker():
             if ticker.find('{server_count}') >= 0:
                 ticker_f = ticker_f.replace('{server_count}',str(len(client.servers)))
             if ticker.find('{user_count}') >= 0:
-                ticker_f = ticker_f.replace('{user_count}',str(count_client_users(client)))
+                users = yield from count_client_users(client,False)
+                ticker_f = ticker_f.replace('{user_count}',str(users))
             game = discord.Game(name=ticker_f,type=0)
             yield from client.change_presence(game=game)
             yield from asyncio.sleep(TICKER_TIME)
