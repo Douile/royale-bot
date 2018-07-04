@@ -187,7 +187,7 @@ class HelpEmbed(discord.Embed):
                             if len(cmd.aliases) > 0:
                                 commands[command] += ' Aliases for this command are '
                                 for alias in cmd.aliases:
-                                    alias_format = alias.format_map(Map({'prefix':self.prefix}))
+                                    alias_format = alias.format_map(Map({'prefix':self.prefix,'bot_id':'424265028267540490'})) # change from hard coding
                                     commands[command] += '`{}`, '.format(alias_format)
                                 if commands[command].endswith(', '):
                                     commands[command] = commands[command][:-2]
