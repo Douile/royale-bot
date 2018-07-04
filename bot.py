@@ -330,7 +330,7 @@ def handle_queue():
 @asyncio.coroutine
 def ticker():
     logger = logging.getLogger('ticker')
-    ticker_text = ['Est. 2018 @mention for help','Powering {server_count} communities','{user_count} unique users']
+    ticker_text = ['Est. 2018 @mention for help','Powering {server_count} communities','{user_count} users']
     yield from client.wait_until_ready()
     logger.info('Ticker started')
     while not client.is_closed:
