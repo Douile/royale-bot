@@ -153,8 +153,8 @@ def autoshop(): # add fnbr not accessable fallback
     while not client.is_closed:
         shopdata = None
         servers = yield from get_server_priority(list(client.servers),client.database.get_priority_servers)
-        for server_r in servers:
-            for serverd in servers:
+        for servers_r in servers:
+            for serverd in servers_r:
                 serverid = serverd.id
                 server = client.database.server_info(serverid,backgrounds=True,channels=True)
                 if 'autoshop' in server['channels']:
@@ -296,7 +296,7 @@ def autonews():
                 embeds.append(fortnite.NewsEmbed(msg,data['updated']))
                 client.database.set_cache("news",msg['title'],once=False)
         servers = yield from get_server_priority(list(client.servers),client.database.get_priority_servers)
-        for server_r in servers:
+        for servers_r in servers:
             for serverd in servers_r:
                 serverid = serverd.id
                 server = client.database.server_info(serverid,channels=True)
