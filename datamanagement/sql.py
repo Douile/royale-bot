@@ -197,6 +197,11 @@ class Database(Postgres):
         self.run("DELETE FROM server_data WHERE server_id=%(id)s",parameters={'id':server_id})
         self.run("DELETE FROM server_channels WHERE server_id=%(id)s",parameters={'id':server_id})
         self.run("DELETE FROM server_backgrounds WHERE server_id=%(id)s",parameters={'id':server_id})
+    def get_priority_servers(self,priority=0):
+        servers = self.all("SELECT server_id,priority FROM server_data WHERE priority=%(priority)s",
+        parameters={'priority':priority},
+        back_as=dict)
+        return servers
 
     # server backgrounds
     def add_server_background(self,server_id,background_url=None,type=None):

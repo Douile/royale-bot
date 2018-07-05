@@ -20,7 +20,7 @@ from imagegeneration import shop
 from datamanagement import sql
 from utils import linecount
 from utils.times import day_string as parse_second_time
-from utils.discord import count_client_users
+from utils.discord import count_client_users, get_server_priority
 
 def getEnv(name,default=None):
     value = os.environ.get(name,None)
@@ -152,65 +152,66 @@ def autoshop(): # add fnbr not accessable fallback
     logger.info('Autoshop started')
     while not client.is_closed:
         shopdata = None
-        servers = client.servers
-        for serverd in list(servers):
-            serverid = serverd.id
-            server = client.database.server_info(serverid,backgrounds=True,channels=True)
-            if 'autoshop' in server['channels']:
-                now = time.time()
-                if 'next_shop' in server:
-                    nextshop = server['next_shop']
-                if nextshop == None:
-                    nextshop = time.mktime(datetime.now().utctimetuple())
-                if now >= nextshop:
-                    if shopdata == None:
-                        shopdata = yield from shop.getShopData(KEY_FNBR)
-                    if shopdata.type == 'shop':
-                        rawtime = shop.getTime(shopdata.data.date)
-                        bgs = server.get('backgrounds',{})
-                        bgs_s = bgs.get('shop',[])
-                        try:
-                            file = yield from shop.generate(KEY_FNBR,serverid,bgs_s)
-                        except:
-                            error = traceback.format_exc()
-                            logger.error('Error generating image: %s',error)
-                            continue
-                        content = "Data from <https://fnbr.co/>\nVote for this bot here: <{0}>".format(vote_link)
-                        nextshoptime = round(time.mktime(rawtime.utctimetuple()) + (60*60*24))
-                        try:
-                            yield from client.send_file(discord.Object(server['channels']['autoshop']),file,content=content)
-                            client.database.set_server_info(serverid,next_shop=nextshoptime,latest_shop=file)
-                        except (discord.errors.Forbidden, discord.errors.NotFound):
-                            logger.info('Forbidden or not found on server: {}'.format(serverid))
-                            serverdata = client.get_server(serverid)
-                            if serverdata is None:
-                                client.database.delete_server(serverid)
-                            else:
-                                try:
-                                    client.database.set_server_info(serverid,next_shop=nextshoptime,latest_shop=file)
-                                    client.database.set_server_channel(serverid,'autoshop',None)
-                                except:
-                                    error = traceback.format_exc()
-                                    logger.error('Error updating database: {0}'.format(error))
-                                try:
-                                    yield from client.send_message(serverdata.owner,content='I was unable to access the autoshop channel you set in your server `{0}`. I have deleted the channel from my database.'.format(serverdata.name))
-                                except:
-                                    error = traceback.format_exc()
-                                    logger.error('Error sending message to owner: {0}'.format(error))
-                        except:
-                            error = traceback.format_exc()
-                            logger.error('Error sending shop: %s', error)
-                        yield from asyncio.sleep(RATE_LIMIT_TIME)
-                    else:
-                        logger.error('Error getting shop data %s: %s', str(shopdata.error), str(shopdata.json))
-                        shopdata = None
-        time_until_next = nextshop-now
-        if time_until_next < 0:
-            time_until_next = 1
-        else:
-            time_until_next += 60
-        logger.info("Autoshop now:%d next:%d updating in: %s", now, nextshop, parse_second_time(nextshop-now))
-        yield from asyncio.sleep(time_until_next)
+        servers = yield from get_server_priority(list(client.servers),client.database.get_priority_servers)
+        for server_r in servers:
+            for serverd in servers:
+                serverid = serverd.id
+                server = client.database.server_info(serverid,backgrounds=True,channels=True)
+                if 'autoshop' in server['channels']:
+                    now = time.time()
+                    if 'next_shop' in server:
+                        nextshop = server['next_shop']
+                    if nextshop == None:
+                        nextshop = time.mktime(datetime.now().utctimetuple())
+                    if now >= nextshop:
+                        if shopdata == None:
+                            shopdata = yield from shop.getShopData(KEY_FNBR)
+                        if shopdata.type == 'shop':
+                            rawtime = shop.getTime(shopdata.data.date)
+                            bgs = server.get('backgrounds',{})
+                            bgs_s = bgs.get('shop',[])
+                            try:
+                                file = yield from shop.generate(KEY_FNBR,serverid,bgs_s)
+                            except:
+                                error = traceback.format_exc()
+                                logger.error('Error generating image: %s',error)
+                                continue
+                            content = "Data from <https://fnbr.co/>\nVote for this bot here: <{0}>".format(vote_link)
+                            nextshoptime = round(time.mktime(rawtime.utctimetuple()) + (60*60*24))
+                            try:
+                                yield from client.send_file(discord.Object(server['channels']['autoshop']),file,content=content)
+                                client.database.set_server_info(serverid,next_shop=nextshoptime,latest_shop=file)
+                            except (discord.errors.Forbidden, discord.errors.NotFound):
+                                logger.info('Forbidden or not found on server: {}'.format(serverid))
+                                serverdata = client.get_server(serverid)
+                                if serverdata is None:
+                                    client.database.delete_server(serverid)
+                                else:
+                                    try:
+                                        client.database.set_server_info(serverid,next_shop=nextshoptime,latest_shop=file)
+                                        client.database.set_server_channel(serverid,'autoshop',None)
+                                    except:
+                                        error = traceback.format_exc()
+                                        logger.error('Error updating database: {0}'.format(error))
+                                    try:
+                                        yield from client.send_message(serverdata.owner,content='I was unable to access the autoshop channel you set in your server `{0}`. I have deleted the channel from my database.'.format(serverdata.name))
+                                    except:
+                                        error = traceback.format_exc()
+                                        logger.error('Error sending message to owner: {0}'.format(error))
+                            except:
+                                error = traceback.format_exc()
+                                logger.error('Error sending shop: %s', error)
+                            yield from asyncio.sleep(RATE_LIMIT_TIME)
+                        else:
+                            logger.error('Error getting shop data %s: %s', str(shopdata.error), str(shopdata.json))
+                            shopdata = None
+            time_until_next = nextshop-now
+            if time_until_next < 0:
+                time_until_next = 1
+            else:
+                time_until_next += 60
+            logger.info("Autoshop now:%d next:%d updating in: %s", now, nextshop, parse_second_time(nextshop-now))
+            yield from asyncio.sleep(time_until_next)
 
 @asyncio.coroutine
 def autostatus():
@@ -294,22 +295,23 @@ def autonews():
             if not msg['title'] in cache:
                 embeds.append(fortnite.NewsEmbed(msg,data['updated']))
                 client.database.set_cache("news",msg['title'],once=False)
-        servers = client.servers
-        for serverd in list(servers):
-            serverid = serverd.id
-            server = client.database.server_info(serverid,channels=True)
-            if 'autonews' in server['channels']:
-                for embed in embeds:
-                    try:
-                        yield from client.send_message(discord.Object(server['channels']['autonews']),embed=embed)
-                    except:
-                        error = traceback.format_exc()
-                        logger.error('Unable to send news update: %s',error)
-                update_time -= RATE_LIMIT_TIME
-                yield from asyncio.sleep(RATE_LIMIT_TIME)
-        logger.info('Auto news update complete checking again in %s', parse_second_time(update_time))
-        if update_time > 0:
-            yield from asyncio.sleep(update_time)
+        servers = yield from get_server_priority(list(client.servers),client.database.get_priority_servers)
+        for server_r in servers:
+            for serverd in servers_r:
+                serverid = serverd.id
+                server = client.database.server_info(serverid,channels=True)
+                if 'autonews' in server['channels']:
+                    for embed in embeds:
+                        try:
+                            yield from client.send_message(discord.Object(server['channels']['autonews']),embed=embed)
+                        except:
+                            error = traceback.format_exc()
+                            logger.error('Unable to send news update: %s',error)
+                    update_time -= RATE_LIMIT_TIME
+                    yield from asyncio.sleep(RATE_LIMIT_TIME)
+            logger.info('Auto news update complete checking again in %s', parse_second_time(update_time))
+            if update_time > 0:
+                yield from asyncio.sleep(update_time)
 
 @asyncio.coroutine
 def handle_queue():
