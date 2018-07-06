@@ -43,9 +43,9 @@ class Modal:
     def send(self,destination):
         self.message = yield from send_message(destination,content=self.content,embed=self.embed)
         active_modals[self.message.id] = self
-        for key in self.actions:
+        for action in self.actions:
             yield from asyncio.sleep(ACTION_TIMEOUT)
-            yield from add_reaction(self.message,key)
+            yield from add_reaction(self.message,action.emoji)
         return self.message
     def add_action(self,key,action):
         self.actions.append(ModalAction(emoji=key,action=action))
