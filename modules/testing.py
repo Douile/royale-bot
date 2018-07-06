@@ -41,7 +41,7 @@ class TestPages(Command):
         size = randint(3,15)
         for i in range(1,size+1):
             self.custom.add_page(embed=self.Page(i,size))
-        yield from custom.send(msg.channel)
+        yield from self.custom.send(msg.channel)
     @staticmethod
     @asyncio.coroutine
     def end(reaction,user,modal):
