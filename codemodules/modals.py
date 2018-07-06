@@ -59,9 +59,13 @@ class Modal:
         if self.content != self.message.content or self.embed != self.message.embeds[0]:
             self.message = yield from edit_message(self.message,new_content=self.content,embed=self.embed)
         yield from clear_reactions(self.message)
+        has_actions = False
         for action in self.actions:
+            has_actions = True
             yield from asyncio.sleep(ACTION_TIMEOUT)
             yield from add_reaction(self.message,action.emoji)
+        if not has_actions:
+            active_modals.pop(self.message.id,None)
 
 class ModalAction:
     def __init__(self,*,emoji=None,action=None):
