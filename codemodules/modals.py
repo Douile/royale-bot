@@ -24,14 +24,15 @@ def setup(send_function,edit_function,delete_function,reaction_function,clear_fu
 
 @asyncio.coroutine
 def reaction_handler(reaction,user):
-    modal = active_modals.get(reaction.message.id)
-    if modal is not None:
-        action = modal.actions.get(reaction.emoji)
-        if action is not None and callable(action):
-            if asyncio.iscoroutinefunction(action):
-                yield from action(reaction,user,modal)
-            else:
-                action(reaction,user,modal)
+    if user != reaction.message.author:
+        modal = active_modals.get(reaction.message.id)
+        if modal is not None:
+            action = modal.actions.get(reaction.emoji)
+            if action is not None and callable(action):
+                if asyncio.iscoroutinefunction(action):
+                    yield from action(reaction,user,modal)
+                else:
+                    action(reaction,user,modal)
 
 
 class Modal:
