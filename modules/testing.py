@@ -6,9 +6,10 @@ import asyncio
 
 class TestingModule(Module):
     def __init__(self):
-        super().__init__(name='testing',description='commands im testing',category='test')
+        super().__init__(name='testing',description='commands im testing',category='testing')
         self.commands = {
-            'acceptme': AcceptMe()
+            'acceptme': AcceptMe(),
+            'testpages': TestPages()
         }
 
 class AcceptMe(Command):
