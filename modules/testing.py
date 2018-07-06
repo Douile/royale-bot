@@ -57,7 +57,7 @@ class TestItems(Command):
         super().__init__(name='testitems',description='A test items modal',permission='admin')
     @asyncio.coroutine
     def run(self,command,msg,settings):
-        self.custom = modals.ItemsModal(title='Test',description='Choose an item',only=msg.author)
+        self.custom = modals.ItemModal(title='Test',description='Choose an item',only=msg.author)
         self.custom.add_item(name='test')
         self.custom.add_item(name='test2')
         yield from self.custom.send(msg.channel)
