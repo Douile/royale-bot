@@ -43,3 +43,28 @@ def startmatches(string, matches):
             doesMatch = match
             break
     return doesMatch
+
+def num_after(string,text):
+    i = string.find(text)+len(text)
+    b = string[i:]
+    s = ''
+    for c in range(0,len(b)):
+        d = ord(b[c])
+        if d > 47 and d < 57:
+            s += b[c]
+        else:
+            if len(s) > 0:
+                break
+    try:
+        v = int(s)
+    except ValueError:
+        v = None
+    return v
+
+def includes(string,*values):
+    t = True
+    for value in values:
+        if string.find(value) < 0:
+            t = False
+            break
+    return t

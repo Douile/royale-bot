@@ -1,0 +1,130 @@
+import asyncio
+
+ACTION_TIMEOUT = 0.15
+
+send_message = None
+edit_message = None
+delete_message = None
+add_reaction = None
+clear_reactions = None
+
+active_modals = {}
+
+def setup(send_function,edit_function,delete_function,reaction_function,clear_function):
+    global send_message
+    global edit_message
+    global delete_message
+    global add_reaction
+    global clear_reactions
+    send_message = send_function
+    edit_message = edit_function
+    delete_message = delete_function
+    add_reaction = reaction_function
+    clear_reactions = clear_function
+
+@asyncio.coroutine
+def reaction_handler(reaction,user):
+    modal = active_modals.get(reaction.message.id)
+    if modal is not None:
+        action = modal.actions.get(reaction.emoji)
+        if action is not None and callable(action):
+            if asyncio.iscoroutinefunction(action):
+                yield from action(reaction,user,modal)
+            else:
+                action(reaction,user,modal)
+
+
+class Modal:
+    def __init__(self,*,content=None,embed=None):
+        self.actions = ModalActionList()
+        self.content = content
+        self.embed = embed
+    @asyncio.coroutine
+    def send(self,destination):
+        self.message = yield from send_message(destination,content=self.content,embed=self.embed)
+        active_modals[self.message.id] = self
+        for key in self.actions:
+            yield from asyncio.sleep(ACTION_TIMEOUT)
+            yield from add_reaction(self.message,key)
+        return self.message
+    def add_action(self,key,action):
+        self.actions.append(ModalAction(emoji=key,action=action))
+    @asyncio.coroutine
+    def delete(self):
+        yield from delete_message(self.message)
+        active_modals.pop(self.message.id,None)
+    @asyncio.coroutine
+    def reset(self):
+        if self.content != self.message.content or self.embed != self.message.embeds[0]:
+            self.message = yield from edit_message(self.message,new_content=self.content,embed=self.embed)
+        yield from clear_reactions(self.message)
+        for action in self.actions:
+            yield from asyncio.sleep(ACTION_TIMEOUT)
+            yield from add_reaction(self.message,action.emoji)
+
+class ModalAction:
+    def __init__(self,*,emoji=None,action=None):
+        self.emoji = emoji
+        self.action = action
+
+class ModalActionList(list):
+    def get(self,key):
+        value = None
+        for action in self:
+            if action.emoji == key:
+                value = action.action
+                break
+        return value
+
+
+class AcceptModal(Modal):
+    def __init__(self,*,content=None,embed=None,accept=None,decline=None):
+        super().__init__(content=content,embed=embed)
+        self.add_action(':x:',decline)
+        self.add_action(':heavy_check_mark:',accept)
+
+class PagedModal(Modal):
+    def __init__(self,*,center_actions=[]):
+        self.page = None
+        self.pages = []
+        self.center_actions = center_actions
+    @property
+    def actions(self):
+        actual_actions = [ModalAction(emoji=':arrow_left:',action=self.page_left)] + self.center_actions + [ModalAction(emoji=':arrow_right:',action=self.page_right)]
+        return ModalActionList(actual_actions)
+    @property
+    def content(self):
+        c = None
+        if self.page is not None:
+            c = self.pages[self.page-1].content
+        return c
+    @property
+    def embed(self):
+        c = None
+        if self.page is not None:
+            c = self.pages[self.page-1].embed
+        return c
+    @staticmethod
+    @asyncio.coroutine
+    def page_left(reaction,user,modal):
+        if modal.page < 2:
+            modal.page = len(modal.pages)
+        else:
+            modal.page -= 1
+        yield from modal.reset()
+    @staticmethod
+    @asyncio.coroutine
+    def page_right(reaction,user,modal):
+        if modal.page > len(modal.pages) - 2:
+            modal.page = 1
+        else:
+            modal.page += 1
+        yield from modal.reset()
+    def add_page(self,content=None,embed=None):
+        self.pages.append(self.Page(content=content,embed=embed))
+        if self.page is None:
+            self.page = 1
+    class Page:
+        def __init__(self,*,content=None,embed=None):
+            self.content = content
+            self.embed = embed

@@ -21,6 +21,7 @@ from datamanagement import sql
 from utils import linecount
 from utils.times import day_string as parse_second_time
 from utils.discord import count_client_users, get_server_priority
+from codemodules import modals
 
 def getEnv(name,default=None):
     value = os.environ.get(name,None)
@@ -131,6 +132,7 @@ client = discord.Client(shard_id=SHARD_NO,shard_count=SHARD_COUNT)
 client.queued_actions = []
 client.database = sql.Database(False, url=DATABASE_URL)
 builtins.client = client
+modals.setup(client.send_message,client.edit_message,client.delete_message,client.add_reaction,client.clear_reactions)
 
 @asyncio.coroutine
 def debugger(function):
