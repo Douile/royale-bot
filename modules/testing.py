@@ -17,7 +17,7 @@ class AcceptMe(Command):
         super().__init__(name='acceptme',description='A test accept modal',permission='admin')
     @asyncio.coroutine
     def run(self,command,msg,settings):
-        self.custom = modals.AcceptModal(content='Would you like to accept?',accept=self.accept,decline=self.decline)
+        self.custom = modals.AcceptModal(content='Would you like to accept?',accept=self.accept,decline=self.decline,only=msg.author)
         yield from self.custom.send(msg.channel)
     @staticmethod
     @asyncio.coroutine
@@ -37,7 +37,7 @@ class TestPages(Command):
         super().__init__(name='testpages',description='A test paged modal',permission='admin')
     @asyncio.coroutine
     def run(self,command,msg,settings):
-        self.custom = modals.PagedModal(center_actions=[modals.ModalAction(emoji=u'\u274C',action=self.end)])
+        self.custom = modals.PagedModal(center_actions=[modals.ModalAction(emoji=u'\u274C',action=self.end)],only=msg.author)
         size = randint(3,15)
         for i in range(1,size+1):
             self.custom.add_page(embed=self.Page(i,size))
