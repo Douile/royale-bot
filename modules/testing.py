@@ -9,7 +9,8 @@ class TestingModule(Module):
         super().__init__(name='testing',description='commands im testing',category='testing')
         self.commands = {
             'acceptme': AcceptMe(),
-            'testpages': TestPages()
+            'testpages': TestPages(),
+            'testitems': TestItems()
         }
 
 class AcceptMe(Command):
