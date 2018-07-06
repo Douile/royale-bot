@@ -50,3 +50,13 @@ class TestPages(Command):
         def __init__(self,number,amount):
             super().__init__(title='Page {}'.format(number),description='You can close this by pressing the :x:')
             self.set_footer(text='{}/{}'.format(number,amount))
+
+class TestItems(Command):
+    def __init__(self):
+        super().__init__(name='testitems',description='A test items modal',permission='admin')
+    @asyncio.coroutine
+    def run(self,command,msg,settings):
+        self.custom = modals.ItemsModal(title='Test',description='Choose an item',only=msg.author)
+        self.custom.add_item(name='test')
+        self.custom.add_item(name='test2')
+        yield from self.custom.send(msg.channel)

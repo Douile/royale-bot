@@ -1,4 +1,5 @@
 import asyncio
+from discord import Embed
 
 ACTION_TIMEOUT = 0.15
 
@@ -136,3 +137,36 @@ class PagedModal(Modal):
         def __init__(self,*,content=None,embed=None):
             self.content = content
             self.embed = embed
+
+class ItemModal(Modal):
+    def __init__(self,*,parent=None,only=None,title='_ _',description='_ _'):
+        self.parent = parent
+        self.only = only
+        self.items = []
+        self.content = None
+        self.embed = Embed(title=title,description=description)
+    @property
+    def actions(self):
+        actual_actions = [ModalAction(emoji=u'\u274C',action=self.close)]
+        if self.parent is not None:
+            actual_actions += [ModalAction(emoji=u'\u2B05',action=self.parent.reset)]
+        self.embed.clear_fields()
+        for i in range(len(self.items)):
+            item = self.items[i]
+            emoji = self.get_char(i)
+            actual_actions.append(ModalAction(emoji=emoji,action=None))
+            self.embed.add_field(name=emoji,value=item.name,inline=False)
+        return ModalActionList(actual_actions)
+    @staticmethod
+    def get_char(i):
+        if i > -1 and i < 26:
+            return chr(55356)+chr(56806+i)
+        else:
+            raise ValueError('Char must be between 0 and 25')
+    def add_item(self,name='_ _',description=None,action=None):
+        self.items.append(Item(name=name,description=description,action=action))
+    class Item:
+        def __init__(self,*,name='_ _',description=None,action=None):
+            self.name = name
+            self.description = description
+            self.action = action
