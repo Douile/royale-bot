@@ -87,8 +87,8 @@ class ModalActionList(list):
 class AcceptModal(Modal):
     def __init__(self,*,content=None,embed=None,only=None,accept=None,decline=None):
         super().__init__(content=content,embed=embed,only=only)
-        self.add_action(u'\u2716',decline)
-        self.add_action(u'\u2714',accept)
+        self.add_action(u'\u274C',decline)
+        self.add_action(u'\u1F5F8',accept)
 
 class PagedModal(Modal):
     def __init__(self,*,center_actions=[],only=None):
