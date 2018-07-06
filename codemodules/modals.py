@@ -27,19 +27,21 @@ def reaction_handler(reaction,user):
     if user != reaction.message.author:
         modal = active_modals.get(reaction.message.id)
         if modal is not None:
-            action = modal.actions.get(reaction.emoji)
-            if action is not None and callable(action):
-                if asyncio.iscoroutinefunction(action):
-                    yield from action(reaction,user,modal)
-                else:
-                    action(reaction,user,modal)
+            if modal.only is None or modal.only == user:
+                action = modal.actions.get(reaction.emoji)
+                if action is not None and callable(action):
+                    if asyncio.iscoroutinefunction(action):
+                        yield from action(reaction,user,modal)
+                    else:
+                        action(reaction,user,modal)
 
 
 class Modal:
-    def __init__(self,*,content=None,embed=None):
+    def __init__(self,*,content=None,embed=None,only=None):
         self.actions = ModalActionList()
         self.content = content
         self.embed = embed
+        self.only = only
     @asyncio.coroutine
     def send(self,destination):
         self.message = yield from send_message(destination,content=self.content,embed=self.embed)
@@ -83,13 +85,14 @@ class ModalActionList(list):
 
 
 class AcceptModal(Modal):
-    def __init__(self,*,content=None,embed=None,accept=None,decline=None):
-        super().__init__(content=content,embed=embed)
+    def __init__(self,*,content=None,embed=None,only=None,accept=None,decline=None):
+        super().__init__(content=content,embed=embed,only=only)
         self.add_action(u'\u2716',decline)
         self.add_action(u'\u2714',accept)
 
 class PagedModal(Modal):
-    def __init__(self,*,center_actions=[]):
+    def __init__(self,*,center_actions=[],only=None):
+        self.only = only
         self.page = None
         self.pages = []
         self.center_actions = center_actions
