@@ -395,6 +395,11 @@ def count_users(client_class):
 
 @client.event
 @asyncio.coroutine
+def on_reaction_add(reaction,user):
+    yield from modals.reaction_handler(reaction,user)
+
+@client.event
+@asyncio.coroutine
 def on_ready():
     logger = logging.getLogger()
     logger.info("Discord client logged in: %s %s %d/%d", client.user.name, client.user.id, client.shard_id, client.shard_count)
