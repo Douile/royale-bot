@@ -164,7 +164,7 @@ class ItemModal(Modal):
         else:
             raise ValueError('Char must be between 0 and 25')
     @staticmethod
-    @asyncio.corouine
+    @asyncio.coroutine
     def close(reaction, user, modal):
         yield from modal.delete()
     def add_item(self,name='_ _',description=None,action=None):
