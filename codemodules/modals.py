@@ -163,6 +163,10 @@ class ItemModal(Modal):
             return chr(55356)+chr(56806+i)
         else:
             raise ValueError('Char must be between 0 and 25')
+    @staticmethod
+    @asyncio.corouine
+    def close(reaction, user, modal):
+        yield from modal.delete()
     def add_item(self,name='_ _',description=None,action=None):
         self.items.append(self.Item(name=name,description=description,action=action))
     class Item:
