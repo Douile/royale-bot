@@ -80,8 +80,8 @@ class ModalActionList(list):
 class AcceptModal(Modal):
     def __init__(self,*,content=None,embed=None,accept=None,decline=None):
         super().__init__(content=content,embed=embed)
-        self.add_action(':x:',decline)
-        self.add_action(':heavy_check_mark:',accept)
+        self.add_action(u'\u2716',decline)
+        self.add_action(u'\u2714',accept)
 
 class PagedModal(Modal):
     def __init__(self,*,center_actions=[]):
@@ -90,7 +90,7 @@ class PagedModal(Modal):
         self.center_actions = center_actions
     @property
     def actions(self):
-        actual_actions = [ModalAction(emoji=':arrow_left:',action=self.page_left)] + self.center_actions + [ModalAction(emoji=':arrow_right:',action=self.page_right)]
+        actual_actions = [ModalAction(emoji=u'\u2B05',action=self.page_left)] + self.center_actions + [ModalAction(emoji=u'\u27A1',action=self.page_right)]
         return ModalActionList(actual_actions)
     @property
     def content(self):
