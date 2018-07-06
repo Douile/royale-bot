@@ -14,8 +14,8 @@ class AcceptMe(Command):
         super().__init__(name='acceptme',description='A test accept modal',permission='admin')
     @asyncio.coroutine
     def run(self,command,msg,settings):
-        modal = modals.AcceptModal(content='Would you like to accept?',accept=self.accept,decline=self.decline)
-        yield from modal.send(msg.channel)
+        self.custom = modals.AcceptModal(content='Would you like to accept?',accept=self.accept,decline=self.decline)
+        yield from self.custom.send(msg.channel)
     @staticmethod
     @asyncio.coroutine
     def accept(reaction, user, modal):

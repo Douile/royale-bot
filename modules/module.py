@@ -90,6 +90,7 @@ class Command:
         self.file = None
         self.embed = None
         self.embeds = None
+        self.custom = None
         self.settings = None
         self.is_help = False
         self.noPermission = None
@@ -110,7 +111,8 @@ class Command:
              self.embeds is None and \
              self.noPermission is None and \
              self.deletes == [] and \
-             self.queue == []:
+             self.queue == [] and \
+             self.custom is None:
             is_empty = True
         else:
             is_empty = False
