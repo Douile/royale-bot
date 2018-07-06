@@ -13,7 +13,7 @@ import builtins
 import logging
 import logging.config
 
-from modules import default, fortnite, moderation
+from modules import default, fortnite, moderation, testing
 from modules.module import Command
 from dataretrieval import meta
 from imagegeneration import shop
@@ -519,7 +519,7 @@ def commandStatus(msg,settings):
     '<@!{0}> bot v{1} is online!'.format(msg.author.id,VERSION)
 
 
-cmodules = [fortnite.FortniteModule(KEY_FNBR, KEY_TRACKERNETWORK, client.database), moderation.ModerationModule()]
+cmodules = [fortnite.FortniteModule(KEY_FNBR, KEY_TRACKERNETWORK, client.database), moderation.ModerationModule(), testing.TestingModule()]
 defaultmodule = default.DefaultModule(cmodules, VERSION)
 
 def close():
