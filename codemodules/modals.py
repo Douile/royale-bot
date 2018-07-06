@@ -164,7 +164,7 @@ class ItemModal(Modal):
         else:
             raise ValueError('Char must be between 0 and 25')
     def add_item(self,name='_ _',description=None,action=None):
-        self.items.append(Item(name=name,description=description,action=action))
+        self.items.append(self.Item(name=name,description=description,action=action))
     class Item:
         def __init__(self,*,name='_ _',description=None,action=None):
             self.name = name
