@@ -169,7 +169,8 @@ class ItemModal(Modal):
         yield from modal.delete()
     def add_item(self,name='_ _',description=None,action=None):
         self.items.append(self.Item(name=name,description=description,action=action))
-        self.embed.add_field(name=self.get_char(len(self.items)-1),value=name,inline=False)
+        emoji = self.get_char(len(self.items)-1)
+        self.embed.add_field(name='{} {}'.format(emoji,name),value=description,inline=False)
     class Item:
         def __init__(self,*,name='_ _',description=None,action=None):
             self.name = name
