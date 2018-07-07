@@ -155,7 +155,7 @@ class ItemModal(Modal):
             item = self.items[i]
             emoji = self.get_char(i)
             actual_actions.append(ModalAction(emoji=emoji,action=None))
-            self.embed.add_field(name=emoji,value=item.name,inline=False)
+
         return ModalActionList(actual_actions)
     @staticmethod
     def get_char(i):
@@ -169,6 +169,7 @@ class ItemModal(Modal):
         yield from modal.delete()
     def add_item(self,name='_ _',description=None,action=None):
         self.items.append(self.Item(name=name,description=description,action=action))
+        self.embed.add_field(name=self.get_char(len(self.items)-1),value=name,inline=False)
     class Item:
         def __init__(self,*,name='_ _',description=None,action=None):
             self.name = name
