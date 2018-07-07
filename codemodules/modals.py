@@ -160,7 +160,7 @@ class ItemModal(Modal):
     @staticmethod
     def get_char(i):
         if i > -1 and i < 26:
-            return chr(55356)+chr(56806+i)
+            return chr(127462+i)
         else:
             raise ValueError('Char must be between 0 and 25')
     @staticmethod
