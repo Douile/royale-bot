@@ -343,10 +343,9 @@ def autocheatsheets():
             client.database.set_cache('last_cheat_sheet',json.dumps(cache),once=True)
         if update is not None:
             title = 'Season **{}** Week **{}** cheat sheet'.format(update.season,update.week)
-            description = 'Vote for RoyaleBot here:\n<{0}>'.format(vote_link)
+            description = '[Vote for RoyaleBot]({0})\nImage by [TheSquatingDog](https://reddit.com/u/thesquatingdog?utm=RoyaleBot)'.format(vote_link)
             embed = discord.Embed(title=title,description=description)
             embed.set_image(url=update.image)
-            embed.set_footer(text='TheSquatingDog',url='https://reddit.com/u/thesquatingdog?utm=RoyaleBot')
             servers = yield from get_server_priority(list(client.servers),client.database.get_priority_servers)
             for servers_r in servers:
                 for serverd in servers_r:
