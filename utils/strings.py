@@ -50,7 +50,7 @@ def num_after(string,text):
     s = ''
     for c in range(0,len(b)):
         d = ord(b[c])
-        if d > 47 and d < 57:
+        if d > 47 and d < 58:
             s += b[c]
         else:
             if len(s) > 0:

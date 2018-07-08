@@ -15,7 +15,7 @@ import logging.config
 
 from modules import default, fortnite, moderation, testing
 from modules.module import Command
-from dataretrieval import meta
+from dataretrieval import meta, cheatsheets
 from imagegeneration import shop
 from datamanagement import sql
 from utils import linecount
@@ -212,8 +212,8 @@ def autoshop(): # add fnbr not accessable fallback
                 time_until_next = 1
             else:
                 time_until_next += 60
-            logger.info("Autoshop now:%d next:%d updating in: %s", now, nextshop, parse_second_time(nextshop-now))
-            yield from asyncio.sleep(time_until_next)
+        logger.info("Autoshop now:%d next:%d updating in: %s", now, nextshop, parse_second_time(nextshop-now))
+        yield from asyncio.sleep(time_until_next)
 
 @asyncio.coroutine
 def autostatus():
@@ -288,7 +288,7 @@ def autonews():
     while not client.is_closed:
         update_time = 300
         cache = client.database.get_cache("news",once=False)
-        if cache == None:
+        if cache is None:
             cache = []
         data = meta.getNews('en')
         used = []
@@ -311,9 +311,58 @@ def autonews():
                             logger.error('Unable to send news update: %s',error)
                     update_time -= RATE_LIMIT_TIME
                     yield from asyncio.sleep(RATE_LIMIT_TIME)
-            logger.info('Auto news update complete checking again in %s', parse_second_time(update_time))
-            if update_time > 0:
-                yield from asyncio.sleep(update_time)
+        logger.info('Auto news update complete checking again in %s', parse_second_time(update_time))
+        if update_time > 0:
+            yield from asyncio.sleep(update_time)
+
+@asyncio.coroutine
+def auto_sheets():
+    logger = logging.getLogger('autosheets')
+    yield from client.wait_until_ready()
+    logger.info('Autosheets started')
+    vote_link = 'https://discordbots.org/bot/{0}/vote'.format(client.user.id)
+    while not client.is_closed:
+        update_time = 600
+        cache = client.database.get_cache('last_cheat_sheet',once=True)
+        if cache is None:
+            cache = {'season':0,'week':0}
+        else:
+            try:
+                cache = # parse json
+            except:
+                cache = {'season':0,'week':0}
+        old_cache = cache
+        update = None
+        data = yield from cheatsheets.get_cheat_sheets()
+        for sheet in data:
+            if (sheet.season > cache.get('season',0) or sheet.week > cache.get('week',0)) and sheet.has_image:
+                cache['season'] = sheet.season
+                cache['week'] = sheet.week
+                update = sheet
+        if old_cache.get('season') != cache.get('season') or old_cache.get('week') != cache.get('week'):
+            client.database.set_cache() # parse json
+        if update is not None:
+            title = 'Season **{}** Week **{}** cheat sheet'.format(update.season,update.week)
+            description = 'Vote for RoyaleBot here:\n<{0}>'.format(vote_link)
+            embed = discord.Embed(title=title,description=description)
+            embed.set_image(url=update.image)
+            embed.set_footer(text='TheSquatingDog',url='https://reddit.com/u/thesquatingdog?utm=RoyaleBot')
+            servers = yield from get_server_priority(list(client.servers),client.database.get_priority_servers)
+            for servers_r in servers:
+                for serverd in servers_r:
+                    serverid = serverd.id
+                    server = client.database.server_info(serverid,channels=True)
+                    if 'autocheatsheets' in server.get('channels',[]):
+                        try:
+                            yield from client.send_message(discord.Object(server['channels']['autocheatsheets']),embed=embed)
+                        except:
+                            error = traceback.format_exc()
+                            logger.error('Unabled to send cheat sheet: %s',error)
+                        update_time -= RATE_LIMIT_TIME
+                        yield from asyncio.sleep(RATE_LIMIT_TIME)
+        logger.info('Auto cheat sheets update complete checking again in %s', parse_second_time(update_time))
+        if update_time > 0:
+            yield from asyncio.sleep(update_time)
 
 @asyncio.coroutine
 def handle_queue():
