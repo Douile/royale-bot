@@ -346,6 +346,8 @@ def autocheatsheets():
             except:
                 error = traceback.format_exc()
                 logger.error('Error updating cache: %s',error)
+        else:
+            logger.debug('%s\n%s',str(old_cache),str(cache))
         if update is not None:
             title = 'Season **{}** Week **{}** cheat sheet'.format(update.season,update.week)
             description = '[Vote for RoyaleBot]({0})\nImage by [TheSquatingDog](https://reddit.com/u/thesquatingdog?utm=RoyaleBot)'.format(vote_link)
