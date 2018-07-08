@@ -110,7 +110,7 @@ logging_config = {
             'formatter': 'verbose'
         },
         'sentry': {
-            'level':'WARNING',
+            'level':'INFO',
             'class':'raven.handlers.logging.SentryHandler',
             'dsn':SENTRY_URL
         }
@@ -331,7 +331,7 @@ def autocheatsheets():
                 cache = json.loads(cache)
             except:
                 cache = {'season':0,'week':0}
-        old_cache = cache
+        old_cache = dict(cache)
         update = None
         data = yield from cheatsheets.get_cheat_sheets()
         for sheet in data:
