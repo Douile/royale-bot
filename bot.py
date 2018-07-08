@@ -577,7 +577,7 @@ def commandStatus(msg,settings):
 
 
 cmodules = [fortnite.FortniteModule(KEY_FNBR, KEY_TRACKERNETWORK, client.database), moderation.ModerationModule(), testing.TestingModule()]
-defaultmodule = default.DefaultModule(cmodules, VERSION, client.database)
+defaultmodule = default.DefaultModule(cmodules, VERSION, database=client.database)
 
 def close():
     asyncio.ensure_future(client.close())
