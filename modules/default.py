@@ -170,7 +170,7 @@ class SetPrefix(Command):
         modal.content = 'Changing prefix to `{0}`'.format(modal.prefix)
         modal.actions = {}
         yield from modal.reset()
-        yield from update_prefix(modal.message.server.id,modal.prefix,finish_modal(modal,'Successfully changed prefix to `{0}`'.format(modal.prefix),finish_modal(modal,'Sorry an error occurred while changing your prefix'))
+        yield from update_prefix(modal.message.server.id,modal.prefix,finish_modal(modal,'Successfully changed prefix to `{0}`'.format(modal.prefix)),finish_modal(modal,'Sorry an error occurred while changing your prefix'))
     @staticmethod
     @asyncio.coroutine
     def declineModal(reaction,user,modal):
