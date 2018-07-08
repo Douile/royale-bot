@@ -340,13 +340,17 @@ def autocheatsheets():
                 cache['week'] = sheet.week
                 update = sheet
         if old_cache.get('season') != cache.get('season') or old_cache.get('week') != cache.get('week'):
-            client.database.set_cache('last_cheat_sheet',json.dumps(cache),once=True)
-            logger.info('Updated cache')
+            try:
+                client.database.set_cache('last_cheat_sheet',json.dumps(cache),once=True)
+                logger.info('Updated cache')
+            except:
+                error = traceback.format_exc()
+                logger.error('Error updating cache: %s',error)
         if update is not None:
             title = 'Season **{}** Week **{}** cheat sheet'.format(update.season,update.week)
             description = '[Vote for RoyaleBot]({0})\nImage by [TheSquatingDog](https://reddit.com/u/thesquatingdog?utm=RoyaleBot)'.format(vote_link)
             embed = discord.Embed(title=title,description=description)
-            embed.set_image(url=update.image)
+            embed.set_thumbnail(url=update.image)
             logger.info('Embed built {0}.{1} image url: {2}'.format(update.season,update.week,update.image))
             servers = yield from get_server_priority(list(client.servers),client.database.get_priority_servers)
             for servers_r in servers:
