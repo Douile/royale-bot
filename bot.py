@@ -316,7 +316,7 @@ def autonews():
             yield from asyncio.sleep(update_time)
 
 @asyncio.coroutine
-def auto_sheets():
+def autocheatsheets():
     logger = logging.getLogger('autosheets')
     yield from client.wait_until_ready()
     logger.info('Autosheets started')
@@ -340,7 +340,7 @@ def auto_sheets():
                 cache['week'] = sheet.week
                 update = sheet
         if old_cache.get('season') != cache.get('season') or old_cache.get('week') != cache.get('week'):
-            client.database.set_cache('last_cheat_sheet',json.dumps(cache),once=True) 
+            client.database.set_cache('last_cheat_sheet',json.dumps(cache),once=True)
         if update is not None:
             title = 'Season **{}** Week **{}** cheat sheet'.format(update.season,update.week)
             description = 'Vote for RoyaleBot here:\n<{0}>'.format(vote_link)
@@ -591,6 +591,7 @@ client.loop.add_signal_handler(signal.SIGTERM, close)
 client.loop.create_task(debugger(autoshop))
 client.loop.create_task(debugger(autostatus))
 client.loop.create_task(debugger(autonews))
+client.loop.create_task(debugger(autocheatsheets))
 client.loop.create_task(handle_queue())
 client.loop.create_task(debugger(ticker))
 client.loop.create_task(dbl_api())
