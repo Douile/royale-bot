@@ -328,7 +328,7 @@ def auto_sheets():
             cache = {'season':0,'week':0}
         else:
             try:
-                cache = # parse json
+                cache = json.loads(cache)
             except:
                 cache = {'season':0,'week':0}
         old_cache = cache
@@ -340,7 +340,7 @@ def auto_sheets():
                 cache['week'] = sheet.week
                 update = sheet
         if old_cache.get('season') != cache.get('season') or old_cache.get('week') != cache.get('week'):
-            client.database.set_cache() # parse json
+            client.database.set_cache('last_cheat_sheet',json.dumps(cache),once=True) 
         if update is not None:
             title = 'Season **{}** Week **{}** cheat sheet'.format(update.season,update.week)
             description = 'Vote for RoyaleBot here:\n<{0}>'.format(vote_link)
