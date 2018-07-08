@@ -160,8 +160,9 @@ class SetPrefix(Command):
             text = '<@!{0}> are you sure you want to change your prefix to `{1}`. Example: `{1}help`'.format(msg.author.id,prefix)
             self.custom = modals.AcceptModal(content=text,accept=self.acceptModal,decline=self.declineModal,only=msg.author)
             self.custom.prefix = prefix
-            self.content = '<@!{0}> Successfully set the prefix to `{1}`'.format(msg.author.id,prefix)
-            self.settings = {'prefix':prefix}
+            yield from self.custom.send(msg.channel)
+            # self.content = '<@!{0}> Successfully set the prefix to `{1}`'.format(msg.author.id,prefix)
+            # self.settings = {'prefix':prefix}
         else:
             self.content = '<@!{0}> Please enter a valid prefix'.format(msg.author.id)
     @staticmethod
