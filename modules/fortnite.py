@@ -25,7 +25,7 @@ class FortniteModule(Module):
             'link': Link(sql),
             'unlink': UnLink(sql)
         }
-        self.types = ['autoshop','autostatus','autonews']
+        self.types = ['autoshop','autostatus','autonews','autocheatsheets']
         for command_name in self.commands:
             command = self.commands[command_name]
             if command.permission is not None and not command.permission in self.types and command.permission != 'admin':
