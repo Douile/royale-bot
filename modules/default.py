@@ -1,14 +1,20 @@
 from .module import Module, Command, checkPermissions, QueueAction, get_prefix, Map
+from codemodules import modals
 import discord
 import asyncio
 import traceback
 from utils import getEnv
 
 DEFAULT_PREFIX = getEnv("DEFAULT_PREFIX","!")
+UPDATE_SERVER = None
+
 
 class DefaultModule(Module):
-    def __init__(self,modules=[],version='',client_id=''):
+    def __init__(self,modules=[],version='',client_id='',database=None):
         super().__init__(name='default',client_id=client_id)
+        global UPDATE_SERVER
+        if database is not None:
+            UPDATE_SERVER = database.set_server_info
         self.types = []
         self.modules = modules
         for module in modules:
@@ -139,6 +145,7 @@ class SetPrefix(Command):
     def __init__(self):
         super().__init__(name='setprefix',description='Set the command prefix. `{prefix}setprefix "[prefix]"`. In order to have a space at the beginning or end of your prefix you must put "" around it. e.g. `".rb "`')
         self.permission = 'admin'
+    @asyncio.coroutine
     def run(self,command,msg,settings):
         self.reset()
         if command.count('"') > 1:
@@ -150,10 +157,42 @@ class SetPrefix(Command):
             except IndexError:
                 prefix = ''
         if prefix != '':
-            self.content = '<@!{0}> Successfully set the prefix to {1}'.format(msg.author.id,prefix)
+            msg = '<@!{0}> are you sure you want to change your prefix to `{1}`. Example: `{1}help`'.format(msg.author.id,prefix)
+            self.custom = modals.AcceptModal(content=msg,accept=self.acceptModal,decline=self.declineModal,only=msg.author)
+            self.custom.prefix = prefix
+            self.content = '<@!{0}> Successfully set the prefix to `{1}`'.format(msg.author.id,prefix)
             self.settings = {'prefix':prefix}
         else:
             self.content = '<@!{0}> Please enter a valid prefix'.format(msg.author.id)
+    @staticmethod
+    @asyncio.coroutine
+    def acceptModal(reaction,user,modal):
+        modal.content = 'Changing prefix to `{0}`'.format(modal.prefix)
+        modal.actions = {}
+        yield from modal.reset()
+        yield from update_prefix(modal.message.server.id,modal.prefix,finish_modal(modal,'Successfully changed prefix to `{0}`'.format(modal.prefix),finish_modal(modal,'Sorry an error occurred while changing your prefix'))
+    @staticmethod
+    @asyncio.coroutine
+    def declineModal(reaction,user,modal):
+        modal.content = 'Your prefix was not changed'
+        modal.actions = {}
+        yield from modal.reset()
+@asyncio.coroutine
+def update_prefix(server,prefix,done,error):
+    global UPDATE_SERVER
+    if UPDATE_SERVER is None:
+        yield from error
+    else:
+        try:
+            UPDATE_SERVER(server,prefix=prefix)
+            yield from done
+        except:
+            yield from error
+@asyncio.coroutine
+def finish_modal(modal,content):
+    modal.content = content
+    modal.actions = {}
+    yield from modal.reset()
 
 class HelpEmbed(discord.Embed):
     def __init__(self,prefix='!',category=None,icon_url=None,admin=False):

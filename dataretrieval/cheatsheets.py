@@ -43,12 +43,9 @@ def parse_cheat_sheets(data):
                 item = container.get('data',{})
                 if item.get('subreddit') == 'FortNiteBR':
                     title = item.get('title')
-                    print('Post in correct subreddit: {}'.format(title))
                     if strings.includes(title.lower(),'cheat sheet','challenges'):
-                        print('Post title contains key words')
                         season = strings.num_after(title.lower(),'season')
                         week = strings.num_after(title.lower(),'week')
-                        print('\tSeason: {}\n\tWeek: {}'.format(season,week))
                         if season is not None and week is not None:
                             image = None
                             images = item.get('preview',{}).get('images',[])
