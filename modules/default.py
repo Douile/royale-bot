@@ -157,8 +157,8 @@ class SetPrefix(Command):
             except IndexError:
                 prefix = ''
         if prefix != '':
-            msg = '<@!{0}> are you sure you want to change your prefix to `{1}`. Example: `{1}help`'.format(msg.author.id,prefix)
-            self.custom = modals.AcceptModal(content=msg,accept=self.acceptModal,decline=self.declineModal,only=msg.author)
+            text = '<@!{0}> are you sure you want to change your prefix to `{1}`. Example: `{1}help`'.format(msg.author.id,prefix)
+            self.custom = modals.AcceptModal(content=text,accept=self.acceptModal,decline=self.declineModal,only=msg.author)
             self.custom.prefix = prefix
             self.content = '<@!{0}> Successfully set the prefix to `{1}`'.format(msg.author.id,prefix)
             self.settings = {'prefix':prefix}

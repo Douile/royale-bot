@@ -328,7 +328,7 @@ def autocheatsheets():
             cache = {'season':0,'week':0}
         else:
             try:
-                cache = json.loads(cache)
+                cache = json.loads(cache.get('last_cheat_sheet'))
             except:
                 logger.debug(str(cache))
                 cache = {'season':0,'week':0}
