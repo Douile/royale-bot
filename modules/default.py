@@ -3,6 +3,7 @@ from codemodules import modals
 import discord
 import asyncio
 import traceback
+import logging
 from utils import getEnv
 
 DEFAULT_PREFIX = getEnv("DEFAULT_PREFIX","!")
@@ -188,6 +189,8 @@ def update_prefix(server,prefix,done,error):
             UPDATE_SERVER(server,prefix=prefix)
             yield from done
         except:
+            error_text = traceback.format_exc()
+            logging.getLogger('update_prefix').error('Error updating prefix: %s',error_text)
             yield from error
 @asyncio.coroutine
 def finish_modal(modal,content):
