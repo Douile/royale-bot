@@ -330,6 +330,7 @@ def autocheatsheets():
             try:
                 cache = json.loads(cache)
             except:
+                logger.debug(str(cache))
                 cache = {'season':0,'week':0}
         old_cache = dict(cache)
         update = None
