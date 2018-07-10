@@ -238,44 +238,45 @@ def autostatus():
             error = traceback.format_exc()
             logger.error('Error compiling embed %s', error)
         logger.debug('Embed built')
-        servers = client.servers
-        for server_d in list(servers):
-            serverid = server_d.id
-            server = client.database.server_info(serverid,channels=True)
-            if 'autostatus' in server['channels']:
-                last_status_msg = server.get('last_status_msg', None)
-                last_status_channel = server.get('last_status_channel', None)
-                server = discord.Object(server['channels']['autostatus'])
-                old_message = None
-                if last_status_msg is not None and last_status_channel is not None:
-                    channel = discord.Object(last_status_channel)
-                    try:
-                        old_message = yield from client.get_message(channel, last_status_msg)
-                    except (discord.errors.NotFound, discord.errors.Forbidden):
-                        old_message = None
-                    except:
-                        old_message = None
-                        logger.error('Error getting message')
+        servers = yield from get_server_priority(list(client.servers),client.database.get_priority_servers)
+        for servers_r in servers:
+            for server_d in servers_r:
+                serverid = server_d.id
+                server = client.database.server_info(serverid,channels=True)
+                if 'autostatus' in server['channels']:
+                    last_status_msg = server.get('last_status_msg', None)
+                    last_status_channel = server.get('last_status_channel', None)
+                    server = discord.Object(server['channels']['autostatus'])
+                    old_message = None
+                    if last_status_msg is not None and last_status_channel is not None:
+                        channel = discord.Object(last_status_channel)
+                        try:
+                            old_message = yield from client.get_message(channel, last_status_msg)
+                        except (discord.errors.NotFound, discord.errors.Forbidden):
+                            old_message = None
+                        except:
+                            old_message = None
+                            logger.error('Error getting message')
 
-                if old_message is not None:
+                    if old_message is not None:
+                        try:
+                            message = yield from client.edit_message(old_message, embed = embed)
+                        except:
+                            error = traceback.format_exc()
+                            logger.error('Error editing message %s', error)
+                    else:
+                        try:
+                            message = yield from client.send_message(server, embed = embed)
+                        except:
+                            error = traceback.format_exc()
+                            logger.error('Error sending message %s', error)
                     try:
-                        message = yield from client.edit_message(old_message, embed = embed)
+                        client.database.set_server_info(serverid, last_status_msg=message.id, last_status_channel=message.channel.id)
                     except:
                         error = traceback.format_exc()
-                        logger.error('Error editing message %s', error)
-                else:
-                    try:
-                        message = yield from client.send_message(server, embed = embed)
-                    except:
-                        error = traceback.format_exc()
-                        logger.error('Error sending message %s', error)
-                try:
-                    client.database.set_server_info(serverid, last_status_msg=message.id, last_status_channel=message.channel.id)
-                except:
-                    error = traceback.format_exc()
-                    logger.error('Error updating server info %s', error)
-                update_time -= RATE_LIMIT_TIME
-                yield from asyncio.sleep(RATE_LIMIT_TIME)
+                        logger.error('Error updating server info %s', error)
+                    update_time -= RATE_LIMIT_TIME
+                    yield from asyncio.sleep(RATE_LIMIT_TIME)
         logger.info('Autostatus update complete checking again in %s', parse_second_time(update_time))
         if update_time > 0:
             yield from asyncio.sleep(update_time)
