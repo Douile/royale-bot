@@ -35,7 +35,7 @@ class LocaleResponse:
                 start = None
                 end = None
                 type = 'text'
-            elif char == ':' and start is not None:
+            elif char == ';' and start is not None:
                 type = self.message[start:i]
                 start = i+1
         self.parsed = True
