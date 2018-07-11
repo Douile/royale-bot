@@ -44,7 +44,7 @@ class LocaleResponse:
             self.name = name
             self.type = type
         def __str__(self):
-            return '{'+self.type+':'+self.name+'}'
+            return '{'+self.type+';'+self.name+'}'
         def formattable(self):
             if self.type == 'channel':
                 text = '<#{0}>'
