@@ -5,6 +5,7 @@ import asyncio
 import traceback
 import logging
 from utils import getEnv
+import localisation
 
 DEFAULT_PREFIX = getEnv("DEFAULT_PREFIX","!")
 UPDATE_SERVER = None
@@ -99,10 +100,10 @@ class SetChannel(Command):
                     self.settings['channels'][channeltype] = channelid
                     success = True
         if success:
-            self.content = '<@!{0}> Successfully set {2} channel to <#{1}>'.format(msg.author.id,channelid,type)
+            self.content = localisation.getFormattedMessage('setchannel_success',author=msg.author.id,channel=channelid,type=type)
         else:
             typemsg = self.typestring()
-            self.content = '<@!{0}> You must specify the type to set this channel to one of: {1} or `all`'.format(msg.author.id,typemsg)
+            self.content = localisation.getFormattedMessage('setchannel_error',author=msg.author.id,types:typemsg)
     def typestring(self):
         typemsg = ""
         for i in range(0,len(self.types)):

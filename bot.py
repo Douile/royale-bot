@@ -13,6 +13,7 @@ import builtins
 import logging
 import logging.config
 
+import localisation
 from modules import default, fortnite, moderation, testing
 from modules.module import Command
 from dataretrieval import meta, cheatsheets
@@ -55,6 +56,7 @@ if len(sys.argv) > 2:
 VERSION = {'name': BOT_NAME, 'version_name': '1.1.0', 'revison': getEnv('HEROKU_RELEASE_VERSION', 'v1'), 'description': getEnv('HEROKU_SLUG_DESCRIPTION', ''), 'lines': LINE_COUNT, 'shards': SHARD_COUNT}
 RATE_LIMIT_TIME = 0.25
 
+localisation.loadLocales()
 
 # functions
 def checkPermissions(channel,type,settings):
@@ -150,7 +152,6 @@ def debugger(function):
 def autoshop(): # add fnbr not accessable fallback
     logger = logging.getLogger('autoshop')
     yield from client.wait_until_ready()
-    vote_link = 'https://discordbots.org/bot/{0}/vote'.format(client.user.id)
     logger.info('Autoshop started')
     while not client.is_closed:
         shopdata = None
@@ -178,7 +179,7 @@ def autoshop(): # add fnbr not accessable fallback
                                 error = traceback.format_exc()
                                 logger.error('Error generating image: %s',error)
                                 continue
-                            content = "Data from <https://fnbr.co/>\nVote for this bot here: <{0}>".format(vote_link)
+                            content = localisation.getMessage('autoshop')
                             nextshoptime = round(time.mktime(rawtime.utctimetuple()) + (60*60*24))
                             try:
                                 yield from client.send_file(discord.Object(server['channels']['autoshop']),file,content=content)
@@ -196,7 +197,8 @@ def autoshop(): # add fnbr not accessable fallback
                                         error = traceback.format_exc()
                                         logger.error('Error updating database: {0}'.format(error))
                                     try:
-                                        yield from client.send_message(serverdata.owner,content='I was unable to access the autoshop channel you set in your server `{0}`. I have deleted the channel from my database.'.format(serverdata.name))
+                                        text = localisation.getFormattedMessage('autoshop_no_access',channel=server['channels']['autoshop'],server_name=serverdata.name)
+                                        yield from client.send_message(serverdata.owner,content=text)
                                     except:
                                         error = traceback.format_exc()
                                         logger.error('Error sending message to owner: {0}'.format(error))
@@ -321,7 +323,6 @@ def autocheatsheets():
     logger = logging.getLogger('autosheets')
     yield from client.wait_until_ready()
     logger.info('Autosheets started')
-    vote_link = 'https://discordbots.org/bot/{0}/vote'.format(client.user.id)
     while not client.is_closed:
         update_time = 600
         cache = client.database.get_cache('last_cheat_sheet',once=True)
@@ -351,8 +352,8 @@ def autocheatsheets():
         else:
             logger.debug('%s\n%s',str(old_cache),str(cache))
         if update is not None:
-            title = 'Season **{}** Week **{}** cheat sheet'.format(update.season,update.week)
-            description = '[Vote for RoyaleBot]({0})\nImage by [TheSquatingDog](https://reddit.com/u/thesquatingdog?utm=RoyaleBot)'.format(vote_link)
+            title = localisation.getFormattedMessage('autocheatsheets_title',season=update.season,week=update.week)
+            description = localisation.getMessage('autocheatsheets_desc')
             embed = discord.Embed(title=title,description=description)
             embed.set_thumbnail(url=update.image)
             logger.info('Embed built {0}.{1} image url: {2}'.format(update.season,update.week,update.image))

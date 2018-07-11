@@ -1,0 +1,14 @@
+{
+  "autoshop": {
+    "message": "Data from {link:fnbr}\nVote for this bot here: {link:vote_link}"
+  },
+  "autoshop_no_access": {
+    "message": "I was unable to access the `autoshop` channel ({channel:channel}) you set in your server `{server_name}`. I have deleted the channel from my database"
+  },
+  "autocheatsheets_title": {
+    "message": "Season **{season}** Week **{week}** cheat sheet"
+  },
+  "autocheatsheets_desc": {
+    "message": "[Vote for RoyaleBot]({vote_link})\nImage by [TheSquatingDog]({squatingdog})"
+  }
+}
