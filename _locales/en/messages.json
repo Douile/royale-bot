@@ -10,5 +10,11 @@
   },
   "autocheatsheets_desc": {
     "message": "[Vote for RoyaleBot]({vote_link})\nImage by [TheSquatingDog]({squatingdog})"
+  },
+  "setchannel_success": {
+    "message": "{user:author} Successfully set {type} channel to {channel:channel}"
+  },
+  "setchannel_error": {
+    "message": "{user:author} You must specify the type to set this channel to one of: {types}"
   }
 }
