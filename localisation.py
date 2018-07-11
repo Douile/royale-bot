@@ -16,7 +16,7 @@ class LocaleResponse:
         if parse:
             self.parseVariables()
     def parseVariables(self):
-        if parsed:
+        if self.parsed:
             self.variables = []
         start = None
         end = None
