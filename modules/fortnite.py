@@ -2,6 +2,7 @@ from .module import Module, Command, parse_user_at
 from dataretrieval import aiofnotes, meta
 from imagegeneration import shop, stats, upcoming
 from utils import strings, arrays
+import localisation
 import traceback
 from datetime import datetime
 import discord
@@ -20,7 +21,7 @@ class FortniteModule(Module):
             'upcoming': Upcoming(fnbr_key),
             'setbackground': SetBackgrounds(),
             'news': News(),
-            'servers': Servers(),
+            'status': Servers(),
             #'patchnotes': PatchNotes(),
             'link': Link(sql),
             'unlink': UnLink(sql)
@@ -59,9 +60,9 @@ class Shop(Command):
             file = yield from shop.generate(self.fnbr_key,msg.server.id,bgs_s)
             self.typing = True
             self.file = file
-            self.content = "Data from <https://fnbr.co>"
+            self.content = localisation.getMessage('shop_success')
         except Exception as e:
-            self.content = "Error generating image"
+            self.content = localisation.getMessage('shop_error')
             logger.error(traceback.format_exc())
 class Upcoming(Command):
     def __init__(self,fnbr_key):
@@ -88,9 +89,9 @@ class Upcoming(Command):
             file = yield from upcoming.generate(self.fnbr_key,msg.server.id,bgs_s)
             self.typing = True
             self.file = file
-            self.content = "Data from <https://fnbr.co>"
+            self.content = localisation.getMessage('shop_success')
         except Exception as e:
-            self.content = "Error generating image"
+            self.content = localisation.getMessage('shop_error')
             logger.error(traceback.format_exc())
 
 class Stats(Command):
@@ -125,11 +126,11 @@ class Stats(Command):
                     statsimage = yield from stats.generate_season(self.tn_key,name,platform,bgs_s)
                 if statsimage is None:
                     if linked:
-                        self.content = 'User not found using your linked account: `{0}` (`{1}`). You might need to update your linked account using `{2}link [username]`'.format(name,platform,'{prefix}')
+                        self.content = localisation.getFormattedMessage('stats_notfound_link',username=name,platform=platform)
                     else:
-                        self.content = 'User not found: `{0}` (`{1}`)'.format(name,platform)
+                        self.content = localisation.getFormattedMessage('stats_notfound',username=name,platform=platform)
                         if platform != 'pc':
-                            self.content += '. Console players require a linked epic games account to view their stats. In order to link your epic games account visit <https://fortnite.com> and login. You must use your epic games username to view stats.'
+                            self.content += localisation.getMessage('stats_notfound_console')
                 else:
                     self.typing = True
                     statsimage.save('generatedstats.png')
@@ -137,17 +138,17 @@ class Stats(Command):
                     self.file = 'generatedstats.png'
             except Exception as e:
                 if linked:
-                    self.content = "Error getting stats with your linked account: `{0}` (`{1}`). You might need to update your linked account using the `{2}link [username]` command.".format(name,platform,'{prefix}')
+                    self.content = localisation.getFormattedMessage('stats_error_link',username=name,platform=platform)
                 else:
-                    self.content = "Error getting stats for `{0}` (`{1}`)".format(name,platform)
+                    self.content = localisation.getFormattedMessage('stats_error',username=name,platform=platform)
                 logger.error(traceback.format_exc())
         else:
             if linked:
-                self.content = 'Your linked account name `{0}` (`{1}`) is too short please relink using `{2}link [username]`'.format(name,platform,'{prefix}')
+                self.content = localisation.getFormattedMessage('stats_short_link',username=name,platform=platform)
             else:
-                self.content = '<@!{author}> you must link your account using `{prefix}link [username]`, or just enter your name in this command.'
+                self.content = localisation.getFormattedMessage('stats_short',author=msg.author.id)
         if name.find('shop') > -1 or name.find('help') > -1 or name.find('setprefix') > -1:
-            self.content += ' If your trying to use a command your prefix is: `{prefix}` e.g. `{prefix}setprefix ".rb "`'
+            self.content += localisation.getMessage('stats_command')
 class Matches(Command):
     def __init__(self,tn_key,sql):
         super().__init__(name='matches',permission='stats')
@@ -190,16 +191,16 @@ class Link(Command):
             name = user.get('name')
             platform = user.get('platform')
             if len(name.strip()) > 0:
-                self.content = '<@!{2}> Your account is now linked to `{0}` (`{1}`)'.format(name,platform,'{author}')
+                self.content = localisation.getFormattedMessage('link_success',author=msg.author.id,username=name,platform=platform)
                 try:
                     self.sql.set_link(msg.author.id,name,platform)
                 except:
                     traceback.print_exc()
-                    self.content = '<@!{author}> Sorry we had an error linking your account'
+                    self.content = localisation.getFormattedMessage('link_error',author=msg.author.id)
             else:
-                self.content = '<@!{author}> Please provide a username to link to'
+                self.content = localisation.getFormattedMessage('link_short',author=msg.author.id)
         else:
-            self.content = '<@!{author}> You must enter a username to link your account'
+            self.content = localisation.getFormattedMessage('link_short',author=msg.author.id)
 class UnLink(Command):
     def __init__(self,sql):
         super().__init__(name='unlink',description='Unlink your fortnite account. `{prefix}unlink`',permission='stats')
@@ -208,10 +209,10 @@ class UnLink(Command):
     def run(self,command,msg,settings):
         try:
             self.sql.delete_link(msg.author.id)
-            self.content = '<@!{author}> Account successfully unlinked'
+            self.content = localisation.getFormattedMessage('unlink_success',author=msg.author.id)
         except:
             traceback.print_exc()
-            self.content = '<@!{author}> Sorry there was an error unlinking your account'
+            self.content = localisation.getFormattedMessage('unlink_error',author=msg.author.id)
 class SetBackgrounds(Command):
     def __init__(self):
         self.background_types = ['shop','stat','upcoming']
@@ -231,33 +232,38 @@ class SetBackgrounds(Command):
                 backgrounds = urls[1:]
         if type is not None:
             self.settings = {'backgrounds': {type:backgrounds}}
-            self.content = '<@!{1}> Set backgrounds for `{0}`'.format(type,'{author}')
+            self.content = localisation.getFormattedMessage('setbackground_success',author=msg.author.id,type=type)
         else:
-            self.content = '<@!{1}> Unable to set backgrounds you must include a type. One of: {0}'.format(arrays.message_string(self.background_types,'all'),'{author}')
+            self.content = localisation.getFormattedMessage('setbackground_error',author=msg.author.id,types=arrays.message_string(self.background_types,'all'))
 class News(Command):
     def __init__(self):
         super().__init__(name='news',description='Print the current news in fortnite battle royale. `{prefix}news`')
         self.permission = 'news'
+    @asyncio.coroutine
     def run(self,command,msg,settings):
-        self.reset()
-        news = meta.getNews('en')
+        lang = 'en'
+        news = meta.getNews(lang)
         if news['success']:
             self.embeds = []
             for msg in news['messages']:
                 embed = NewsEmbed(msg,news['updated'])
                 self.embeds.append(embed)
         else:
-            self.content = 'Sorry <@!{author}> we were unable to get the news.'
+            self.content = localisation.getFormattedMessage('news_error',author=msg.author.id)
 class Servers(Command):
     def __init__(self):
-        super().__init__(name='servers',description='Print the fortnite servers status. `{prefix}servers`',permission='servers')
+        super().__init__(name='status',description='Print the fortnite servers status. `{prefix}status`',permission='status')
     @asyncio.coroutine
     def run(self,command,msg,settings):
-        status = yield from meta.getStatus()
-        self.content = '<@!{0}> current server status'.format(msg.author.id)
-        self.embed = StatusEmbed(status['online'],status['message'])
-        for s in status['services']:
-            self.embed.add_service(name=s,value=status['services'][s])
+        try:
+            status = yield from meta.getStatus()
+            self.content = localisation.getFormattedMessage('servers_success',author=msg.author.id)
+            self.embed = StatusEmbed(status['online'],status['message'])
+            for s in status['services']:
+                self.embed.add_service(name=s,value=status['services'][s])
+        except:
+            self.content = localisation.getFormattedMessage('servers_error',author=msg.author.id)
+
 class PatchNotes(Command):
     def __init__(self):
         super().__init__(name='patchnotes',description="Get the latest patchnotes. `{prefix}patchnotes ([d], [detail])` include `d` or `detail` for a more detailed breakdown of the patchnotes.", permission='patchnotes')

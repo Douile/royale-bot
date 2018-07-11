@@ -23,7 +23,7 @@ class DefaultModule(Module):
             self.types = self.types + module.types
         self.modules.append(self)
         self.commands = {
-            'status': Status(version),
+            'botinfo': Status(version),
             'help': Help(self.modules),
             'setchannel': SetChannel(self.types),
             'resetchannels': ResetChannels(self.types),
@@ -32,10 +32,10 @@ class DefaultModule(Module):
         }
 class Status(Command):
     def __init__(self,version):
-        super().__init__(name='status',description="Print the status of the bot. `{prefix}status`")
+        super().__init__(name='botinfo',description="Print the status of the bot. `{prefix}botinfo`")
         self.version = Map(version)
+    @asyncio.coroutine
     def run(self,command,msg,settings):
-        self.reset()
         raw = '<@!{author}> {name} {version_name} ({revison} {description}: {lines} lines) is online.) shards: {shards}'
         self.content = raw.format_map(self.version)
 class Help(Command):
@@ -116,13 +116,25 @@ class ResetChannels(Command):
         super().__init__(name='resetchannels',description='Reset all set channels for this server. `{prefix}resetchannels`')
         self.permission = 'admin'
         self.types = types
+    @asyncio.coroutine
     def run(self,command,msg,settings):
-        self.reset()
         serverid = msg.server.id
-        self.settings = {'channels':{}}
-        for channeltype in self.types:
-            self.settings['channels'][channeltype] = None
-        self.content = '<@!{0}> Successfully reset all channels'.format(msg.author.id)
+        try:
+            type = command.split(" ")[1].lower()
+        except IndexError:
+            type = None
+        if type is None:
+            self.settings = {'channels':{}}
+            for channeltype in self.types:
+                self.settings['channels'][channeltype] = None
+            self.content = localisation.getFormattedMessage('resetchannels_all',author=msg.author.id)
+        else:
+            if type in self.types:
+                self.settings['channels'] = {}
+                self.settings['channels'][type] = None
+                self.content = localisation.getFormattedMessage('resetchannels_success',author=msg.author.id,type=type)
+            else:
+                self.content = localisation.getFormattedMessage('resetchannels_error',author=msg.author.id)
 class Channels(Command):
     def __init__(self,types=[]):
         super().__init__(name='channels',description='Print set channels for current server. `{prefix}channels`')
@@ -159,25 +171,28 @@ class SetPrefix(Command):
             except IndexError:
                 prefix = ''
         if prefix != '':
-            text = '<@!{0}> are you sure you want to change your prefix to `{1}`. Example: `{1}help`'.format(msg.author.id,prefix)
+            text = localisation.getFormattedMessage('setprefix_confirm',author=msg.author.id,prefix=prefix)
             self.custom = modals.AcceptModal(content=text,accept=self.acceptModal,decline=self.declineModal,only=msg.author)
             self.custom.prefix = prefix
             yield from self.custom.send(msg.channel)
             # self.content = '<@!{0}> Successfully set the prefix to `{1}`'.format(msg.author.id,prefix)
             # self.settings = {'prefix':prefix}
         else:
-            self.content = '<@!{0}> Please enter a valid prefix'.format(msg.author.id)
+            self.content = localisation.getFormattedMessage('setprefix_invalid',author=msg.author.id)
     @staticmethod
     @asyncio.coroutine
     def acceptModal(reaction,user,modal):
-        modal.content = 'Changing prefix to `{0}`'.format(modal.prefix)
+        modal.content = localisation.getFormattedMessage('setprefix_changing',prefix=modal.prefix)
         modal.actions = {}
         yield from modal.reset()
-        yield from update_prefix(modal.message.server.id,modal.prefix,finish_modal(modal,'Successfully changed prefix to `{0}`'.format(modal.prefix)),finish_modal(modal,'Sorry an error occurred while changing your prefix'))
+        yield from update_prefix(modal.message.server.id,modal.prefix,
+            finish_modal(modal,localisation.getFormattedMessage('setprefix_success',prefix=modal.prefix)),
+            finish_modal(modal,localisation.getMessage('setprefix_error'))
+        )
     @staticmethod
     @asyncio.coroutine
     def declineModal(reaction,user,modal):
-        modal.content = 'Your prefix was not changed'
+        modal.content = localisation.getMessage('setprefix_decline')
         modal.actions = {}
         yield from modal.reset()
 @asyncio.coroutine

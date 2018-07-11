@@ -16,5 +16,104 @@
   },
   "setchannel_error": {
     "message": "{user;author} You must specify the type to set this channel to one of: {types}"
+  },
+  "resetchannels_all": {
+    "message": "{user;author} Successfully reset all channels"
+  },
+  "resetchannels_success": {
+    "message": "{user;author} Successfully reset all {type} channels"
+  },
+  "resetchannels_error": {
+    "message": "{user;author} Sorry that type does not exist"
+  },
+  "setprefix_confirm": {
+    "message": "{user;author} are you sure you want to change your prefix to `{prefix}`, example: `{prefix}help`?"
+  },
+  "setprefix_invalid": {
+    "message": "{user;author} please enter a valid prefix"
+  },
+  "setprefix_changing": {
+    "message": "Changing prefix to `{prefix}`"
+  },
+  "setprefix_success": {
+    "message": "Successfully changed your prefix to `{prefix}`"
+  },
+  "setprefix_error": {
+    "message": "Sorry, an error occured whilst changing your prefix"
+  },
+  "setprefix_decline": {
+    "message": "Your prefix was not changed"
+  },
+  "shop_success": {
+    "message": "Data from {link:fnbr}"
+  },
+  "shop_error": {
+    "message": "Error generating image"
+  },
+  "stats_notfound_link": {
+    "message": "User not found using your linked account: `{username}` (`{platform}`). You might need to update your linked account using `{prefix}link [username]`"
+  },
+  "stats_notfound": {
+    "message": "User not found: `{username}` (`{platform}`)"
+  },
+  "stats_notfound_console": {
+    "message": ". Console players require a linked epic games account to view their stats. In order to link your epic games account visit {link;fortnite} and login. You must use your epic games username to view stats."
+  },
+  "stats_error_link": {
+    "message": "Error getting stats with your linked account: `{username}` (`{platform}`). You might need to update your linked account using the `{prefix}link [username]` command."
+  },
+  "stats_error": {
+    "message": "Error getting stats for `{username}` (`{platform}`)"
+  },
+  "stats_short_link": {
+    "message": "Your linked account name `{username}` (`{platform}`) is too short please relink using `{prefix}link [username]`"
+  },
+  "stats_short": {
+    "message": "{user;author} you must link your account using `{prefix}link [username]`, or just enter your name in this command."
+  },
+  "stats_command": {
+    "message": " If your trying to use a command your prefix is: `{prefix}` e.g. `{prefix}setprefix \".rb \"`"
+  },
+  "link_success": {
+    "message": "{user;author} Your account is not linked to `{username}` (`{platform}`)"
+  },
+  "link_error": {
+    "message": "{user;author} Sorry I encountered an error while linking your account, please try again later"
+  },
+  "link_short": {
+    "message": "{user;author} Please provide a username to link your account"
+  },
+  "unlink_success": {
+    "message": "{user;author} Your account was unlinked"
+  },
+  "unlink_error": {
+    "message": "{user;author} Sorry I encountered an error unlinking your account, please try again later"
+  },
+  "setbackground_success": {
+    "message": "{user;author} Set backgrounds for `{type}`"
+  },
+  "setbackground_error": {
+    "message": "{user;author} Unable to set backgrounds you must include a type. One of: {types}"
+  },
+  "news_error": {
+    "message": "Sorry {user;author} I was unable to get the news, please try again later"
+  },
+  "servers_success": {
+    "message": "{user;author} current fortnite server status"
+  },
+  "servers_error": {
+    "message": "{user;author} sorry I was unable to get the current fortnite server status, please try again later"
+  },
+  "error": {
+    "message": "{user;author} Sorry an error occured, please try again later"
+  },
+  "wrong_channel": {
+    "message": "{user;author} Please use the set {type} channel {channel;channel}"
+  },
+  "channel_administrator": {
+    "message": "{user;author} You must be an administrator to change channel settings"
+  },
+  "nopermission": {
+    "message": "{user;author} You don't have permission"
   }
 }

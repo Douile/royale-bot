@@ -559,15 +559,13 @@ def commandHandler(command, msg):
 def noPermission(msg,type,settings):
     serverid = msg.server.id
     if type == 'error':
-        m = '<@!{0}> Sorry an error occured'.format(msg.author.id)
+        m = localisation.getFormattedMessage('error',author=msg.author.id)
     elif type in settings['channels']:
-        m = '<@!{0}> Please use the set {1} channel <#{2}>'.format(msg.author.id,type,settings['channels'][type])
+        m = localisation.getFormattedMessage('wrong_channel',author=msg.author.id,type=type,channel=settings['channels'][type])
     elif type == 'setchannel' or type == 'resetchannels':
-        m = '<@!{0}> You must be an administrator to change channel settings'.format(msg.author.id)
-    elif type == 'error':
-        m = '<@!{0}> Sorry we encountered a strange error.'.format(msg.author.id)
+        m = localisation.getFormattedMessage('channel_administrator',author=msg.author.id)
     else:
-        m = '<@!{0}> You don\'t have permission'.format(msg.author.id)
+        m = localisation.getFormattedMessage('nopermission',author=msg.author.id)
     mymsg = yield from client.send_message(msg.channel,m)
     yield from asyncio.sleep(5)
     yield from client.delete_message(msg)
