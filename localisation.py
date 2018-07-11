@@ -67,6 +67,8 @@ class LocaleResponse:
         text = self.formattable()
         self.message = text.format_map(values)
         return self.message
+    def __str__(self):
+        return self.message
 class Locale(dict):
     def __init__(self,*args,lang=None):
         super().__init__(*args)
@@ -103,12 +105,12 @@ class LocaleContainer(dict):
         if lang is None:
             lang = self.defaultLang
         res = self[lang].getMessage(key)
-        return self.applyGlobals(res)
+        return str(self.applyGlobals(res))
     def getFormattedMessage(self,key,lang=None,**variables):
         if lang is None:
             lang = self.defaultLang
         res = self[lang].getFormattedMessage(key,**variables)
-        return self.applyGlobals(res)
+        return str(self.applyGlobals(res))
     def applyGlobals(self,response):
         response.message = response.message.format_map(FormatMap(self.globalVars))
         return response
