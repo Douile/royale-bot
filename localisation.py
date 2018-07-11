@@ -42,7 +42,7 @@ class LocaleResponse:
     class Variable:
         def __init__(self,*,name='',type='text'):
             self.name = name
-            self.type = text
+            self.type = type
         def __str__(self):
             return '{'+self.type+':'+self.name+'}'
         def formattable(self):
