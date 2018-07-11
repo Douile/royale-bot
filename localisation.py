@@ -128,7 +128,7 @@ def readJson(filename):
 def loadLocales():
     global locales
     logger = logging.getLogger('locales')
-    locales_dir = os.path.join(os.getcwd(),'\\_locales\\')
+    locales_dir = os.path.join(os.getcwd(),'_locales')
     if os.path.isdir(locales_dir):
         locale_names = [x[0] for x in os.walk(locales_dir)]
         for locale_name in locale_names:
