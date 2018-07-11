@@ -103,7 +103,7 @@ class SetChannel(Command):
             self.content = localisation.getFormattedMessage('setchannel_success',author=msg.author.id,channel=channelid,type=type)
         else:
             typemsg = self.typestring()
-            self.content = localisation.getFormattedMessage('setchannel_error',author=msg.author.id,types:typemsg)
+            self.content = localisation.getFormattedMessage('setchannel_error',author=msg.author.id,types=typemsg)
     def typestring(self):
         typemsg = ""
         for i in range(0,len(self.types)):
