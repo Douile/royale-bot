@@ -136,6 +136,7 @@ def loadLocales():
             if os.path.isfile(path):
                 data = readJson(path)
                 locales.addLocale(locale_name,data)
+                logger.info('Loaded locale %s',locale_name)
             else:
                 logger.warn('No messages.json found for %s',locale_name)
         path = os.path.join(locales_dir,'globals.json')
