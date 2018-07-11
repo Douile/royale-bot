@@ -128,17 +128,17 @@ def readJson(filename):
 def loadLocales():
     global locales
     logger = logging.getLogger('locales')
-    if os.path.isdir(os.path.join(os.getcwd(),'/_locales/')):
-        dir = os.path.join(os.getcwd(),'/locales/')
-        locale_names = [x[0] for x in os.walk(dir)]
+    locales_dir = os.path.join(os.getcwd(),'_locales')
+    if os.path.isdir(locales_dir):
+        locale_names = [x[0] for x in os.walk(locales_dir)]
         for locale_name in locale_names:
-            path = os.path.join(os.getcwd(),'/locales/',locale_name,'messages.json')
+            path = os.path.join(locales_dir,locale_name,'messages.json')
             if os.path.isfile(path):
                 data = readJson(path)
                 locales.addLocale(locale_name,data)
             else:
                 logger.warn('No messages.json found for %s',locale_name)
-        path = os.path.join(os.getcwd(),'/_locales/','globals.json')
+        path = os.path.join(locales_dir,'globals.json')
         if os.path.isfile(path):
             data = readJson(path)
             locales.setGlobals(data)
