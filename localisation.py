@@ -150,21 +150,22 @@ def loadLocales():
     locales_dir = os.path.join(os.getcwd(),'_locales')
     if os.path.isdir(locales_dir):
         locale_names = [x[0] for x in os.walk(locales_dir)]
-        for locale_name in locale_names:
+        for locale_path in locale_names:
             path = os.path.join(locales_dir,locale_name,'messages.json')
             if os.path.isfile(path):
                 data = readJson(path)
             else:
                 data = None
                 logger.warn('No messages.json found for %s',locale_name)
-            path = os.path.join(locales_dir,locale_name,'manifest.json')
+            path = os.path.join(locales_dir,locale_path,'manifest.json')
             if os.path.isfile(path):
                 info = readJson(path)
-                logger.info('Loaded locale %s',locale_name)
             else:
                 info = None
                 logger.warn('No manifest.json found for %s',locale_name)
             if data is not None:
+                split = locale_path.split('/')
+                locale_name = split[-1]
                 locales.addLocale(locale_name,info,data)
                 logger.info('Loaded locale %s',locale_name)
         path = os.path.join(locales_dir,'globals.json')
