@@ -151,7 +151,7 @@ def loadLocales():
     if os.path.isdir(locales_dir):
         locale_names = [x[0] for x in os.walk(locales_dir)]
         for locale_path in locale_names:
-            path = os.path.join(locales_dir,locale_name,'messages.json')
+            path = os.path.join(locales_dir,locale_path,'messages.json')
             if os.path.isfile(path):
                 data = readJson(path)
             else:
