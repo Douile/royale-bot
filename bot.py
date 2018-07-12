@@ -248,7 +248,7 @@ def autostatus():
                 if 'autostatus' in server['channels']:
                     last_status_msg = server.get('last_status_msg', None)
                     last_status_channel = server.get('last_status_channel', None)
-                    server = discord.Object(server['channels']['autostatus'])
+                    channel = discord.Object(server['channels']['autostatus'])
                     old_message = None
                     if last_status_msg is not None and last_status_channel is not None:
                         channel = discord.Object(last_status_channel)
@@ -268,7 +268,7 @@ def autostatus():
                             logger.error('Error editing message %s', error)
                     else:
                         try:
-                            message = yield from client.send_message(server, embed = embed)
+                            message = yield from client.send_message(channel, embed = embed)
                         except:
                             error = traceback.format_exc()
                             logger.error('Error sending message %s', error)
