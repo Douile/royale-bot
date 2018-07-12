@@ -558,15 +558,16 @@ def commandHandler(command, msg):
         client.database.set_server_info(serverid,last_help_msg=response.id,last_help_channel=response.channel.id)
 @asyncio.coroutine
 def noPermission(msg,type,settings):
+    locale = settings.get('locale')
     serverid = msg.server.id
     if type == 'error':
-        m = localisation.getFormattedMessage('error',author=msg.author.id)
+        m = localisation.getFormattedMessage('error',author=msg.author.id,lang=locale)
     elif type in settings['channels']:
-        m = localisation.getFormattedMessage('wrong_channel',author=msg.author.id,type=type,channel=settings['channels'][type])
+        m = localisation.getFormattedMessage('wrong_channel',author=msg.author.id,type=type,channel=settings['channels'][type],lang=locale)
     elif type == 'setchannel' or type == 'resetchannels':
-        m = localisation.getFormattedMessage('channel_administrator',author=msg.author.id)
+        m = localisation.getFormattedMessage('channel_administrator',author=msg.author.id,lang=locale)
     else:
-        m = localisation.getFormattedMessage('nopermission',author=msg.author.id)
+        m = localisation.getFormattedMessage('nopermission',author=msg.author.id,lang=locale)
     mymsg = yield from client.send_message(msg.channel,m)
     yield from asyncio.sleep(5)
     yield from client.delete_message(msg)
