@@ -113,7 +113,7 @@ class LocaleContainer(dict):
     def setGlobals(self,data):
         self.globalVars = data
     def addLocale(self,lang,info,data):
-        self[lang] = Locale(data,lang=lang)
+        self[lang] = Locale(data,info=info,lang=lang)
         if self.defaultLang is None:
             self.defaultLang = lang
     def getMessage(self,key,lang=None):
