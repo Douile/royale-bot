@@ -226,21 +226,19 @@ class SetLocale(Command):
     @staticmethod
     @asyncio.coroutine
     def cancel(reaction,user,modal):
-        modal.content = localisation.getMessage('setlocale_cancel',lang=modal.locale)
-        modal.embed = None
+        modal.embed = TextEmbed(text=localisation.getMessage('setlocale_cancel',lang=modal.locale))
         modal.actions = {}
         yield from modal.reset()
     @staticmethod
     @asyncio.coroutine
     def change_language(reaction,user,modal):
         locale = modal.flagMap.get(str(reaction.emoji))
-        modal.content = localisation.getFormattedMessage('setlocale_change',locale=locale,lang=modal.locale)
-        modal.embed = None
+        modal.embed = TextEmbed(text=localisation.getFormattedMessage('setlocale_change',locale=locale,lang=modal.locale))
         modal.actions = {}
         yield from modal.reset()
         yield from update_locale(modal.message.server.id,locale,
-            finish_modal(modal,localisation.getFormattedMessage('setlocale_success',locale=locale,lang=locale)),
-            finish_modal(modal,localisation.getMessage('setlocale_error',lang=modal.locale))
+            finish_modal(modal,embed=localisation.getFormattedMessage('setlocale_success',locale=locale,lang=locale)),
+            finish_modal(modal,embed=localisation.getMessage('setlocale_error',lang=modal.locale))
         )
 class LocaleEmbed(discord.Embed):
     def __init__(self,locale=None):
@@ -280,11 +278,19 @@ def update_locale(server,locale,done,error):
             logging.getLogger('update_locale').error('Error updating locale: %s',error_text)
             yield from error
 @asyncio.coroutine
-def finish_modal(modal,content):
+def finish_modal(modal,content=None,embed=None):
     modal.content = content
-    modal.embed = None
+    if embed is not None:
+        modal.embed = TextEmbed(text=embed)
+    else:
+        modal.embed = None
     modal.actions = {}
     yield from modal.reset()
+class TextEmbed(discord.Embed):
+    def __init__(self,text='_ _',description=None,footer=None):
+        super().__init__(title=text,description=description,color=0x6ad2f7)
+        if footer is not None:
+            self.set_footer(text=footer)
 
 class HelpEmbed(discord.Embed):
     def __init__(self,prefix='!',category=None,icon_url=None,admin=False):
