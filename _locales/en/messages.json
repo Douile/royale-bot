@@ -75,7 +75,7 @@
     "message": " If your trying to use a command your prefix is: `{prefix}` e.g. `{prefix}setprefix \".rb \"`"
   },
   "link_success": {
-    "message": "{user;author} Your account is not linked to `{username}` (`{platform}`)"
+    "message": "{user;author} Your account is now linked to `{username}` (`{platform}`)"
   },
   "link_error": {
     "message": "{user;author} Sorry I encountered an error while linking your account, please try again later"
@@ -115,5 +115,14 @@
   },
   "nopermission": {
     "message": "{user;author} You don't have permission"
+  },
+  "setlocale_title": {
+    "message": "Choose your language"
+  },
+  "setlocale_desc": {
+    "message": "[Create a translation for your language]({translate_link})"
+  },
+  "setlocale_value": {
+    "message": "Created by {author}"
   }
 }

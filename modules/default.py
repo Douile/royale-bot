@@ -28,7 +28,8 @@ class DefaultModule(Module):
             'setchannel': SetChannel(self.types),
             'resetchannels': ResetChannels(self.types),
             'channels': Channels(self.types),
-            'setprefix': SetPrefix()
+            'setprefix': SetPrefix(),
+            'setlocale': SetLocale()
         }
 class Status(Command):
     def __init__(self,version):
@@ -207,6 +208,64 @@ def update_prefix(server,prefix,done,error):
         except:
             error_text = traceback.format_exc()
             logging.getLogger('update_prefix').error('Error updating prefix: %s',error_text)
+            yield from error
+class SetLocale(Command):
+    def __init__(self):
+        super().__init__(name='setlocale',description='Change the language on your server. `{prefix}setlocale`',permission='admin')
+    @asyncio.coroutine
+    def run(self,command,msg,settings):
+        locale = settings.get('locale')
+        embed = LocaleEmbed(locale=locale)
+        self.custom = modals.Modal(embed=embed,only=msg.author)
+        self.custom.locale = locale
+        self.custom.add_action(':x:',self.cancel)
+        self.custom.flagMap = embed.flags
+        for flag in self.custom.flagMap:
+            self.custom.add_action(flag,self.change_language)
+    @staticmethod
+    @asyncio.coroutine
+    def cancel(reaction,user,modal):
+        modal.content = localisation.getMessage('setlocale_cancel',lang=modal.locale)
+        modal.embed = None
+        modal.actions = {}
+        yield from modal.reset()
+    @staticmethod
+    @asyncio.coroutine
+    def change_language(reaction,user,modal):
+        locale = modal.flagMap.get(str(reaction.emoji))
+        modal.content = localisation.getFormattedMessage('setlocale_change',locale=locale,lang=modal.locale)
+        modal.embed = None
+        modal.actions = {}
+        yield from modal.reset()
+        yield from update_locale(modal.message.server.id,locale,
+            finish_modal(modal,localisation.getFormattedMessage('setprefix_success',locale=locale,lang=modal.locale)),
+            finish_modal(modal,localisation.getMessage('setprefix_error',lang=modal.locale))
+        )
+class LocaleEmbed(discord.Embed):
+    def __init__(self,locale=None):
+        super().__init__(title=localisation.getMessage('setlocale_title',lang=locale),description=localisation.getMessage('setlocale_desc',lang=locale),color=0x6ad2f7)
+        self.flags = {}
+        locales = localisation.getLocales()
+        for locale in locales:
+            flag = ':flag_'+locale.lang+':'
+            self.flags[flag] = locale.lang
+            title = flag + ' ' + locale.name
+            if locale.name != locale.nameEn:
+                title += ' (' + locale.nameEn + ')'
+            value = localisation.getFormattedMessage('setlocale_value',lang=locale,author=locale.author)
+            self.add_field(title,value,inline=False)
+@asyncio.coroutine
+def update_locale(server,locale,done,error):
+    global UPDATE_SERVER
+    if UPDATE_SERVER is None:
+        yield from error
+    else:
+        try:
+            UPDATE_SERVER(server,locale=prefix)
+            yield from done
+        except:
+            error_text = traceback.format_exc()
+            logging.getLogger('update_locale').error('Error updating locale: %s',error_text)
             yield from error
 @asyncio.coroutine
 def finish_modal(modal,content):

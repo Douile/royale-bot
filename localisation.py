@@ -7,14 +7,13 @@ class FormatMap(dict):
     def __missing__(self, key):
         return '{'+key+'}'
 class LocaleResponse:
-    def __init__(self,*,message='',description=None,lang=None,parse=False):
+    def __init__(self,*,message='',description=None,lang=None):
         self.message = message
         self.description = description
         self.lang = lang
         self.variables = []
         self.parsed = False
-        if parse:
-            self.parseVariables()
+        self.parseVariables()
     def parseVariables(self):
         if self.parsed:
             self.variables = []
@@ -70,9 +69,13 @@ class LocaleResponse:
     def __str__(self):
         return self.message
 class Locale(dict):
-    def __init__(self,*args,lang=None):
+    def __init__(self,*args,info={},lang=None):
         super().__init__(*args)
         self.lang = lang
+        self.name = info.get('name')
+        self.nameEn = info.get('name_en')
+        self.author = info.get('author')
+        self.authorName = info.get('author_name')
     def getMessage(self,key):
         data = self.get(key)
         if data is not None:
@@ -83,11 +86,20 @@ class Locale(dict):
     def getFormattedMessage(self,key,**variables):
         data = self.get(key)
         if data is not None:
-            resp = LocaleResponse(message=data.get('message'),lang=self.lang,parse=True)
+            resp = LocaleResponse(message=data.get('message'),lang=self.lang)
             resp.format(variables)
         else:
             resp = None
         return resp
+    def getInfo(self):
+        return self.LocaleInfo(lang=self.lang,name=self.name,nameEn=self.nameEn,author=self.author,authorName=self.authorName)
+    class LocaleInfo:
+        def __init__(self,*,lang=None,name=None,nameEn=None,author=None,authorName=None):
+            self.lang = lang
+            self.name = name
+            self.nameEn = nameEn
+            self.author = author
+            self.authorName = authorName
 class LocaleContainer(dict):
     def __init__(self):
         super().__init__({})
@@ -97,7 +109,7 @@ class LocaleContainer(dict):
         self.defaultLang = lang
     def setGlobals(self,data):
         self.globalVars = data
-    def addLocale(self,lang,data):
+    def addLocale(self,lang,info,data):
         self[lang] = Locale(data,lang=lang)
         if self.defaultLang is None:
             self.defaultLang = lang
@@ -114,6 +126,11 @@ class LocaleContainer(dict):
     def applyGlobals(self,response):
         response.message = response.message.format_map(FormatMap(self.globalVars))
         return response
+    def getLocales(self):
+        locales = []
+        for key in self:
+            locales.append(self[key].getInfo())
+        return locales
 
 locales = LocaleContainer()
 
@@ -137,10 +154,19 @@ def loadLocales():
             path = os.path.join(locales_dir,locale_name,'messages.json')
             if os.path.isfile(path):
                 data = readJson(path)
-                locales.addLocale(locale_name,data)
+            else:
+                data = None
+                logger.warn('No messages.json found for %s',locale_name)
+            path = os.path.join(locales_dir,locale_name,'manifest.json')
+            if os.path.isfile(path):
+                info = readJson(path)
                 logger.info('Loaded locale %s',locale_name)
             else:
-                logger.warn('No messages.json found for %s',locale_name)
+                info = None
+                logger.warn('No manifest.json found for %s',locale_name)
+            if data is not None:
+                locales.addLocale(locale_name,info,data)
+                logger.info('Loaded locale %s',locale_name)
         path = os.path.join(locales_dir,'globals.json')
         if os.path.isfile(path):
             data = readJson(path)
@@ -153,3 +179,4 @@ def loadLocales():
 
 getMessage = locales.getMessage
 getFormattedMessage = locales.getFormattedMessage
+getLocales = locales.getLocales
