@@ -164,7 +164,7 @@ class SetPrefix(Command):
         self.permission = 'admin'
     @asyncio.coroutine
     def run(self,command,msg,settings):
-        self.reset()
+        locale = settings.get('locale')
         if command.count('"') > 1:
             command = command[command.index('"')+1:]
             prefix = command[:command.index('"')]
@@ -174,23 +174,24 @@ class SetPrefix(Command):
             except IndexError:
                 prefix = ''
         if prefix != '':
-            text = localisation.getFormattedMessage('setprefix_confirm',author=msg.author.id,prefix=prefix)
+            text = localisation.getFormattedMessage('setprefix_confirm',author=msg.author.id,prefix=prefix,lang=locale)
             self.custom = modals.AcceptModal(content=text,accept=self.acceptModal,decline=self.declineModal,only=msg.author)
             self.custom.prefix = prefix
+            self.custom.locale = locale
             yield from self.custom.send(msg.channel)
             # self.content = '<@!{0}> Successfully set the prefix to `{1}`'.format(msg.author.id,prefix)
             # self.settings = {'prefix':prefix}
         else:
-            self.content = localisation.getFormattedMessage('setprefix_invalid',author=msg.author.id)
+            self.content = localisation.getFormattedMessage('setprefix_invalid',author=msg.author.id,lang=locale)
     @staticmethod
     @asyncio.coroutine
     def acceptModal(reaction,user,modal):
-        modal.content = localisation.getFormattedMessage('setprefix_changing',prefix=modal.prefix)
+        modal.content = localisation.getFormattedMessage('setprefix_changing',prefix=modal.prefix,lang=modal.locale)
         modal.actions = {}
         yield from modal.reset()
         yield from update_prefix(modal.message.server.id,modal.prefix,
-            finish_modal(modal,localisation.getFormattedMessage('setprefix_success',prefix=modal.prefix)),
-            finish_modal(modal,localisation.getMessage('setprefix_error'))
+            finish_modal(modal,localisation.getFormattedMessage('setprefix_success',prefix=modal.prefix,lang=modal.locale)),
+            finish_modal(modal,localisation.getMessage('setprefix_error',lang=modal.locale))
         )
     @staticmethod
     @asyncio.coroutine
@@ -269,15 +270,19 @@ class LocaleEmbed(discord.Embed):
 @asyncio.coroutine
 def update_locale(server,locale,done,error):
     global UPDATE_SERVER
+    logger = logging.getLogger('update_locale')
     if UPDATE_SERVER is None:
         yield from error
+        error_text = traceback.format_exc()
+        logger.error('Error updating locale: %s',error_text)
     else:
         try:
             UPDATE_SERVER(server,locale=locale)
             yield from done
+            logger.debug('Updated locale to %s',locale)
         except:
             error_text = traceback.format_exc()
-            logging.getLogger('update_locale').error('Error updating locale: %s',error_text)
+            logger.error('Error updating locale: %s',error_text)
             yield from error
 @asyncio.coroutine
 def finish_modal(modal,content=None,embed=None):
