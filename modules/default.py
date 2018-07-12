@@ -249,15 +249,23 @@ class LocaleEmbed(discord.Embed):
         locales = localisation.getLocales()
         for localeInfo in locales:
             if localeInfo.lang == 'en':
-                flag = ':flag_gb:'
+                country = 'GB'
             else:
-                flag = ':flag_'+localeInfo.lang+':'
+                country = localeInfo.lang
+            flag = self.getFlag(country)
             self.flags[flag] = localeInfo.lang
             title = '{} {}'.format(flag,localeInfo.name)
             if localeInfo.name != localeInfo.nameEn:
                 title += ' (' + localeInfo.nameEn + ')'
             value = localisation.getFormattedMessage('setlocale_value',lang=locale,author=localeInfo.author)
             self.add_field(name=title,value=value,inline=False)
+    @staticmethod
+    def getFlag(country):
+        country = country.upper()
+        flag = ''
+        for char in country:
+            flag += chr(ord(char)+127397)
+        return flag
 @asyncio.coroutine
 def update_locale(server,locale,done,error):
     global UPDATE_SERVER
