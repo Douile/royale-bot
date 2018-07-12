@@ -273,7 +273,7 @@ def update_locale(server,locale,done,error):
         yield from error
     else:
         try:
-            UPDATE_SERVER(server,locale=prefix)
+            UPDATE_SERVER(server,locale=locale)
             yield from done
         except:
             error_text = traceback.format_exc()
