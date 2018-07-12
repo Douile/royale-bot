@@ -82,8 +82,9 @@ class SetChannel(Command):
         super().__init__(name='setchannel',description='Set the channel to a command type. `{prefix}setchannel [arg]`.[arg] must be one of %s or `all`' % typemsg)
         self.permission = 'admin'
         self.types = types
+    @asyncio.coroutine
     def run(self,command,msg,settings):
-        self.reset()
+        locale = settings.get('locale')
         channelid = msg.channel.id
         try:
             type = command.split(" ")[1].lower()
@@ -101,10 +102,10 @@ class SetChannel(Command):
                     self.settings['channels'][channeltype] = channelid
                     success = True
         if success:
-            self.content = str(localisation.getFormattedMessage('setchannel_success',author=msg.author.id,channel=channelid,type=type))
+            self.content = localisation.getFormattedMessage('setchannel_success',author=msg.author.id,channel=channelid,type=type,lang=locale)
         else:
             typemsg = self.typestring()
-            self.content = str(localisation.getFormattedMessage('setchannel_error',author=msg.author.id,types=typemsg))
+            self.content = localisation.getFormattedMessage('setchannel_error',author=msg.author.id,types=typemsg,lang=locale)
     def typestring(self):
         typemsg = ""
         for i in range(0,len(self.types)):
@@ -119,6 +120,7 @@ class ResetChannels(Command):
         self.types = types
     @asyncio.coroutine
     def run(self,command,msg,settings):
+        locale = settings.get('locale')
         serverid = msg.server.id
         try:
             type = command.split(" ")[1].lower()
@@ -128,14 +130,14 @@ class ResetChannels(Command):
             self.settings = {'channels':{}}
             for channeltype in self.types:
                 self.settings['channels'][channeltype] = None
-            self.content = localisation.getFormattedMessage('resetchannels_all',author=msg.author.id)
+            self.content = localisation.getFormattedMessage('resetchannels_all',author=msg.author.id,lang=locale)
         else:
             if type in self.types:
                 self.settings['channels'] = {}
                 self.settings['channels'][type] = None
-                self.content = localisation.getFormattedMessage('resetchannels_success',author=msg.author.id,type=type)
+                self.content = localisation.getFormattedMessage('resetchannels_success',author=msg.author.id,type=type,lang=locale)
             else:
-                self.content = localisation.getFormattedMessage('resetchannels_error',author=msg.author.id)
+                self.content = localisation.getFormattedMessage('resetchannels_error',author=msg.author.id,lang=locale)
 class Channels(Command):
     def __init__(self,types=[]):
         super().__init__(name='channels',description='Print set channels for current server. `{prefix}channels`')

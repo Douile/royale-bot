@@ -218,8 +218,9 @@ class SetBackgrounds(Command):
         self.background_types = ['shop','stat','upcoming']
         super().__init__(name='setbackground',description='Sets the backgrounds for all images generated. Seperate urls with a space. If you want a blank backround don\'t include any urls. `{prefix}setbackground(s) [type] [url 2] [url 3]...`. `type` must be one of '+arrays.message_string(self.background_types,'all'))
         self.permission = 'admin'
+    @asyncio.coroutine
     def run(self,command,msg,settings):
-        self.reset()
+        locale = settings.get('locale')
         urls = command.split(" ")
         type = None
         if len(urls) < 2:
@@ -232,9 +233,9 @@ class SetBackgrounds(Command):
                 backgrounds = urls[1:]
         if type is not None:
             self.settings = {'backgrounds': {type:backgrounds}}
-            self.content = localisation.getFormattedMessage('setbackground_success',author=msg.author.id,type=type)
+            self.content = localisation.getFormattedMessage('setbackground_success',author=msg.author.id,type=type,lang=locale)
         else:
-            self.content = localisation.getFormattedMessage('setbackground_error',author=msg.author.id,types=arrays.message_string(self.background_types,'all'))
+            self.content = localisation.getFormattedMessage('setbackground_error',author=msg.author.id,types=arrays.message_string(self.background_types,'all'),lang=locale)
 class News(Command):
     def __init__(self):
         super().__init__(name='news',description='Print the current news in fortnite battle royale. `{prefix}news`')
