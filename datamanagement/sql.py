@@ -87,6 +87,7 @@ class ServerData(Table):
         self.add_column("next_shop",type="int")
         self.add_column("latest_shop",type="text")
         self.add_column("prefix",type="text")
+        self.add_column("locale",type="text")
 class ServerBackgrounds(Table):
     def __init__(self):
         super().__init__("server_backgrounds",True)
