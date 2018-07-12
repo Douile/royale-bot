@@ -222,7 +222,7 @@ class SetLocale(Command):
         self.custom.flagMap = embed.flags
         for flag in self.custom.flagMap:
             self.custom.add_action(flag,self.change_language)
-        yield from self.custom.send()
+        yield from self.custom.send(msg.channel)
     @staticmethod
     @asyncio.coroutine
     def cancel(reaction,user,modal):
