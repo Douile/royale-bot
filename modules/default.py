@@ -252,7 +252,7 @@ class LocaleEmbed(discord.Embed):
                 country = 'GB'
             else:
                 country = localeInfo.lang
-            flag = self.getFlag(country)
+            flag = self.getFlag(country)[0]
             self.flags[flag] = localeInfo.lang
             title = '{} {}'.format(flag,localeInfo.name)
             if localeInfo.name != localeInfo.nameEn:
