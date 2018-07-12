@@ -124,5 +124,14 @@
   },
   "setlocale_value": {
     "message": "Created by {author}"
+  },
+  "setlocale_change": {
+    "message": "Setting locale to {code;locale}"
+  },
+  "setlocale_success": {
+    "message": "Your language was changed to {code;locale}"
+  },
+  "setlocale_error": {
+    "message": "There was an error changing your language"
   }
 }

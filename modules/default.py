@@ -238,8 +238,8 @@ class SetLocale(Command):
         modal.actions = {}
         yield from modal.reset()
         yield from update_locale(modal.message.server.id,locale,
-            finish_modal(modal,localisation.getFormattedMessage('setprefix_success',locale=locale,lang=modal.locale)),
-            finish_modal(modal,localisation.getMessage('setprefix_error',lang=modal.locale))
+            finish_modal(modal,localisation.getFormattedMessage('setlocale_success',locale=locale,lang=locale)),
+            finish_modal(modal,localisation.getMessage('setlocale_error',lang=modal.locale))
         )
 class LocaleEmbed(discord.Embed):
     def __init__(self,locale=None):

@@ -51,6 +51,8 @@ class LocaleResponse:
                 text = '<@{0}>'
             elif self.type == 'link':
                 text = '<{0}>'
+            elif self.type == 'code':
+                text = '`{0}`'
             else:
                 text = '{0}'
             return text.format('{'+self.name+'}')
