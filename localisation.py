@@ -158,13 +158,13 @@ def loadLocales():
                 data = readJson(path)
             else:
                 data = None
-                logger.warn('No messages.json found for %s',locale_name)
+                logger.warn('No messages.json found for %s',locale_path)
             path = os.path.join(locales_dir,locale_path,'manifest.json')
             if os.path.isfile(path):
                 info = readJson(path)
             else:
                 info = None
-                logger.warn('No manifest.json found for %s',locale_name)
+                logger.warn('No manifest.json found for %s',locale_path)
             if data is not None:
                 split = locale_path.split('/')
                 locale_name = split[-1]
