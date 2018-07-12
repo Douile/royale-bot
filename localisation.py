@@ -79,7 +79,7 @@ class Locale(dict):
         self.author = info.get('author')
         self.authorName = info.get('author_name')
     def getMessage(self,key):
-        data = self.get(key,'')
+        data = self.get(key,{'message':''})
         if data is not None:
             resp = LocaleResponse(message=data.get('message'),lang=self.lang)
             resp.format({})
@@ -87,7 +87,7 @@ class Locale(dict):
             resp = None
         return resp
     def getFormattedMessage(self,key,**variables):
-        data = self.get(key,'')
+        data = self.get(key,{'message':''})
         if data is not None:
             resp = LocaleResponse(message=data.get('message'),lang=self.lang)
             resp.format(variables)
