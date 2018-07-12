@@ -123,6 +123,7 @@ logging_config = {
 logging.config.dictConfig(logging_config)
 
 localisation.loadLocales()
+localisation.setDefault('en')
 
 if SHARD_NO == 0:
     defaults_database = True

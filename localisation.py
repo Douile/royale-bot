@@ -183,3 +183,4 @@ def loadLocales():
 getMessage = locales.getMessage
 getFormattedMessage = locales.getFormattedMessage
 getLocales = locales.getLocales
+setDefault = locales.setDefault
