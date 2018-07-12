@@ -253,7 +253,7 @@ class LocaleEmbed(discord.Embed):
             if localeInfo.name != localeInfo.nameEn:
                 title += ' (' + localeInfo.nameEn + ')'
             value = localisation.getFormattedMessage('setlocale_value',lang=locale,author=localeInfo.author)
-            self.add_field(title,value,inline=False)
+            self.add_field(title=title,value=value,inline=False)
 @asyncio.coroutine
 def update_locale(server,locale,done,error):
     global UPDATE_SERVER
