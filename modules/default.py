@@ -279,7 +279,7 @@ def update_locale(server,locale,done,error):
         try:
             UPDATE_SERVER(server,locale=locale)
             yield from done
-            logger.debug('Updated locale to %s',locale)
+            logger.debug('Updated locale to %s for %s',locale,server)
         except:
             error_text = traceback.format_exc()
             logger.error('Error updating locale: %s',error_text)
