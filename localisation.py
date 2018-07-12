@@ -82,6 +82,7 @@ class Locale(dict):
         data = self.get(key)
         if data is not None:
             resp = LocaleResponse(message=data.get('message'),lang=self.lang)
+            resp.format()
         else:
             resp = None
         return resp
