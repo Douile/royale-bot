@@ -282,6 +282,7 @@ def update_locale(server,locale,done,error):
 @asyncio.coroutine
 def finish_modal(modal,content):
     modal.content = content
+    modal.embed = None
     modal.actions = {}
     yield from modal.reset()
 
