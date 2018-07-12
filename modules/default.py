@@ -249,7 +249,7 @@ class LocaleEmbed(discord.Embed):
         for locale in locales:
             flag = ':flag_'+locale.lang+':'
             self.flags[flag] = locale.lang
-            title = flag + ' ' + locale.name
+            title = '{} {}'.format(flag,locale.name)
             if locale.name != locale.nameEn:
                 title += ' (' + locale.nameEn + ')'
             value = localisation.getFormattedMessage('setlocale_value',lang=locale,author=locale.author)
