@@ -338,7 +338,7 @@ def autocheatsheets():
         update = None
         data = yield from cheatsheets.get_cheat_sheets()
         for sheet in data:
-            if (sheet.season > cache.get('season',0) or sheet.week > cache.get('week',0)) and sheet.has_image:
+            if ()(sheet.season >= cache.get('season',0) and sheet.week > cache.get('week',0)) or sheet.season > cache.get('season',0)) and sheet.has_image:
                 cache['season'] = sheet.season
                 cache['week'] = sheet.week
                 update = sheet
