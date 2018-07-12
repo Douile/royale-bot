@@ -218,7 +218,7 @@ class SetLocale(Command):
         embed = LocaleEmbed(locale=locale)
         self.custom = modals.Modal(embed=embed,only=msg.author)
         self.custom.locale = locale
-        self.custom.add_action(':x:',self.cancel)
+        self.custom.add_action(u'\u274C',self.cancel)
         self.custom.flagMap = embed.flags
         for flag in self.custom.flagMap:
             self.custom.add_action(flag,self.change_language)
@@ -252,7 +252,7 @@ class LocaleEmbed(discord.Embed):
                 country = 'GB'
             else:
                 country = localeInfo.lang
-            flag = self.getFlag(country)[0]
+            flag = self.getFlag(country)
             self.flags[flag] = localeInfo.lang
             title = '{} {}'.format(flag,localeInfo.name)
             if localeInfo.name != localeInfo.nameEn:
