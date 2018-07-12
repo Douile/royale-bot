@@ -45,7 +45,7 @@
     "message": "Your prefix was not changed"
   },
   "shop_success": {
-    "message": "Data from {link:fnbr}"
+    "message": "Data from {link;fnbr}"
   },
   "shop_error": {
     "message": "Error generating image"
