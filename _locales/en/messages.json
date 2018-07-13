@@ -6,7 +6,7 @@
     "message": "I was unable to access the `autoshop` channel ({channel;channel}) you set in your server `{server_name}`. I have deleted the channel from my database"
   },
   "autocheatsheets_title": {
-    "message": "Season **{season}** Week **{week}** cheat sheet"
+    "message": "Season {bold;season} Week {bold;week} cheat sheet"
   },
   "autocheatsheets_desc": {
     "message": "[Vote for RoyaleBot]({vote_link})\nImage by [TheSquatingDog]({squatingdog})"
@@ -33,10 +33,10 @@
     "message": "{user;author} please enter a valid prefix"
   },
   "setprefix_changing": {
-    "message": "Changing prefix to `{prefix}`"
+    "message": "Changing prefix to {code;prefix}"
   },
   "setprefix_success": {
-    "message": "Successfully changed your prefix to `{prefix}`"
+    "message": "Successfully changed your prefix to {code;prefix}"
   },
   "setprefix_error": {
     "message": "Sorry, an error occured whilst changing your prefix"
@@ -90,7 +90,7 @@
     "message": "{user;author} Sorry I encountered an error unlinking your account, please try again later"
   },
   "setbackground_success": {
-    "message": "{user;author} Set backgrounds for `{type}`"
+    "message": "{user;author} Set backgrounds for {code;type}"
   },
   "setbackground_error": {
     "message": "{user;author} Unable to set backgrounds you must include a type. One of: {types}"
