@@ -129,10 +129,10 @@
     "message": "Your locale was not changed"
   },
   "setlocale_change": {
-    "message": "Setting locale to {code;locale}"
+    "message": "Setting locale to {bold;locale}"
   },
   "setlocale_success": {
-    "message": "Your language was changed to {code;locale}"
+    "message": "Your language was changed to {bold;locale}"
   },
   "setlocale_error": {
     "message": "There was an error changing your language"

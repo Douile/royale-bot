@@ -11,10 +11,10 @@
     "message": "Je taal is niet veranderd"
   },
   "setlocale_change": {
-    "message": "Bezig met het veranderen van je taal naar {code;locale}"
+    "message": "Bezig met het veranderen van je taal naar {bold;locale}"
   },
   "setlocale_success": {
-    "message": "Je taal is veranderd naar {code;locale}"
+    "message": "Je taal is veranderd naar {bold;locale}"
   },
   "setlocale_error": {
     "message": "Er is een fout opgetreden bij het veranderen van je taal"
