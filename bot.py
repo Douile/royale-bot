@@ -156,7 +156,10 @@ def autoshop(): # add fnbr not accessable fallback
     while not client.is_closed:
         shopdata = None
         servers = yield from get_server_priority(list(client.servers),client.database.get_priority_servers)
+        needRestart = False
         for servers_r in servers:
+            if needRestart:
+                break
             for serverd in servers_r:
                 serverid = serverd.id
                 server = client.database.server_info(serverid,backgrounds=True,channels=True)
@@ -168,7 +171,20 @@ def autoshop(): # add fnbr not accessable fallback
                         nextshop = time.mktime(datetime.now().utctimetuple())
                     if now >= nextshop:
                         if shopdata == None:
-                            shopdata = yield from shop.getShopData(KEY_FNBR)
+                            tries = 0
+                            while shopdata == None and tries < 10:
+                                try:
+                                    shopdata = yield from shop.getShopData(KEY_FNBR)
+                                except:
+                                    shopdata = None
+                                    error = traceback.format_exc()
+                                    logger.error('Error generating shop image: %s',error)
+                                    yield from asyncio.sleep(0.1)
+                                tries += 1
+                            if tries > 9:
+                                needRestart = True
+                                logger.error('Failed to generate shop 10 times restarting autoshop')
+                                break
                         if shopdata.type == 'shop':
                             rawtime = shop.getTime(shopdata.data.date)
                             bgs = server.get('backgrounds',{})
