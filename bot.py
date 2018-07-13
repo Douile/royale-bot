@@ -110,7 +110,7 @@ logging_config = {
             'formatter': 'verbose'
         },
         'sentry': {
-            'level':'INFO',
+            'level':'ERROR',
             'class':'raven.handlers.logging.SentryHandler',
             'dsn':SENTRY_URL
         }
