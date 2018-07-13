@@ -21,6 +21,7 @@ from imagegeneration import shop
 from datamanagement import sql
 from utils import linecount
 from utils.times import day_string as parse_second_time
+from utils.times import tommorow
 from utils.discord import count_client_users, get_server_priority
 from codemodules import modals
 
@@ -154,7 +155,6 @@ def autoshop(): # add fnbr not accessable fallback
     yield from client.wait_until_ready()
     logger.info('Autoshop started')
     while not client.is_closed:
-        shopdata = None
         servers = yield from get_server_priority(list(client.servers),client.database.get_priority_servers)
         needRestart = False
         for servers_r in servers:
@@ -164,67 +164,48 @@ def autoshop(): # add fnbr not accessable fallback
                 serverid = serverd.id
                 server = client.database.server_info(serverid,backgrounds=True,channels=True)
                 if 'autoshop' in server['channels']:
+                    locale = server.get('locale')
                     now = time.time()
-                    if 'next_shop' in server:
-                        nextshop = server['next_shop']
-                    if nextshop == None:
+                    nextshop = server.get('next_shop')
+                    if nextshop is None:
                         nextshop = time.mktime(datetime.now().utctimetuple())
                     if now >= nextshop:
-                        if shopdata == None:
-                            tries = 0
-                            while shopdata == None and tries < 10:
+                        bgs = server.get('backgrounds',{})
+                        bgs_s = bgs.get('shop',[])
+                        try:
+                            file = yield from shop.generate(KEY_FNBR,serverid,bgs_s)
+                        except:
+                            error = traceback.format_exc()
+                            logger.error('Error generating image: %s',error)
+                            needRestart = True
+                            break
+                        content = localisation.getMessage('autoshop',lang=locale)
+                        nextshoptime = tommorow()
+                        try:
+                            yield from client.send_file(discord.Object(server['channels']['autoshop']),file,content=content)
+                            client.database.set_server_info(serverid,next_shop=nextshoptime,latest_shop=file)
+                        except (discord.errors.Forbidden, discord.errors.NotFound):
+                            logger.info('Forbidden or not found on server: {}'.format(serverid))
+                            serverdata = client.get_server(serverid)
+                            if serverdata is None:
+                                client.database.delete_server(serverid)
+                            else:
                                 try:
-                                    shopdata = yield from shop.getShopData(KEY_FNBR)
+                                    client.database.set_server_info(serverid,next_shop=nextshoptime,latest_shop=file)
+                                    client.database.set_server_channel(serverid,'autoshop',None)
                                 except:
-                                    shopdata = None
                                     error = traceback.format_exc()
-                                    logger.error('Error generating shop image: %s',error)
-                                    yield from asyncio.sleep(0.1)
-                                tries += 1
-                            if tries > 9:
-                                needRestart = True
-                                logger.error('Failed to generate shop 10 times restarting autoshop')
-                                break
-                        if shopdata.type == 'shop':
-                            rawtime = shop.getTime(shopdata.data.date)
-                            bgs = server.get('backgrounds',{})
-                            bgs_s = bgs.get('shop',[])
-                            try:
-                                file = yield from shop.generate(KEY_FNBR,serverid,bgs_s)
-                            except:
-                                error = traceback.format_exc()
-                                logger.error('Error generating image: %s',error)
-                                continue
-                            content = localisation.getMessage('autoshop')
-                            nextshoptime = round(time.mktime(rawtime.utctimetuple()) + (60*60*24))
-                            try:
-                                yield from client.send_file(discord.Object(server['channels']['autoshop']),file,content=content)
-                                client.database.set_server_info(serverid,next_shop=nextshoptime,latest_shop=file)
-                            except (discord.errors.Forbidden, discord.errors.NotFound):
-                                logger.info('Forbidden or not found on server: {}'.format(serverid))
-                                serverdata = client.get_server(serverid)
-                                if serverdata is None:
-                                    client.database.delete_server(serverid)
-                                else:
-                                    try:
-                                        client.database.set_server_info(serverid,next_shop=nextshoptime,latest_shop=file)
-                                        client.database.set_server_channel(serverid,'autoshop',None)
-                                    except:
-                                        error = traceback.format_exc()
-                                        logger.error('Error updating database: {0}'.format(error))
-                                    try:
-                                        text = localisation.getFormattedMessage('autoshop_no_access',channel=server['channels']['autoshop'],server_name=serverdata.name)
-                                        yield from client.send_message(serverdata.owner,content=text)
-                                    except:
-                                        error = traceback.format_exc()
-                                        logger.error('Error sending message to owner: {0}'.format(error))
-                            except:
-                                error = traceback.format_exc()
-                                logger.error('Error sending shop: %s', error)
-                            yield from asyncio.sleep(RATE_LIMIT_TIME)
-                        else:
-                            logger.error('Error getting shop data %s: %s', str(shopdata.error), str(shopdata.json))
-                            shopdata = None
+                                    logger.error('Error updating database: {0}'.format(error))
+                                try:
+                                    text = localisation.getFormattedMessage('autoshop_no_access',channel=server['channels']['autoshop'],server_name=serverdata.name,lang=locale)
+                                    yield from client.send_message(serverdata.owner,content=text)
+                                except:
+                                    error = traceback.format_exc()
+                                    logger.error('Error sending message to owner: {0}'.format(error))
+                        except:
+                            error = traceback.format_exc()
+                            logger.error('Error sending shop: %s', error)
+                        yield from asyncio.sleep(RATE_LIMIT_TIME)
             time_until_next = nextshop-now
             if time_until_next < 0:
                 time_until_next = 1
