@@ -178,8 +178,7 @@ class Database(Postgres):
         cols = ServerData().column_names
         for arg in kwargs:
             if arg in cols:
-                if kwargs.get(arg,None) != None:
-                    self.set_server_info_string(server_id, arg, kwargs.get(arg))
+                self.set_server_info_string(server_id, arg, kwargs.get(arg))
     def set_server_info_string(self,server_id,column,value):
         self.set_server_info_raw(server_id,column,value,"s")
     def set_server_info_int(self,server_id,column,value):

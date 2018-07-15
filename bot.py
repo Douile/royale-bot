@@ -521,7 +521,7 @@ def commandHandler(command, msg):
     if len(output.queue) > 0:
         client.queued_actions += output.queue
         logger.debug('Added queued action')
-    if output.settings != None:
+    if output.settings is not None:
         if 'channels' in output.settings:
             for type in output.settings['channels']:
                 client.database.set_server_channel(serverid,type,output.settings['channels'][type])
