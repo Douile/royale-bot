@@ -291,6 +291,14 @@ class PatchNotes(Command):
         else:
             self.content = 'Sorry <@!{author}> we were unable to get the patch notes'
 
+class ResetStatus(Command):
+    def __init__(self):
+        super().__init__(name='resetstatus',description='Force a reset of autostatus',permission='admin')
+    @asyncio.coroutine
+    def run(self,command,msg,settings):
+        self.content = 'Resseting your autostatus, a new message will be delivered on the next update (every 2 mins)'
+        self.settings = {'last_status_msg':None,'last_status_channel':None}
+
 class ShopEmbed(discord.Embed):
     def __init__(self,date,filename):
         super().__init__(title=date)
