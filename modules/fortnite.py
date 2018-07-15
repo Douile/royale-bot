@@ -24,7 +24,8 @@ class FortniteModule(Module):
             'status': Servers(),
             #'patchnotes': PatchNotes(),
             'link': Link(sql),
-            'unlink': UnLink(sql)
+            'unlink': UnLink(sql),
+            'resetstatus': ResetStatus()
         }
         self.types = ['autoshop','autostatus','autonews','autocheatsheets']
         for command_name in self.commands:
