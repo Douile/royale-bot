@@ -210,7 +210,7 @@ def autoshop(): # add fnbr not accessable fallback
             if time_until_next < 0:
                 time_until_next = 1
             else:
-                time_until_next += 60
+                time_until_next += 10
         logger.info("Autoshop now:%d next:%d updating in: %s", now, nextshop, parse_second_time(nextshop-now))
         yield from asyncio.sleep(time_until_next)
 
