@@ -61,7 +61,10 @@ class Modal:
     def reset(self):
         if self.content != self.message.content or self.embed != self.message.embeds[0]:
             self.message = yield from edit_message(self.message,new_content=self.content,embed=self.embed)
-        yield from clear_reactions(self.message)
+        try:
+            yield from clear_reactions(self.message)
+        except: # include actual errors
+            pass
         has_actions = False
         for action in self.actions:
             has_actions = True
