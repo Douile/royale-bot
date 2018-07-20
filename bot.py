@@ -43,9 +43,9 @@ KEY_FNBR = getEnv("KEY_FNBR")
 KEY_TRACKERNETWORK = getEnv("KEY_TRACKERNETWORK")
 KEY_DBL = getEnv("KEY_DBL",None)
 DATABASE_URL = getEnv("DATABASE_URL")
-BOT_NAME = getEnv("BOT_NAME", "FortniteData")
+BOT_NAME = getEnv("BOT_NAME", "RoyaleBot")
 TICKER_TIME = int(getEnv("TICKER_TIME", 30))
-DEFAULT_PREFIX = getEnv("DEFAULT_PREFIX","!")
+DEFAULT_PREFIX = getEnv("DEFAULT_PREFIX",".rb ")
 SHARD_NO = 0
 SHARD_COUNT = 1
 if len(sys.argv) > 2:
