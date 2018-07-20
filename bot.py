@@ -17,7 +17,7 @@ import localisation
 from modules import default, fortnite, moderation, testing
 from modules.module import Command
 from dataretrieval import meta, cheatsheets
-from imagegeneration import shop
+from imagegeneration import shop, upcoming
 from datamanagement import sql
 from utils import linecount
 from utils.times import day_string as parse_second_time
@@ -440,6 +440,21 @@ def dbl_api():
 #             if client.in_server(serverid):
 #                 pass
 
+@asyncio.coroutine
+def pre_cache():
+    logger = logging.getLogger('pre-cache')
+    try:
+        yield from shop.generate(KEY_FNBR)
+        logger.info('Finished shop')
+    except:
+        error = traceback.format_exc()
+        logger.error('Error precaching: %s',error)
+    try:
+        yield from upcoming.generate(KEY_FNBR)
+        logger.info('Finished upcoming')
+    except:
+        error = traceback.format_exc()
+        logger.error('Error precaching: %s',error)
 
 @asyncio.coroutine
 def count_users(client_class):
@@ -462,6 +477,7 @@ def on_ready():
     yield from client.edit_profile(username=BOT_NAME)
     yield from client.change_presence(game=discord.Game(name="Est. 2018 @mention for help",type=0),status="online",afk=False)
     defaultmodule.client_id = client.user.id
+    yield from pre_cache()
 
 
 @client.event
