@@ -34,7 +34,7 @@ class FortniteModule(Module):
                 self.types.append(command.permission)
 class Shop(Command):
     def __init__(self,fnbr_key):
-        super().__init__(name="shop",description='Print an image of today\'s fortnite shop. `{prefix}shop`')
+        super().__init__(name="shop",description=localisation.PreMessage('shop_help'))
         self.permission = 'shop'
         self.fnbr_key = fnbr_key
     @asyncio.coroutine
@@ -67,7 +67,7 @@ class Shop(Command):
             logger.error(traceback.format_exc())
 class Upcoming(Command):
     def __init__(self,fnbr_key):
-        super().__init__(name="upcoming",description='Print currently found upcoming fortnite items. `{prefix}upcoming`',permission='upcoming')
+        super().__init__(name="upcoming",description=localisation.PreMessage('upcoming_help'),permission='upcoming')
         self.fnbr_key = fnbr_key
     @asyncio.coroutine
     def run(self,command,msg,settings):
@@ -97,7 +97,7 @@ class Upcoming(Command):
 
 class Stats(Command):
     def __init__(self,tn_key,sql):
-        super().__init__(name='stats',description='Gets the fortnite stats of a player. `{prefix}stats [cs]? [platform] [player]` .If you do not set platform it will default to pc. If you are linked and do not enter a player name it will default to your linked account, you can also @metion another linked user to default to their linked account. If you type `cs` at the start of the command you will get stats for the current season.',permission='stats',aliases=['{prefix}'])
+        super().__init__(name='stats',description=localisation.PreMessage('stats_help'),permission='stats',aliases=['{prefix}'])
         self.tn_key = tn_key
         self.sql = sql
     @asyncio.coroutine
@@ -182,7 +182,7 @@ class Matches(Command):
 
 class Link(Command):
     def __init__(self,sql):
-        super().__init__(name='link',description='Link you fortnite account for easy stats retrieval. `{prefix}link [platform]? [username]` if you do not include platform or if it is not one of `pc`, `xbox` or `psn` it will default to `pc`',permission='stats')
+        super().__init__(name='link',description=localisation.PreMessage('link_help'),permission='stats')
         self.sql = sql
     @asyncio.coroutine
     def run(self,command,msg,settings):
@@ -204,7 +204,7 @@ class Link(Command):
             self.content = localisation.getFormattedMessage('link_short',author=msg.author.id)
 class UnLink(Command):
     def __init__(self,sql):
-        super().__init__(name='unlink',description='Unlink your fortnite account. `{prefix}unlink`',permission='stats')
+        super().__init__(name='unlink',description=localisation.PreMessage('unlink_help'),permission='stats')
         self.sql = sql
     @asyncio.coroutine
     def run(self,command,msg,settings):
@@ -217,7 +217,7 @@ class UnLink(Command):
 class SetBackgrounds(Command):
     def __init__(self):
         self.background_types = ['shop','stat','upcoming']
-        super().__init__(name='setbackground',description='Sets the backgrounds for all images generated. Seperate urls with a space. If you want a blank backround don\'t include any urls. `{prefix}setbackground(s) [type] [url 2] [url 3]...`. `type` must be one of '+arrays.message_string(self.background_types,'all'))
+        super().__init__(name='setbackground',description=localisation.PreMessage('setbackground_help',types=arrays.message_string(self.background_types,'all')))
         self.permission = 'admin'
     @asyncio.coroutine
     def run(self,command,msg,settings):
@@ -239,7 +239,7 @@ class SetBackgrounds(Command):
             self.content = localisation.getFormattedMessage('setbackground_error',author=msg.author.id,types=arrays.message_string(self.background_types,'all'),lang=locale)
 class News(Command):
     def __init__(self):
-        super().__init__(name='news',description='Print the current news in fortnite battle royale. `{prefix}news`')
+        super().__init__(name='news',description=localisation.PreMessage('news_help'))
         self.permission = 'news'
     @asyncio.coroutine
     def run(self,command,msg,settings):
@@ -254,7 +254,7 @@ class News(Command):
             self.content = localisation.getFormattedMessage('news_error',author=msg.author.id)
 class Servers(Command):
     def __init__(self):
-        super().__init__(name='status',description='Print the fortnite servers status. `{prefix}status`',permission='status')
+        super().__init__(name='status',description=localisation.PreMessage('status_help'),permission='status')
     @asyncio.coroutine
     def run(self,command,msg,settings):
         try:
@@ -294,7 +294,7 @@ class PatchNotes(Command):
 
 class ResetStatus(Command):
     def __init__(self):
-        super().__init__(name='resetstatus',description='Force a reset of autostatus',permission='admin')
+        super().__init__(name='resetstatus',description=localisation.PreMessage('resetstatus_help'),permission='admin')
     @asyncio.coroutine
     def run(self,command,msg,settings):
         self.content = 'Resseting your autostatus, a new message will be delivered on the next update (every 2 mins)'

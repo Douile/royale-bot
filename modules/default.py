@@ -78,8 +78,8 @@ def remove_help(client,msg):
 class SetChannel(Command):
     def __init__(self,types=[]):
         self.types = types
-        typemsg = self.typestring()
-        super().__init__(name='setchannel',description='Set the channel to a command type. `{prefix}setchannel [arg]`.[arg] must be one of %s or `all`' % typemsg)
+        typemsg = self.typestring() + 'or `all`'
+        super().__init__(name='setchannel',description=localisation.PreMessage('setchannel_help',types=typemsg))
         self.permission = 'admin'
         self.types = types
     @asyncio.coroutine
@@ -115,9 +115,10 @@ class SetChannel(Command):
         return typemsg
 class ResetChannels(Command):
     def __init__(self,types=[]):
-        super().__init__(name='resetchannels',description='Reset all set channels for this server. `{prefix}resetchannels`')
-        self.permission = 'admin'
         self.types = types
+        typemsg = self.typestring() + 'or `all`'
+        super().__init__(name='resetchannels',description=localisation.PreMessage('resetchannels_help',types=typemsg))
+        self.permission = 'admin'
     @asyncio.coroutine
     def run(self,command,msg,settings):
         locale = settings.get('locale')
@@ -140,7 +141,7 @@ class ResetChannels(Command):
                 self.content = localisation.getFormattedMessage('resetchannels_error',author=msg.author.id,lang=locale)
 class Channels(Command):
     def __init__(self,types=[]):
-        super().__init__(name='channels',description='Print set channels for current server. `{prefix}channels`')
+        super().__init__(name='channels',description=localisation.PreMessage('channels_help'))
         self.permission = 'admin'
         self.types = types
     def run(self,command,msg,settings):
@@ -160,7 +161,7 @@ class Channels(Command):
             self.embed.add_field(name=channeltype,value=value,inline=False)
 class SetPrefix(Command):
     def __init__(self):
-        super().__init__(name='setprefix',description='Set the command prefix. `{prefix}setprefix "[prefix]"`. In order to have a space at the beginning or end of your prefix you must put "" around it. e.g. `".rb "`')
+        super().__init__(name='setprefix',description=localisation.PreMessage('setprefix_help'))
         self.permission = 'admin'
     @asyncio.coroutine
     def run(self,command,msg,settings):
@@ -214,7 +215,7 @@ def update_prefix(server,prefix,done,error):
             yield from error
 class SetLocale(Command):
     def __init__(self):
-        super().__init__(name='setlocale',description='Change the language on your server. `{prefix}setlocale`',permission='admin')
+        super().__init__(name='setlocale',description=localisation.PreMessage('setlocale_help'),permission='admin')
     @asyncio.coroutine
     def run(self,command,msg,settings):
         locale = settings.get('locale')
