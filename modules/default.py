@@ -4,7 +4,7 @@ import discord
 import asyncio
 import traceback
 import logging
-from utils import getEnv
+from utils import getEnv, arrays
 import localisation
 
 DEFAULT_PREFIX = getEnv("DEFAULT_PREFIX","!")
@@ -78,8 +78,7 @@ def remove_help(client,msg):
 class SetChannel(Command):
     def __init__(self,types=[]):
         self.types = types
-        typemsg = self.typestring() + 'or `all`'
-        super().__init__(name='setchannel',description=localisation.PreMessage('setchannel_help',types=typemsg))
+        super().__init__(name='setchannel',description=localisation.PreMessage('setchannel_help',types=arrays.message_string(self.types,'all')))
         self.permission = 'admin'
         self.types = types
     @asyncio.coroutine
@@ -106,18 +105,10 @@ class SetChannel(Command):
         else:
             typemsg = self.typestring()
             self.content = localisation.getFormattedMessage('setchannel_error',author=msg.author.id,types=typemsg,lang=locale)
-    def typestring(self):
-        typemsg = ""
-        for i in range(0,len(self.types)):
-            typemsg += '`{0}`'.format(self.types[i])
-            if i < len(self.types)-1:
-                typemsg += ', '
-        return typemsg
 class ResetChannels(Command):
     def __init__(self,types=[]):
         self.types = types
-        typemsg = self.typestring() + 'or `all`'
-        super().__init__(name='resetchannels',description=localisation.PreMessage('resetchannels_help',types=typemsg))
+        super().__init__(name='resetchannels',description=localisation.PreMessage('resetchannels_help',types=arrays.message_string(self.types,'all')))
         self.permission = 'admin'
     @asyncio.coroutine
     def run(self,command,msg,settings):
