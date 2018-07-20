@@ -33,7 +33,7 @@ class DefaultModule(Module):
         }
 class Status(Command):
     def __init__(self,version):
-        super().__init__(name='botinfo',description="Print the status of the bot. `{prefix}botinfo`")
+        super().__init__(name='botinfo',description=localisation.PreMessage('botinfo_help'))
         self.version = Map(version)
     @asyncio.coroutine
     def run(self,command,msg,settings):
@@ -63,7 +63,7 @@ class Help(Command):
         except IndexError:
             category = None
         self.embed = HelpEmbed(prefix=prefix,category=category,icon_url=msg.server.icon_url,admin=admin)
-        self.embed.generate(self.modules)
+        self.embed.generate(self.modules,lang=settings.get('locale'))
         last_help_msg = settings.get('last_help_msg',None)
         if last_help_msg != None:
             last_help = discord.Object(last_help_msg)
@@ -309,7 +309,7 @@ class HelpEmbed(discord.Embed):
             self.set_thumbnail(url=icon_url)
         if self.category != None:
             self.title = "Help ({0})".format(self.category)
-    def generate(self,modules):
+    def generate(self,modules,lang=None):
         commands = {}
         for module in modules:
             if module.category == self.category:
@@ -318,13 +318,19 @@ class HelpEmbed(discord.Embed):
                     if cmd.name != '':
                         if self.admin:
                             if cmd.description != '':
-                                commands[command] = cmd.description
+                                if localisation.is_pre(cmd.description):
+                                    commands[command] = cmd.description.getMessage(lang=lang)
+                                else:
+                                    commands[command] = str(cmd.description)
                             else:
                                 commands[command] = 'Description not set'
                         else:
                             if cmd.permission != 'admin':
                                 if cmd.description != '':
-                                    commands[command] = cmd.description
+                                    if localisation.is_pre(cmd.description):
+                                        commands[command] = cmd.description.getMessage(lang=lang)
+                                    else:
+                                        commands[command] = str(cmd.description)
                                 else:
                                     commands[command] = 'Description not set'
                         if type(commands.get(command,None)) is str:
