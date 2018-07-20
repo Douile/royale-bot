@@ -193,9 +193,9 @@ class PreMessage:
         self.name = name
         self.formatting = formatting
     def __str__(self):
-        return localisation.getFormattedMessage(self.name,**self.formatting)
+        return locales.getFormattedMessage(self.name,**self.formatting)
     def getMessage(self,lang=None):
-        return localisation.getFormattedMessage(self.name,lang=lang,**self.formatting)
+        return locales.getFormattedMessage(self.name,lang=lang,**self.formatting)
 
 def is_pre(item):
     if type(item) is PreMessage:
