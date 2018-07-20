@@ -444,13 +444,13 @@ def dbl_api():
 def pre_cache():
     logger = logging.getLogger('pre-cache')
     try:
-        yield from shop.generate(KEY_FNBR)
+        yield from shop.generate(KEY_FNBR,'',[])
         logger.info('Finished shop')
     except:
         error = traceback.format_exc()
         logger.error('Error precaching: %s',error)
     try:
-        yield from upcoming.generate(KEY_FNBR)
+        yield from upcoming.generate(KEY_FNBR,'',[])
         logger.info('Finished upcoming')
     except:
         error = traceback.format_exc()
