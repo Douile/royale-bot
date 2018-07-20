@@ -105,12 +105,23 @@ class Background:
 
 @asyncio.coroutine
 def daily_cache_generator(generator,serverid,backgrounds,basename,*genargs): # improve efficiency
+    logger = logging.getLogger('cache-gen')
     filename_overlay = '{0}-{1}.png'.format(basename,round(morning()))
     if isfile(filename_overlay):
         overlay = PIL.Image.open(filename_overlay)
+        logger.debug('Used overlay from cache')
     else:
-        overlay = yield from generator(*genargs)
+        overlay = None
+        count = 0
+        while overlay is None:
+            count += 1
+            if count > 1:
+                yield from asyncio.sleep(0.05)
+                if count > 9:
+                    raise RuntimeError('Unable to generate image')
+            overlay = yield from generator(*genargs)
         overlay.save(filename_overlay)
+        logger.debug('Generated a new overlay')
     if len(backgrounds) > 0:
         filename_server = '{0}-{1}.png'.format(filename_overlay[:-4],serverid)
         if isfile(filename_server):

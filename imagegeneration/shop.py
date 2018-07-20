@@ -214,6 +214,8 @@ def generate_image(apikey):
     featured = []
     daily = []
     shopdata = yield from getShopData(apikey)
+    if shopdata is None:
+        return None
     time = getTime(shopdata.data.date)
     date = time.strftime("%A %d %B")
 
