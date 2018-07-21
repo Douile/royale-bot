@@ -351,8 +351,8 @@ def autocheatsheets():
         if update is not None:
             title = localisation.getFormattedMessage('autocheatsheets_title',season=update.season,week=update.week)
             description = localisation.getMessage('autocheatsheets_desc')
-            embed = discord.Embed(title=title,description=description)
-            embed.set_thumbnail(url=update.image)
+            embed = discord.Embed(title=title,description=description,color=0xe67e22)
+            embed.set_image(url=update.image)
             logger.info('Embed built {0}.{1} image url: {2}'.format(update.season,update.week,update.image))
             servers = yield from get_server_priority(list(client.servers),client.database.get_priority_servers)
             for servers_r in servers:
