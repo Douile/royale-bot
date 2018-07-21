@@ -217,7 +217,7 @@ class UnLink(Command):
 class SetBackgrounds(Command):
     def __init__(self):
         self.background_types = ['shop','stat','upcoming']
-        super().__init__(name='setbackground',description=localisation.PreMessage('setbackground_help',types=arrays.message_string(self.background_types,'all')))
+        super().__init__(name='setbackground',description=localisation.PreMessage('setbackground_help',types=arrays.message_string(self.background_types)))
         self.permission = 'admin'
     @asyncio.coroutine
     def run(self,command,msg,settings):
@@ -236,7 +236,7 @@ class SetBackgrounds(Command):
             self.settings = {'backgrounds': {type:backgrounds}}
             self.content = localisation.getFormattedMessage('setbackground_success',author=msg.author.id,type=type,lang=locale)
         else:
-            self.content = localisation.getFormattedMessage('setbackground_error',author=msg.author.id,types=arrays.message_string(self.background_types,'all'),lang=locale)
+            self.content = localisation.getFormattedMessage('setbackground_error',author=msg.author.id,types=arrays.message_string(self.background_types),lang=locale)
 class News(Command):
     def __init__(self):
         super().__init__(name='news',description=localisation.PreMessage('news_help'))
