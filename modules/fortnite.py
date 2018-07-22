@@ -297,7 +297,7 @@ class ResetStatus(Command):
         super().__init__(name='resetstatus',description=localisation.PreMessage('resetstatus_help'),permission='admin')
     @asyncio.coroutine
     def run(self,command,msg,settings):
-        self.content = 'Resseting your autostatus, a new message will be delivered on the next update (every 2 mins)'
+        self.content = 'Reseting your autostatus, a new message will be delivered on the next update (every 2 mins)'
         self.settings = {'last_status_msg':None,'last_status_channel':None}
 
 class ShopEmbed(discord.Embed):
