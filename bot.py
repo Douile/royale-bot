@@ -21,7 +21,7 @@ from imagegeneration import shop, upcoming
 from datamanagement import sql
 from utils import linecount
 from utils.times import day_string as parse_second_time
-from utils.times import tommorow
+from utils.times import tommorow, now
 from utils.discord import count_client_users, get_server_priority
 from codemodules import modals
 
@@ -220,7 +220,7 @@ def autostatus():
     yield from client.wait_until_ready()
     logger.info('Autostatus started')
     while not client.is_closed:
-        update_time = 120
+        update_time = now() + 120
         try:
             data = yield from meta.getStatus()
             logger.debug('Fetched status data (online: %s, services: %s)', data['online'], data['services'])
@@ -257,7 +257,6 @@ def autostatus():
                     channel = discord.Object(server['channels']['autostatus'])
                     old_message = None
                     if last_status_msg is not None and last_status_channel is not None:
-                        channel = discord.Object(last_status_channel)
                         try:
                             old_message = yield from client.get_message(channel, last_status_msg)
                         except (discord.errors.NotFound, discord.errors.Forbidden):
@@ -265,7 +264,8 @@ def autostatus():
                         except:
                             old_message = None
                             logger.error('Error getting message')
-
+                    if serverid == '453193540118511619':
+                        logger.debug('Update for team flarox')
                     if old_message is not None:
                         try:
                             message = yield from client.edit_message(old_message, embed = embed)
@@ -283,11 +283,11 @@ def autostatus():
                     except:
                         error = traceback.format_exc()
                         logger.error('Error updating server info %s', error)
-                    update_time -= RATE_LIMIT_TIME
                     yield from asyncio.sleep(RATE_LIMIT_TIME)
-        logger.info('Autostatus update complete checking again in %s', parse_second_time(update_time))
-        if update_time > 0:
-            yield from asyncio.sleep(update_time)
+        next_time = update_time - now()
+        logger.info('Autostatus update complete checking again in %s', parse_second_time(next_time))
+        if next_time > 0:
+            yield from asyncio.sleep(next_time)
 
 @asyncio.coroutine
 def autonews():
