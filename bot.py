@@ -21,7 +21,8 @@ from imagegeneration import shop, upcoming
 from datamanagement import sql
 from utils import linecount
 from utils.times import day_string as parse_second_time
-from utils.times import tommorow, now
+from utils.times import tommorow
+from time import time as now
 from utils.discord import count_client_users, get_server_priority
 from codemodules import modals
 
