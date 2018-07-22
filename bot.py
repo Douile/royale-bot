@@ -268,7 +268,7 @@ def autostatus():
                     if serverid == '453193540118511619':
                         logger.debug('Update for team flarox')
                     if old_message is not None:
-                        if old_message.server.id != serverid:
+                        if old_message.channel.server.id != serverid:
                             logger.warning('Message from wrong server')
                         try:
                             message = yield from client.edit_message(old_message, embed = embed)
