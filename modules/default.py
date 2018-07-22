@@ -243,6 +243,8 @@ class LocaleEmbed(discord.Embed):
         for localeInfo in locales:
             if localeInfo.lang == 'en':
                 country = 'GB'
+            elif localeInfo.lang == 'pt-br':
+                country = 'BR'
             else:
                 country = localeInfo.lang
             flag = self.getFlag(country)
