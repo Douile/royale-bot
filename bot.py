@@ -241,8 +241,12 @@ def autostatus():
         for servers_r in servers:
             for server_d in servers_r:
                 serverid = server_d.id
-                server = client.database.server_info(serverid,channels=True)
-                if 'autostatus' in server['channels']:
+                try:
+                    server = client.database.server_info(serverid,channels=True)
+                except:
+                    server = None
+
+                if server is not None and 'autostatus' in server['channels']:
                     last_status_msg = server.get('last_status_msg', None)
                     last_status_channel = server.get('last_status_channel', None)
                     channel = discord.Object(server['channels']['autostatus'])
