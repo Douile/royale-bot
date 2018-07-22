@@ -103,7 +103,7 @@ class SetChannel(Command):
         if success:
             self.content = localisation.getFormattedMessage('setchannel_success',author=msg.author.id,channel=channelid,type=type,lang=locale)
         else:
-            typemsg = self.typestring()
+            typemsg = arrays.message_string(self.types,'all')
             self.content = localisation.getFormattedMessage('setchannel_error',author=msg.author.id,types=typemsg,lang=locale)
 class ResetChannels(Command):
     def __init__(self,types=[]):
