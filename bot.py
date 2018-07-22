@@ -238,9 +238,14 @@ def autostatus():
             logger.error('Error compiling embed %s', error)
         logger.debug('Embed built')
         servers = yield from get_server_priority(list(client.servers),client.database.get_priority_servers)
+        sent = []
         for servers_r in servers:
             for server_d in servers_r:
                 serverid = server_d.id
+                if serverid in sent:
+                    continue
+                else:
+                    sent.append(serverid)
                 try:
                     server = client.database.server_info(serverid,channels=True)
                 except:
