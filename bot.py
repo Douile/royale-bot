@@ -255,6 +255,7 @@ def autostatus():
                     last_status_msg = server.get('last_status_msg', None)
                     last_status_channel = server.get('last_status_channel', None)
                     channel = discord.Object(server['channels']['autostatus'])
+                    channel.server = discord.Object(serverid)
                     old_message = None
                     if last_status_msg is not None and last_status_channel is not None:
                         try:
@@ -267,22 +268,27 @@ def autostatus():
                     if serverid == '453193540118511619':
                         logger.debug('Update for team flarox')
                     if old_message is not None:
+                        if old_message.server != serverid:
+                            logger.warning('Message from wrong server')
                         try:
                             message = yield from client.edit_message(old_message, embed = embed)
                         except:
                             error = traceback.format_exc()
                             logger.error('Error editing message %s', error)
+                            message = None
                     else:
                         try:
                             message = yield from client.send_message(channel, embed = embed)
                         except:
                             error = traceback.format_exc()
                             logger.error('Error sending message %s', error)
-                    try:
-                        client.database.set_server_info(serverid, last_status_msg=message.id, last_status_channel=message.channel.id)
-                    except:
-                        error = traceback.format_exc()
-                        logger.error('Error updating server info %s', error)
+                            message = None
+                    if message is not None:
+                        try:
+                            client.database.set_server_info(serverid, last_status_msg=message.id, last_status_channel=message.channel.id)
+                        except:
+                            error = traceback.format_exc()
+                            logger.error('Error updating server info %s', error)
                     yield from asyncio.sleep(RATE_LIMIT_TIME)
         next_time = update_time - now()
         logger.info('Autostatus update complete checking again in %s', parse_second_time(next_time))
