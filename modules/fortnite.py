@@ -39,6 +39,7 @@ class Shop(Command):
         self.fnbr_key = fnbr_key
     @asyncio.coroutine
     def run(self,command,msg,settings):
+        locale = settings.get('locale')
         logger = logging.getLogger('shop-command')
         try:
             # shopdata = yield from shop.getShopData(self.fnbr_key)
@@ -61,9 +62,9 @@ class Shop(Command):
             file = yield from shop.generate(self.fnbr_key,msg.server.id,bgs_s)
             self.typing = True
             self.file = file
-            self.content = localisation.getMessage('shop_success')
+            self.content = localisation.getMessage('shop_success',lang=locale)
         except Exception as e:
-            self.content = localisation.getMessage('shop_error')
+            self.content = localisation.getMessage('shop_error',lang=locale)
             logger.error(traceback.format_exc())
 class Upcoming(Command):
     def __init__(self,fnbr_key):
@@ -71,6 +72,7 @@ class Upcoming(Command):
         self.fnbr_key = fnbr_key
     @asyncio.coroutine
     def run(self,command,msg,settings):
+        locale = settings.get('locale')
         logger = logging.getLogger('upcomming-command')
         try:
             # data = yield from upcoming.getData(self.fnbr_key)
@@ -90,9 +92,9 @@ class Upcoming(Command):
             file = yield from upcoming.generate(self.fnbr_key,msg.server.id,bgs_s)
             self.typing = True
             self.file = file
-            self.content = localisation.getMessage('shop_success')
+            self.content = localisation.getMessage('shop_success',lang=locale)
         except Exception as e:
-            self.content = localisation.getMessage('shop_error')
+            self.content = localisation.getMessage('shop_error',lang=locale)
             logger.error(traceback.format_exc())
 
 class Stats(Command):
