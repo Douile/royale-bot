@@ -451,7 +451,7 @@ def server_deleter():
     yield from client.wait_until_ready()
     logger.info('Started')
     while not client.is_closed:
-        last_seen = now()
+        last_seen = round(now())
         for server in client.servers:
             client.database.set_server_info(server.id,last_seen=last_seen)
         purge_ready = client.database.get_purge(last_seen-delete_time)
