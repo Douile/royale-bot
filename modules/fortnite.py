@@ -104,6 +104,7 @@ class Stats(Command):
         self.sql = sql
     @asyncio.coroutine
     def run(self,command,msg,settings):
+        locale = settings.get('locale')
         logger = logging.getLogger('stats')
         if command.startswith('stats'):
             args = command[len('stats'):].strip()
@@ -129,11 +130,11 @@ class Stats(Command):
                     statsimage = yield from stats.generate_season(self.tn_key,name,platform,bgs_s)
                 if statsimage is None:
                     if linked:
-                        self.content = localisation.getFormattedMessage('stats_notfound_link',username=name,platform=platform)
+                        self.content = localisation.getFormattedMessage('stats_notfound_link',username=name,platform=platform,lang=locale)
                     else:
-                        self.content = localisation.getFormattedMessage('stats_notfound',username=name,platform=platform)
+                        self.content = localisation.getFormattedMessage('stats_notfound',username=name,platform=platform,lang=locale)
                         if platform != 'pc':
-                            self.content += localisation.getMessage('stats_notfound_console')
+                            self.content += localisation.getMessage('stats_notfound_console',lang=locale)
                 else:
                     self.typing = True
                     statsimage.save('generatedstats.png')
@@ -141,17 +142,17 @@ class Stats(Command):
                     self.file = 'generatedstats.png'
             except Exception as e:
                 if linked:
-                    self.content = localisation.getFormattedMessage('stats_error_link',username=name,platform=platform)
+                    self.content = localisation.getFormattedMessage('stats_error_link',username=name,platform=platform,lang=locale)
                 else:
-                    self.content = localisation.getFormattedMessage('stats_error',username=name,platform=platform)
+                    self.content = localisation.getFormattedMessage('stats_error',username=name,platform=platform,lang=locale)
                 logger.error(traceback.format_exc())
         else:
             if linked:
-                self.content = localisation.getFormattedMessage('stats_short_link',username=name,platform=platform)
+                self.content = localisation.getFormattedMessage('stats_short_link',username=name,platform=platform,lang=locale)
             else:
-                self.content = localisation.getFormattedMessage('stats_short',author=msg.author.id)
+                self.content = localisation.getFormattedMessage('stats_short',author=msg.author.id,lang=locale)
         if name.find('shop') > -1 or name.find('help') > -1 or name.find('setprefix') > -1:
-            self.content += localisation.getMessage('stats_command')
+            self.content += localisation.getMessage('stats_command',lang=locale)
 class Matches(Command):
     def __init__(self,tn_key,sql):
         super().__init__(name='matches',permission='stats')
@@ -188,34 +189,36 @@ class Link(Command):
         self.sql = sql
     @asyncio.coroutine
     def run(self,command,msg,settings):
+        locale = settings.get('locale')
         command_size = len('link ')
         if len(command) > command_size:
             user = yield from parse_fortnite_user(command[command_size:])
             name = user.get('name')
             platform = user.get('platform')
             if len(name.strip()) > 0:
-                self.content = localisation.getFormattedMessage('link_success',author=msg.author.id,username=name,platform=platform)
+                self.content = localisation.getFormattedMessage('link_success',author=msg.author.id,username=name,platform=platform,lang=locale)
                 try:
                     self.sql.set_link(msg.author.id,name,platform)
                 except:
                     traceback.print_exc()
-                    self.content = localisation.getFormattedMessage('link_error',author=msg.author.id)
+                    self.content = localisation.getFormattedMessage('link_error',author=msg.author.id,lang=locale)
             else:
-                self.content = localisation.getFormattedMessage('link_short',author=msg.author.id)
+                self.content = localisation.getFormattedMessage('link_short',author=msg.author.id,lang=locale)
         else:
-            self.content = localisation.getFormattedMessage('link_short',author=msg.author.id)
+            self.content = localisation.getFormattedMessage('link_short',author=msg.author.id,lang=locale)
 class UnLink(Command):
     def __init__(self,sql):
         super().__init__(name='unlink',description=localisation.PreMessage('unlink_help'),permission='stats')
         self.sql = sql
     @asyncio.coroutine
     def run(self,command,msg,settings):
+        locale = settings.get('locale')
         try:
             self.sql.delete_link(msg.author.id)
-            self.content = localisation.getFormattedMessage('unlink_success',author=msg.author.id)
+            self.content = localisation.getFormattedMessage('unlink_success',author=msg.author.id,lang=locale)
         except:
             traceback.print_exc()
-            self.content = localisation.getFormattedMessage('unlink_error',author=msg.author.id)
+            self.content = localisation.getFormattedMessage('unlink_error',author=msg.author.id,lang=locale)
 class SetBackgrounds(Command):
     def __init__(self):
         self.background_types = ['shop','stat','upcoming']
@@ -245,6 +248,7 @@ class News(Command):
         self.permission = 'news'
     @asyncio.coroutine
     def run(self,command,msg,settings):
+        locale = settings.get('locale')
         lang = 'en'
         news = meta.getNews(lang)
         if news['success']:
@@ -253,20 +257,21 @@ class News(Command):
                 embed = NewsEmbed(msg,news['updated'])
                 self.embeds.append(embed)
         else:
-            self.content = localisation.getFormattedMessage('news_error',author=msg.author.id)
+            self.content = localisation.getFormattedMessage('news_error',author=msg.author.id,lang=locale)
 class Servers(Command):
     def __init__(self):
         super().__init__(name='status',description=localisation.PreMessage('status_help'),permission='status')
     @asyncio.coroutine
     def run(self,command,msg,settings):
+        locale = settings.get('locale')
         try:
             status = yield from meta.getStatus()
-            self.content = localisation.getFormattedMessage('servers_success',author=msg.author.id)
+            self.content = localisation.getFormattedMessage('servers_success',author=msg.author.id,lang=locale)
             self.embed = StatusEmbed(status['online'],status['message'])
             for s in status['services']:
                 self.embed.add_service(name=s,value=status['services'][s])
         except:
-            self.content = localisation.getFormattedMessage('servers_error',author=msg.author.id)
+            self.content = localisation.getFormattedMessage('servers_error',author=msg.author.id,lang=locale)
 
 class PatchNotes(Command):
     def __init__(self):
