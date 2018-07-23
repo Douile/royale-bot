@@ -444,17 +444,21 @@ def dbl_api():
         logger.info('DBL api key not found')
 
 
-# @asyncio.coroutine
-# def server_deleter():
-#     logger = logging.getLogger('server_deleter')
-#     delete_time = 60*60*2
-#     yield from client.wait_until_ready()
-#     logger.info('Started')
-#     while not client.is_closed:
-#         servers = client.database.servers()
-#         for serverid in servers:
-#             if client.in_server(serverid):
-#                 pass
+@asyncio.coroutine
+def server_deleter():
+    logger = logging.getLogger('server_deleter')
+    delete_time = 60*60*3
+    yield from client.wait_until_ready()
+    logger.info('Started')
+    while not client.is_closed:
+        last_seen = now()
+        for server in client.servers:
+            client.database.set_server_info(server.id,last_seen=last_seen)
+        purge_ready = client.database.get_purge(last_seen-delete_time)
+        for server in purge_ready:
+            # client.database.delete_server(server.get('server_id'))
+            logger.debug('Ready to delete server %s',server.get('server_name'))
+        yield from asyncio.sleep(60*60)
 
 @asyncio.coroutine
 def pre_cache():
@@ -630,6 +634,7 @@ client.loop.create_task(debugger(autoshop))
 client.loop.create_task(debugger(autostatus))
 client.loop.create_task(debugger(autonews))
 client.loop.create_task(debugger(autocheatsheets))
+client.loop.create_task(debugger(server_deleter))
 client.loop.create_task(handle_queue())
 client.loop.create_task(debugger(ticker))
 client.loop.create_task(dbl_api())

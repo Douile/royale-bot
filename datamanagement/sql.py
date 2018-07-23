@@ -88,6 +88,7 @@ class ServerData(Table):
         self.add_column("latest_shop",type="text")
         self.add_column("prefix",type="text")
         self.add_column("locale",type="text")
+        self.add_column("last_seen",type="int")
 class ServerBackgrounds(Table):
     def __init__(self):
         super().__init__("server_backgrounds",True)
@@ -201,6 +202,9 @@ class Database(Postgres):
         servers = self.all("SELECT server_id,priority FROM server_data WHERE priority=%(priority)s",
         parameters={'priority':priority},
         back_as=dict)
+        return servers
+    def get_purge(self,time):
+        servers = self.all("SELECT server_id,server_name FROM server_data WHERE premium=false AND last_seen<%(time)s",back_as=dict,parameters={'time':time})
         return servers
 
     # server backgrounds
