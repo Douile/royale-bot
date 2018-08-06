@@ -4,7 +4,6 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-"discord.py" = {git = "https://github.com/Rapptz/discord.py.git", ref = "rewrite"}
 postgres = "==2.2.1"
 aiohttp = "==1.0.5"
 requests = "==2.18.4"
@@ -16,6 +15,7 @@ instagram_private_api = {git = "https://git@github.com/ping/instagram_private_ap
 dbl = {git = "https://github.com/Douile/DBL-Python-Library.git"}
 raven = "*"
 analytics-python = "*"
+"discord.py" = "*"
 
 [dev-packages]
 
