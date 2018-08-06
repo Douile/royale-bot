@@ -456,8 +456,7 @@ def server_deleter():
             client.database.set_server_info(server.id,last_seen=last_seen)
         purge_ready = client.database.get_purge(last_seen-delete_time)
         for server in purge_ready:
-            # client.database.delete_server(server.get('server_id'))
-            logger.debug('Ready to delete server %s',server.get('server_name'))
+            client.database.delete_server(server.get('server_id'))
         yield from asyncio.sleep(60*60)
 
 @asyncio.coroutine
