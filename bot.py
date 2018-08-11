@@ -496,7 +496,8 @@ def on_ready():
     yield from client.edit_profile(username=BOT_NAME)
     yield from client.change_presence(game=discord.Game(name="Est. 2018 @mention for help",type=0),status="online",afk=False)
     defaultmodule.client_id = client.user.id
-    yield from pre_cache()
+    if SHARD_NO == 0:
+        yield from pre_cache()
 
 
 @client.event
