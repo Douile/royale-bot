@@ -46,7 +46,6 @@ def get_server_priority(servers,get_priority):
         else:
             done = True
         priority += 1
-    servers = get_priority(None)
     servers_r = []
     for server in servers:
         if not server.get('server_id') in used:
