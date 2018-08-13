@@ -48,7 +48,7 @@ def get_server_priority(servers,get_priority):
         priority += 1
     servers_r = []
     for server in servers:
-        if not server.get('server_id') in used:
+        if not server.id in used:
             servers_r.append(Object(server.id))
     servers_parsed.append(servers_r)
     return servers_parsed
