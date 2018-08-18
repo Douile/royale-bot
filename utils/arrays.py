@@ -26,3 +26,28 @@ def message_string(*items,split='or'):
         else:
             item_string += ', `{0}`'.format(item_list[i])
     return item_string
+
+class Array(list):
+    def search(self,test):
+        ind = -1
+        if callable(test):
+            for v in self:
+                if test(v):
+                    ind = self.index(v)
+                    break
+        else:
+            for v in self:
+                if getattr(v,'id',None) == test:
+                    ind = self.index(v)
+                    break
+        return ind
+    def filter(self,test):
+        out = []
+        if callable(test):
+            for v in self:
+                if test(v):
+                    out.append(v)
+        else:
+            for v in self:
+                if getattr(v,'id',None) == test:
+                    out.append(v)

@@ -1,5 +1,6 @@
 import asyncio
 from discord import Object
+from utils.arrays import Array
 
 PRIORITY_LIMIT = 10
 
@@ -29,6 +30,7 @@ def count_client_users_fast(client):
 
 @asyncio.coroutine
 def get_server_priority(servers,get_priority):
+    servers = Array(servers)
     servers_parsed = []
     used = []
     priority = 0
@@ -39,9 +41,10 @@ def get_server_priority(servers,get_priority):
             servers_r = []
             for server in servers_p:
                 id = server.get('server_id')
-                if not id in used:
-                    used.append(id)
-                    servers_r.append(Object(id))
+                if servers.find(id) > -1:
+                    if not id in used:
+                        used.append(id)
+                        servers_r.append(Object(id))
             servers_parsed.append(servers_r)
         else:
             done = True
