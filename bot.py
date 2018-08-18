@@ -631,10 +631,10 @@ client.loop.add_signal_handler(signal.SIGTERM, close)
 #         client.loop.create_task(dbl_api())
 # else:
 if SHARD_NO == 0:
-    client.loop.create_task(debugger(autoshop))
     client.loop.create_task(debugger(autostatus))
     client.loop.create_task(debugger(autonews))
     client.loop.create_task(debugger(autocheatsheets))
+client.loop.create_task(debugger(autoshop))
 client.loop.create_task(debugger(server_deleter))
 client.loop.create_task(handle_queue())
 # client.loop.create_task(debugger(ticker))
