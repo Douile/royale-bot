@@ -527,7 +527,7 @@ def commandStatus(msg,settings):
     '<@!{0}> bot v{1} is online!'.format(msg.author.id,VERSION)
 
 class Shard(discord.Client):
-    def __init__(self,*,id=0,count=1):
+    def __init__(self,id,count):
         super().__init__(shard_id=id,shard_count=count)
         self.queued_actions = []
         self.database = sql.Database(False, url=DATABASE_URL)
