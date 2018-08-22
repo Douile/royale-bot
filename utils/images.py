@@ -123,16 +123,11 @@ def daily_cache_generator(generator,serverid,backgrounds,basename,*genargs): # i
         overlay.save(filename_overlay)
         logger.debug('Generated a new overlay')
     if len(backgrounds) > 0:
-        filename_server = '{0}-{1}.png'.format(filename_overlay[:-4],serverid)
-        if isfile(filename_server):
-            filename_final = filename_server
-        else:
-            background = choice(backgrounds)
-            background_generator = Background((overlay.width,overlay.height),url=background)
-            output = yield from background_generator.generate()
-            output.paste(overlay,(0,0),overlay)
-            output.save(filename_server)
-            filename_final = filename_server
+        background = choice(backgrounds)
+        background_generator = Background((overlay.width,overlay.height),url=background)
+        output = yield from background_generator.generate()
+        output.paste(overlay,(0,0),overlay)
+        image = output
     else:
-        filename_final = filename_overlay
-    return filename_final
+        image = overlay
+    return image

@@ -1,5 +1,4 @@
-import discord_wrapper as discord
-import dbl
+import discord
 import asyncio
 import json
 import os
@@ -9,7 +8,6 @@ import signal
 from datetime import datetime
 import time
 import traceback
-import builtins
 import logging
 import logging.config
 
@@ -19,42 +17,21 @@ from modules.module import Command
 from dataretrieval import meta, cheatsheets
 from imagegeneration import shop, upcoming
 from datamanagement import sql
-from utils import linecount
+from utils import getEnv
 from utils.times import day_string as parse_second_time
 from utils.times import tommorow
 from time import time as now
 from utils.discord import count_client_users, get_server_priority
 from codemodules import modals
 
-def getEnv(name,default=None):
-    value = os.environ.get(name,None)
-    if value == None:
-        if default == None:
-            value = input("Env variable not found, please enter {}: ".format(name))
-        else:
-            value = default
-    return value
-
 # constants
-LINE_COUNT = 0
-
-SENTRY_URL = getEnv('SENTRY_URL','')
 KEY_DISCORD = getEnv("KEY_DISCORD")
 KEY_FNBR = getEnv("KEY_FNBR")
 KEY_TRACKERNETWORK = getEnv("KEY_TRACKERNETWORK")
-KEY_DBL = getEnv("KEY_DBL",None)
 DATABASE_URL = getEnv("DATABASE_URL")
 BOT_NAME = getEnv("BOT_NAME", "RoyaleBot")
 TICKER_TIME = int(getEnv("TICKER_TIME", 30))
 DEFAULT_PREFIX = getEnv("DEFAULT_PREFIX",".rb ")
-SHARD_NO = 0
-SHARD_COUNT = 1
-if len(sys.argv) > 2:
-    try:
-        SHARD_NO = int(sys.argv[1])
-        SHARD_COUNT = int(sys.argv[2])
-    except ValueError:
-        pass
 VERSION = {'name': BOT_NAME, 'version_name': '1.1.6', 'revison': getEnv('HEROKU_RELEASE_VERSION', 'v1'), 'description': getEnv('HEROKU_SLUG_DESCRIPTION', ''), 'lines': LINE_COUNT, 'shards': SHARD_COUNT}
 RATE_LIMIT_TIME = 0.25
 
@@ -110,33 +87,17 @@ logging_config = {
             'level':'DEBUG',
             'class':'logging.StreamHandler',
             'formatter': 'verbose'
-        },
-        'sentry': {
-            'level':'ERROR',
-            'class':'raven.handlers.logging.SentryHandler',
-            'dsn':SENTRY_URL
         }
     },
     'root': {
         'level': 'DEBUG',
-        'handlers': ['console', 'sentry'],
+        'handlers': ['console'],
     }
 }
 logging.config.dictConfig(logging_config)
 
 localisation.loadLocales()
 localisation.setDefault('en')
-
-if SHARD_NO == 0:
-    defaults_database = True
-else:
-    defaults_database = False
-
-client = discord.Client(shard_id=SHARD_NO,shard_count=SHARD_COUNT)
-client.queued_actions = []
-client.database = sql.Database(False, url=DATABASE_URL)
-builtins.client = client
-modals.setup(client.send_message,client.edit_message,client.delete_message,client.add_reaction,client.clear_reactions)
 
 @asyncio.coroutine
 def debugger(function):
@@ -483,51 +444,7 @@ def count_users(client_class):
     return users
 
 
-@client.event
-@asyncio.coroutine
-def on_reaction_add(reaction,user):
-    yield from modals.reaction_handler(reaction,user)
 
-@client.event
-@asyncio.coroutine
-def on_ready():
-    logger = logging.getLogger()
-    logger.info("Discord client logged in: %s %s %d/%d", client.user.name, client.user.id, client.shard_id, client.shard_count)
-    yield from client.edit_profile(username=BOT_NAME)
-    yield from client.change_presence(game=discord.Game(name="Est. 2018 @mention for help",type=0),status="online",afk=False)
-    defaultmodule.client_id = client.user.id
-    if SHARD_NO == 0:
-        yield from pre_cache()
-
-
-@client.event
-@asyncio.coroutine
-def on_server_join(server):
-    client.database.set_server_info(server.id,server_name=server.name)
-
-
-@client.event
-@asyncio.coroutine
-def on_server_update(before,after):
-    client.database.set_server_info(after.id,server_name=after.name)
-
-
-@client.event
-@asyncio.coroutine
-def on_message(msg):
-    settings = client.database.server_info(msg.server.id)
-    if settings == None:
-        prefix = DEFAULT_PREFIX
-    else:
-        prefix = settings.get("prefix")
-        if prefix == None:
-            prefix = DEFAULT_PREFIX
-    if not msg.author.bot:
-        if msg.content.startswith(prefix):
-            command = msg.content[len(prefix):]
-        else:
-            command = None
-        yield from commandHandler(command,msg)
 
 
 @asyncio.coroutine
@@ -609,13 +526,58 @@ def noPermission(msg,type,settings):
 def commandStatus(msg,settings):
     '<@!{0}> bot v{1} is online!'.format(msg.author.id,VERSION)
 
+class Shard(discord.Client):
+    def __init__(self,*,id=0,count=1):
+        super().__init__(shard_id=id,shard_count=count)
+        self.queued_actions = []
+        self.database = sql.Database(False, url=DATABASE_URL)
+        modals.setup(self.send_message,self.edit_message,self.delete_message,self.add_reaction,self.clear_reactions)
 
-cmodules = [fortnite.FortniteModule(KEY_FNBR, KEY_TRACKERNETWORK, client.database), moderation.ModerationModule()]
-defaultmodule = default.DefaultModule(cmodules, VERSION, database=client.database)
+    @asyncio.coroutine
+    def on_reaction_add(self, reaction,user):
+        yield from modals.reaction_handler(reaction,user)
+
+    @asyncio.coroutine
+    def on_ready(self):
+        logger = logging.getLogger()
+        logger.info("Discord client logged in: %s %s %d/%d", client.user.name, client.user.id, client.shard_id, client.shard_count)
+        yield from self.edit_profile(username=BOT_NAME)
+        yield from self.change_presence(game=discord.Game(name="Est. 2018 @mention for help",type=0),status="online",afk=False)
+        defaultmodule.client_id = client.user.id
+        if SHARD_NO == 0:
+            yield from pre_cache()
+
+    @asyncio.coroutine
+    def on_message(self, msg):
+        settings = self.database.server_info(msg.server.id)
+        if settings == None:
+            prefix = DEFAULT_PREFIX
+        else:
+            prefix = settings.get("prefix")
+            if prefix == None:
+                prefix = DEFAULT_PREFIX
+        if not msg.author.bot:
+            if msg.content.startswith(prefix):
+                command = msg.content[len(prefix):]
+            else:
+                command = None
+            yield from commandHandler(command,msg)
+
+    def run(self):
+        cmodules = [fortnite.FortniteModule(KEY_FNBR, KEY_TRACKERNETWORK, self.database), moderation.ModerationModule()]
+        defaultmodule = default.DefaultModule(cmodules, VERSION, database=self.database)
+        self.loop.create_task(debugger(autostatus))
+        self.loop.create_task(debugger(autonews))
+        self.loop.create_task(debugger(autocheatsheets))
+        self.loop.create_task(debugger(autoshop))
+        self.loop.create_task(debugger(server_deleter))
+        self.loop.create_task(handle_queue())
+        super().run(KEY_DISCORD)
+
 
 def close():
     asyncio.ensure_future(client.close())
-client.loop.add_signal_handler(signal.SIGTERM, close)
+# client.loop.add_signal_handler(signal.SIGTERM, close)
 # if SHARD_COUNT > 5:
 #     if SHARD_NO == 0:
 #         client.loop.create_task(autoshop())
@@ -630,12 +592,6 @@ client.loop.add_signal_handler(signal.SIGTERM, close)
 #     elif SHARD_NO == 5:
 #         client.loop.create_task(dbl_api())
 # else:
-client.loop.create_task(debugger(autostatus))
-client.loop.create_task(debugger(autonews))
-client.loop.create_task(debugger(autocheatsheets))
-client.loop.create_task(debugger(autoshop))
-client.loop.create_task(debugger(server_deleter))
-client.loop.create_task(handle_queue())
+
 # client.loop.create_task(debugger(ticker))
 # client.loop.create_task(dbl_api())
-client.run(KEY_DISCORD)
