@@ -78,7 +78,7 @@ class UpcomingImage(WorkerThread):
                 continue
 
 class Shard(WorkerThread):
-    def run(self,*,id=0,count=1):
+    def run(self,id=0,count=1):
         self.shard = bot.Shard(id=id,count=count)
         self.shard.run()
 
