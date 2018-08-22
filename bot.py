@@ -528,7 +528,7 @@ def commandStatus(msg,settings):
 
 class Shard(discord.Client):
     def __init__(self,*,id=0,count=1):
-        super().__init__(shard_id=id,shard_count=count)
+        super().__init__(shard_id=id,shard_count=count,loop=asyncio.new_event_loop())
         self.queued_actions = []
         self.database = sql.Database(False, url=DATABASE_URL)
         modals.setup(self.send_message,self.edit_message,self.delete_message,self.add_reaction,self.clear_reactions)
@@ -564,7 +564,6 @@ class Shard(discord.Client):
             yield from commandHandler(command,msg)
 
     def run(self):
-        loop = asyncio.new_event_loop()
         cmodules = [fortnite.FortniteModule(KEY_FNBR, KEY_TRACKERNETWORK, self.database), moderation.ModerationModule()]
         defaultmodule = default.DefaultModule(cmodules, VERSION, database=self.database)
         self.loop.create_task(debugger(autostatus))
