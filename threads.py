@@ -78,8 +78,12 @@ class UpcomingImage(WorkerThread):
                 continue
 
 class Shard(WorkerThread):
-    def run(self,id=0,count=1):
-        self.shard = bot.Shard(id=id,count=count)
+    def __init__(self,*,id=0,count=1):
+        super().__init__()
+        self.id = id
+        self.count = count
+    def run(self):
+        self.shard = bot.Shard(id=self.id,count=self.count)
         self.shard.run()
 
 class ThreadController(threading.Thread):
