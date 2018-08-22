@@ -539,8 +539,6 @@ class Shard(discord.Client):
         yield from self.edit_profile(username=BOT_NAME)
         yield from self.change_presence(game=discord.Game(name="Est. 2018 @mention for help",type=0),status="online",afk=False)
         self.defaultmodule.client_id = self.user.id
-        if SHARD_NO == 0:
-            yield from pre_cache()
 
     @asyncio.coroutine
     def on_message(self, msg):
