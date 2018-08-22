@@ -464,7 +464,7 @@ def commandHandler(client, command, msg, serversettings):
     else:
         output = yield from client.defaultmodule._run_alias(output,command,msg,serversettings)
         if output.empty:
-            for i in range(0,lenclient.(cmodules)):
+            for i in range(0,len(client.(cmodules)):
                 output = yield from client.cmodules[i]._run_alias(output,command,msg,serversettings)
     if len(output.queue) > 0:
         client.queued_actions += output.queue
