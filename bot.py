@@ -444,29 +444,28 @@ def count_users(client_class):
     return users
 
 @asyncio.coroutine
-def commandHandler(client, command, msg):
+def commandHandler(client, command, msg, serversettings):
     logger = logging.getLogger('commandHandler')
     if command != None:
         command = command.lower()
     serverid = msg.server.id
-    serversettings = client.database.server_info(serverid,channels=True,backgrounds=True)
     if serversettings.get("server_name") != msg.server.name:
         client.database.set_server_info(serverid,server_name=msg.server.name)
     output = Command()
     output.delete_command = False
     if command != None:
-        output = yield from defaultmodule._run(output,command,msg,serversettings)
+        output = yield from client.defaultmodule._run(output,command,msg,serversettings)
         if output.empty:
-            for i in range(0,len(cmodules)):
-                output = yield from cmodules[i]._run(output,command,msg,serversettings)
+            for i in range(0,len(client.cmodules)):
+                output = yield from client.cmodules[i]._run(output,command,msg,serversettings)
         if output.empty:
-            for i in range(0,len(cmodules)):
-                output = yield from cmodules[i]._run_alias(output,command,msg,serversettings)
+            for i in range(0,len(client.cmodules)):
+                output = yield from client.cmodules[i]._run_alias(output,command,msg,serversettings)
     else:
-        output = yield from defaultmodule._run_alias(output,command,msg,serversettings)
+        output = yield from client.defaultmodule._run_alias(output,command,msg,serversettings)
         if output.empty:
-            for i in range(0,len(cmodules)):
-                output = yield from cmodules[i]._run_alias(output,command,msg,serversettings)
+            for i in range(0,lenclient.(cmodules)):
+                output = yield from client.cmodules[i]._run_alias(output,command,msg,serversettings)
     if len(output.queue) > 0:
         client.queued_actions += output.queue
         logger.debug('Added queued action')
@@ -545,7 +544,7 @@ class Shard(discord.Client):
 
     @asyncio.coroutine
     def on_message(self, msg):
-        settings = self.database.server_info(msg.server.id)
+        settings = self.database.server_info(msg.server.id,channels=True,backgrounds=True)
         if settings == None:
             prefix = DEFAULT_PREFIX
         else:
@@ -557,11 +556,11 @@ class Shard(discord.Client):
                 command = msg.content[len(prefix):]
             else:
                 command = None
-            yield from commandHandler(self, command,msg)
+            yield from commandHandler(self, command,msg,settings)
 
     def run(self):
-        cmodules = [fortnite.FortniteModule(KEY_FNBR, KEY_TRACKERNETWORK, self.database), moderation.ModerationModule()]
-        defaultmodule = default.DefaultModule(cmodules, VERSION, database=self.database)
+        self.cmodules = [fortnite.FortniteModule(KEY_FNBR, KEY_TRACKERNETWORK, self.database), moderation.ModerationModule()]
+        self.defaultmodule = default.DefaultModule(cmodules, VERSION, database=self.database)
         self.loop.create_task(debugger(self,autostatus))
         self.loop.create_task(debugger(self,autonews))
         self.loop.create_task(debugger(self,autocheatsheets))
