@@ -89,7 +89,7 @@ class ThreadController(threading.Thread):
         self.threadCount = threads
     def run(self):
         for i in range(self.threadCount):
-            self.threads.append(Shard(id=i,count=threadCount))
+            self.threads.append(Shard(id=i,count=self.threadCount))
         for thread in self.threads:
             thread.start()
 
