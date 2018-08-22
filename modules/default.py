@@ -46,7 +46,7 @@ class Help(Command):
     def run(self,command,msg,settings):
         self.reset()
         self.is_help = True
-        admin = msg.author.admin
+        admin = msg.author.server_permissions.administrator
         prefix = settings.get('prefix',DEFAULT_PREFIX)
         if prefix == None:
             prefix = DEFAULT_PREFIX
