@@ -32,7 +32,7 @@ DATABASE_URL = getEnv("DATABASE_URL")
 BOT_NAME = getEnv("BOT_NAME", "RoyaleBot")
 TICKER_TIME = int(getEnv("TICKER_TIME", 30))
 DEFAULT_PREFIX = getEnv("DEFAULT_PREFIX",".rb ")
-VERSION = {'name': BOT_NAME, 'version_name': '1.1.6', 'revison': getEnv('HEROKU_RELEASE_VERSION', 'v1'), 'description': getEnv('HEROKU_SLUG_DESCRIPTION', ''), 'shards': SHARD_COUNT}
+VERSION = {'name': BOT_NAME, 'version_name': '1.1.6', 'revison': getEnv('HEROKU_RELEASE_VERSION', 'v1'), 'description': getEnv('HEROKU_SLUG_DESCRIPTION', '')}
 RATE_LIMIT_TIME = 0.25
 
 # functions
