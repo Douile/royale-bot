@@ -564,6 +564,7 @@ class Shard(discord.Client):
             yield from commandHandler(command,msg)
 
     def run(self):
+        loop = asyncio.new_event_loop()
         cmodules = [fortnite.FortniteModule(KEY_FNBR, KEY_TRACKERNETWORK, self.database), moderation.ModerationModule()]
         defaultmodule = default.DefaultModule(cmodules, VERSION, database=self.database)
         self.loop.create_task(debugger(autostatus))
