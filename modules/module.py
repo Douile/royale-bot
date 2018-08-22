@@ -54,7 +54,7 @@ class Module:
             if self.commands[cmd].permission != 'admin':
                 pcheck = checkPermissions(msg.channel.id,self.commands[cmd].permission,settings)
             else:
-                pcheck = msg.author.admin or msg.author.id == '293482190031945739'
+                pcheck = msg.author.server_permissions.administrator or msg.author.id == '293482190031945739'
             if pcheck:
                 output = yield from self.commands[cmd]._run(command,msg,settings)
             else:
