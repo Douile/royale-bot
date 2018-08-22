@@ -1,12 +1,12 @@
-import threading, Queue, asyncio
+import threading, queue, asyncio
 from imagegeneration import shop, stats, upcoming
 import bot
 
 class WorkerThread(threading.Thread):
     def __init__(self):
         super(WorkerThread, self).__init__()
-        self.input = Queue.Queue()
-        self.output = Queue.Queue()
+        self.input = queue.Queue()
+        self.output = queue.Queue()
         self.stoprequest = threading.Event()
 
 class ShopImage(WorkerThread):
