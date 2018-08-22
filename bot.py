@@ -560,7 +560,7 @@ class Shard(discord.Client):
 
     def run(self):
         self.cmodules = [fortnite.FortniteModule(KEY_FNBR, KEY_TRACKERNETWORK, self.database), moderation.ModerationModule()]
-        self.defaultmodule = default.DefaultModule(cmodules, VERSION, database=self.database)
+        self.defaultmodule = default.DefaultModule(self.cmodules, VERSION, database=self.database)
         self.loop.create_task(debugger(self,autostatus))
         self.loop.create_task(debugger(self,autonews))
         self.loop.create_task(debugger(self,autocheatsheets))
