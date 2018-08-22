@@ -227,8 +227,6 @@ def autostatus(client):
                         except:
                             old_message = None
                             logger.error('Error getting message')
-                    if serverid == '453193540118511619':
-                        logger.debug('Update for team flarox')
                     if old_message is not None:
                         if old_message.channel.server.id != serverid:
                             logger.warning('Message from wrong server')
