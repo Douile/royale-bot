@@ -100,19 +100,19 @@ localisation.loadLocales()
 localisation.setDefault('en')
 
 @asyncio.coroutine
-def debugger(function):
+def debugger(client,function):
     logger = logging.getLogger('debugger')
     count = 0
     while not client.is_closed and count < 50:
         try:
-            yield from function()
+            yield from function(client)
         except:
             error = traceback.format_exc()
             logger.error('Debugging error %s restarting...',error)
             count += 1
 
 @asyncio.coroutine
-def autoshop(): # add fnbr not accessable fallback
+def autoshop(client): # add fnbr not accessable fallback
     logger = logging.getLogger('autoshop')
     yield from client.wait_until_ready()
     logger.info('Autoshop started')
@@ -177,7 +177,7 @@ def autoshop(): # add fnbr not accessable fallback
         yield from asyncio.sleep(time_until_next)
 
 @asyncio.coroutine
-def autostatus():
+def autostatus(client):
     logger = logging.getLogger('autostatus')
     yield from client.wait_until_ready()
     logger.info('Autostatus started')
@@ -258,7 +258,7 @@ def autostatus():
             yield from asyncio.sleep(next_time)
 
 @asyncio.coroutine
-def autonews():
+def autonews(client):
     logger = logging.getLogger('autonews')
     yield from client.wait_until_ready()
     logger.info('Autonews started')
@@ -293,7 +293,7 @@ def autonews():
             yield from asyncio.sleep(update_time)
 
 @asyncio.coroutine
-def autocheatsheets():
+def autocheatsheets(client):
     logger = logging.getLogger('autosheets')
     yield from client.wait_until_ready()
     logger.info('Autosheets started')
@@ -349,7 +349,7 @@ def autocheatsheets():
             yield from asyncio.sleep(update_time)
 
 @asyncio.coroutine
-def handle_queue():
+def handle_queue(client):
     logger = logging.getLogger('handle_queue')
     yield from client.wait_until_ready()
     logger.info('Queue handler started')
@@ -406,7 +406,7 @@ def dbl_api():
 
 
 @asyncio.coroutine
-def server_deleter():
+def server_deleter(client):
     logger = logging.getLogger('server_deleter')
     delete_time = 60*60*3
     yield from client.wait_until_ready()
@@ -443,12 +443,8 @@ def count_users(client_class):
         users += len(server.members)
     return users
 
-
-
-
-
 @asyncio.coroutine
-def commandHandler(command, msg):
+def commandHandler(client, command, msg):
     logger = logging.getLogger('commandHandler')
     if command != None:
         command = command.lower()
@@ -490,7 +486,7 @@ def commandHandler(command, msg):
     if output.typing == True:
         yield from client.send_typing(msg.channel)
     if output.noPermission != None:
-        yield from noPermission(msg,output.noPermission,serversettings)
+        yield from noPermission(client, msg,output.noPermission,serversettings)
     if output.file != None:
         response = yield from client.send_file(msg.channel,output.file,content=output.content)
     elif output.embeds != None:
@@ -507,7 +503,7 @@ def commandHandler(command, msg):
     if output.is_help == True:
         client.database.set_server_info(serverid,last_help_msg=response.id,last_help_channel=response.channel.id)
 @asyncio.coroutine
-def noPermission(msg,type,settings):
+def noPermission(client, msg,type,settings):
     locale = settings.get('locale')
     serverid = msg.server.id
     if type == 'error':
@@ -561,17 +557,17 @@ class Shard(discord.Client):
                 command = msg.content[len(prefix):]
             else:
                 command = None
-            yield from commandHandler(command,msg)
+            yield from commandHandler(self, command,msg)
 
     def run(self):
         cmodules = [fortnite.FortniteModule(KEY_FNBR, KEY_TRACKERNETWORK, self.database), moderation.ModerationModule()]
         defaultmodule = default.DefaultModule(cmodules, VERSION, database=self.database)
-        self.loop.create_task(debugger(autostatus))
-        self.loop.create_task(debugger(autonews))
-        self.loop.create_task(debugger(autocheatsheets))
-        self.loop.create_task(debugger(autoshop))
-        self.loop.create_task(debugger(server_deleter))
-        self.loop.create_task(handle_queue())
+        self.loop.create_task(debugger(self,autostatus))
+        self.loop.create_task(debugger(self,autonews))
+        self.loop.create_task(debugger(self,autocheatsheets))
+        self.loop.create_task(debugger(self,autoshop))
+        self.loop.create_task(debugger(self,server_deleter))
+        self.loop.create_task(handle_queue(self))
         super().run(KEY_DISCORD)
 
 
