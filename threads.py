@@ -84,8 +84,15 @@ class Shard(WorkerThread):
 
 class ThreadController(threading.Thread):
     def __init__(self,threads=1):
+        super().__init__()
         self.threads = []
-        for i in range(threads):
-            self.threads.append(Shard(id=i,count=threads))
+        self.threadCount = threads
+    def run(self):
+        for i in range(self.threadCount):
+            self.threads.append(Shard(id=i,count=threadCount))
         for thread in self.threads:
             thread.start()
+
+if __name__ == '__main__':
+    controller = ThreadController(threads=2)
+    controller.start()
