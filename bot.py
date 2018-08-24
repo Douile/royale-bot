@@ -526,7 +526,7 @@ class Shard(discord.Client):
         super().__init__(shard_id=id,shard_count=count,loop=asyncio.new_event_loop(),max_messages=500)
         self.queued_actions = []
         self.database = sql.Database(False, url=DATABASE_URL)
-        modals.setup(self.send_message,self.edit_message,self.delete_message,self.add_reaction,self.clear_reactions)
+        modals.setup(self)
 
     @asyncio.coroutine
     def on_reaction_add(self, reaction,user):

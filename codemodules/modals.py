@@ -3,25 +3,13 @@ from discord import Embed
 
 ACTION_TIMEOUT = 0.15
 
-send_message = None
-edit_message = None
-delete_message = None
-add_reaction = None
-clear_reactions = None
+client = None
 
 active_modals = {}
 
-def setup(send_function,edit_function,delete_function,reaction_function,clear_function):
-    global send_message
-    global edit_message
-    global delete_message
-    global add_reaction
-    global clear_reactions
-    send_message = send_function
-    edit_message = edit_function
-    delete_message = delete_function
-    add_reaction = reaction_function
-    clear_reactions = clear_function
+def setup(client_new):
+    global client
+    client = client_new
 
 @asyncio.coroutine
 def reaction_handler(reaction,user):
@@ -45,31 +33,31 @@ class Modal:
         self.only = only
     @asyncio.coroutine
     def send(self,destination):
-        self.message = yield from send_message(destination,content=self.content,embed=self.embed)
+        self.message = yield from client.send_message(destination,content=self.content,embed=self.embed)
         active_modals[self.message.id] = self
         for action in self.actions:
             yield from asyncio.sleep(ACTION_TIMEOUT)
-            yield from add_reaction(self.message,action.emoji)
+            yield from client.add_reaction(self.message,action.emoji)
         return self.message
     def add_action(self,key,action):
         self.actions.append(ModalAction(emoji=key,action=action))
     @asyncio.coroutine
     def delete(self):
-        yield from delete_message(self.message)
+        yield from client.delete_message(self.message)
         active_modals.pop(self.message.id,None)
     @asyncio.coroutine
     def reset(self):
         if self.content != self.message.content or self.embed != self.message.embeds[0]:
-            self.message = yield from edit_message(self.message,new_content=self.content,embed=self.embed)
+            self.message = yield from client.edit_message(self.message,new_content=self.content,embed=self.embed)
         try:
-            yield from clear_reactions(self.message)
+            yield from client.clear_reactions(self.message)
         except: # include actual errors
             pass
         has_actions = False
         for action in self.actions:
             has_actions = True
             yield from asyncio.sleep(ACTION_TIMEOUT)
-            yield from add_reaction(self.message,action.emoji)
+            yield from client.add_reaction(self.message,action.emoji)
         if not has_actions:
             active_modals.pop(self.message.id,None)
 
