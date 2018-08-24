@@ -239,6 +239,8 @@ def autostatus(client):
                     else:
                         try:
                             message = yield from client.send_message(channel, embed = embed)
+                        except discord.errors.NotFound:
+                            client.database.set_server_channel(serverid, 'autocheatsheets', None)
                         except:
                             error = traceback.format_exc()
                             logger.error('Error sending message %s', error)
