@@ -521,7 +521,7 @@ def commandStatus(msg,settings):
 
 class Shard(discord.Client):
     def __init__(self,*,id=0,count=1):
-        super().__init__(shard_id=id,shard_count=count,loop=asyncio.new_event_loop())
+        super().__init__(shard_id=id,shard_count=count,loop=asyncio.new_event_loop(),max_messages=500)
         self.queued_actions = []
         self.database = sql.Database(False, url=DATABASE_URL)
         modals.setup(self.send_message,self.edit_message,self.delete_message,self.add_reaction,self.clear_reactions)
