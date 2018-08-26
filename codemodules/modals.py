@@ -1,4 +1,5 @@
 import asyncio
+from async_timeout import timeout
 from discord import Embed
 
 ACTION_TIMEOUT = 0.15
@@ -32,7 +33,7 @@ class Modal:
         self.embed = embed
         self.only = only
     async def send(self,destination):
-        async with asyncio.timeout(120):
+        async with timeout(120):
             self.message = await client.send_message(destination,content=self.content,embed=self.embed)
             active_modals[self.message.id] = self
             for action in self.actions:
