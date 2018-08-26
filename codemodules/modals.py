@@ -31,13 +31,13 @@ class Modal:
         self.content = content
         self.embed = embed
         self.only = only
-    @asyncio.coroutine
-    def send(self,destination):
-        self.message = yield from client.send_message(destination,content=self.content,embed=self.embed)
-        active_modals[self.message.id] = self
-        for action in self.actions:
-            yield from asyncio.sleep(ACTION_TIMEOUT)
-            yield from client.add_reaction(self.message,action.emoji)
+    async def send(self,destination):
+        async with asyncio.timeout(120):
+            self.message = await client.send_message(destination,content=self.content,embed=self.embed)
+            active_modals[self.message.id] = self
+            for action in self.actions:
+                await asyncio.sleep(ACTION_TIMEOUT)
+                await client.add_reaction(self.message,action.emoji)
         return self.message
     def add_action(self,key,action):
         self.actions.append(ModalAction(emoji=key,action=action))
