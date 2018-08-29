@@ -115,7 +115,10 @@ class ThreadController(threading.Thread):
             for threadName in self.threads:
                 thread = self.threads[threadName]
                 if isinstance(thread,WorkerThread):
-                    request = thread.output.get(False)
+                    try:
+                        request = thread.output.get(False)
+                    except queue.Empty:
+                        request = None
                     if request is not None:
                         pass
 
