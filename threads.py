@@ -108,7 +108,8 @@ class ThreadController(threading.Thread):
         self.reqNo = 0
     def run(self):
         self.createShards()
-        for thread in self.threads:
+        for threadName in self.threads:
+            thread = self.threads[threadName]
             thread.start()
         while not self.stoprequest.isSet():
             for threadName in self.threads:
