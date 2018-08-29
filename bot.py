@@ -552,7 +552,6 @@ class Shard(discord.Client):
     def on_ready(self):
         logger = logging.getLogger()
         logger.info("Discord client logged in: %s %s %d/%d", self.user.name, self.user.id, self.shard_id, self.shard_count)
-        # yield from self.edit_profile(username=BOT_NAME)
         if self.shard_id == 0:
             yield from self.change_presence(game=discord.Game(name="Est. 2018 @mention for help",type=0),status="online",afk=False)
         self.defaultmodule.client_id = self.user.id
@@ -587,21 +586,3 @@ class Shard(discord.Client):
 
 def close():
     asyncio.ensure_future(client.close())
-# client.loop.add_signal_handler(signal.SIGTERM, close)
-# if SHARD_COUNT > 5:
-#     if SHARD_NO == 0:
-#         client.loop.create_task(autoshop())
-#     elif SHARD_NO == 1:
-#         client.loop.create_task(autostatus())
-#     elif SHARD_NO == 2:
-#         client.loop.create_task(autonews())
-#     elif SHARD_NO == 3:
-#         client.loop.create_task(handle_queue())
-#     elif SHARD_NO == 4:
-#         client.loop.create_task(ticker())
-#     elif SHARD_NO == 5:
-#         client.loop.create_task(dbl_api())
-# else:
-
-# client.loop.create_task(debugger(ticker))
-# client.loop.create_task(dbl_api())
