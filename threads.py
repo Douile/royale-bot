@@ -102,7 +102,7 @@ class ThreadController(threading.Thread):
             self.id = id
     def __init__(self,threads=1):
         super().__init__()
-        self.threads = Map()
+        self.threads = {}
         self.threadCount = threads
         self.stoprequest = threading.Event()
         self.reqNo = 0
@@ -120,7 +120,7 @@ class ThreadController(threading.Thread):
     def createShards(self):
         for i in range(self.threadCount):
             name = 'shard_{0}'.format(i)
-            self.threads.set(name,Shard(id=i,count=self.threadCount,name=name))
+            self.threads[name] = Shard(id=i,count=self.threadCount,name=name)
 
 def isRequest(value):
     return isinstance(value,ThreadController.Request)
