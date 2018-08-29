@@ -536,7 +536,7 @@ class Shard(discord.Client):
             id = request.requestId
             self.output.put(request)
             while 1:
-                resp = self.input.get(id)
+                resp = self.input.getId(id)
                 if resp is not None:
                     return resp
                 await asyncio.sleep(0.1)

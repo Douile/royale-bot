@@ -11,7 +11,7 @@ class Queue(queue.Queue):
             if test(item):
                 i += 1
         return i
-    def get(self,requestId):
+    def getId(self,requestId):
         for item in self.queue:
             if isinstance(item,transportDefs.ThreadRequest):
                 if item.requestId == requestId:
