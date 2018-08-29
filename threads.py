@@ -21,7 +21,7 @@ class Queue(queue.Queue):
 
 class WorkerThread(threading.Thread):
     def __init__(self):
-        super(WorkerThread, self).__init__()
+        super().__init__()
         self.input = Queue()
         self.output = Queue()
         self.stoprequest = threading.Event()
@@ -102,7 +102,12 @@ class ThreadController(threading.Thread):
                     if request is not None:
                         if request.dest in self.threads:
                             request.source = threadName
-                            self.threads[request.to].input.put(request)
+                            self.threads[request.dest].input.put(request)
+
+    def stop(self):
+        self.stoprequest.set()
+        for threadName in self.threads:
+            self.threads[threadName].stoprequest.set()
 
     def createShards(self):
         for i in range(self.threadCount):
