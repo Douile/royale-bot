@@ -1,2 +1,2 @@
 [commit]
-  template = ./.gitcommit
+  template = ./commit.template
