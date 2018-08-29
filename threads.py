@@ -111,7 +111,8 @@ class ThreadController(threading.Thread):
         for thread in self.threads:
             thread.start()
         while not self.stoprequest.isSet():
-            for thread in self.threads:
+            for threadName in self.threads:
+                thread = self.threads[threadName]
                 if isinstance(thread,WorkerThread):
                     request = thread.output.get(False)
                     if request is not None:
