@@ -100,8 +100,8 @@ class ThreadController(threading.Thread):
                     except queue.Empty:
                         request = None
                     if request is not None:
-                        if request.to in self.threads:
-                            request.from = threadName
+                        if request.dest in self.threads:
+                            request.source = threadName
                             self.threads[request.to].input.put(request)
 
     def createShards(self):
