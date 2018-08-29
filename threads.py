@@ -16,7 +16,6 @@ class WorkerThread(threading.Thread):
         super(WorkerThread, self).__init__()
         self.input = Queue()
         self.output = Queue()
-        self. = Queue()
         self.stoprequest = threading.Event()
 
 class ShopImage(WorkerThread):
