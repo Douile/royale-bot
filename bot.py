@@ -552,8 +552,9 @@ class Shard(discord.Client):
     def on_ready(self):
         logger = logging.getLogger()
         logger.info("Discord client logged in: %s %s %d/%d", self.user.name, self.user.id, self.shard_id, self.shard_count)
-        yield from self.edit_profile(username=BOT_NAME)
-        yield from self.change_presence(game=discord.Game(name="Est. 2018 @mention for help",type=0),status="online",afk=False)
+        # yield from self.edit_profile(username=BOT_NAME)
+        if self.shard_id == 0:
+            yield from self.change_presence(game=discord.Game(name="Est. 2018 @mention for help",type=0),status="online",afk=False)
         self.defaultmodule.client_id = self.user.id
 
     @asyncio.coroutine
