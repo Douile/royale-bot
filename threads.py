@@ -2,11 +2,21 @@ import threading, queue, asyncio
 from imagegeneration import shop, stats, upcoming
 import bot
 
+class Queue(queue.Queue):
+    def find(self, test):
+        """ Provide a test function to check all items in queue """
+        i = 0
+        for item in self.queue:
+            if test(item):
+                i++
+        return i
+
 class WorkerThread(threading.Thread):
     def __init__(self):
         super(WorkerThread, self).__init__()
-        self.input = queue.Queue()
-        self.output = queue.Queue()
+        self.input = Queue()
+        self.output = Queue()
+        self. = Queue()
         self.stoprequest = threading.Event()
 
 class ShopImage(WorkerThread):
@@ -78,25 +88,44 @@ class UpcomingImage(WorkerThread):
                 continue
 
 class Shard(WorkerThread):
-    def __init__(self,*,id=0,count=1):
+    def __init__(self,*,id=0,count=1,name=''):
         super().__init__()
         self.id = id
         self.count = count
+        self.name = name
     def run(self):
-        self.shard = bot.Shard(id=self.id,count=self.count)
+        self.shard = bot.Shard(id=self.id,count=self.count,input=self.input,output=self.output)
         self.shard.run()
 
 class ThreadController(threading.Thread):
+    class Request:
+        def __init__(self,*,id=0):
+            self.id = id
     def __init__(self,threads=1):
         super().__init__()
-        self.threads = []
+        self.threads = Map()
         self.threadCount = threads
+        self.stoprequest = threading.Event()
+        self.reqNo = 0
     def run(self):
-        for i in range(self.threadCount):
-            self.threads.append(Shard(id=i,count=self.threadCount))
+        self.createShards()
         for thread in self.threads:
             thread.start()
+        while not self.stoprequest.isSet():
+            for thread in self.threads:
+                if isinstance(thread,WorkerThread):
+                    request = thread.output.get(False)
+                    if request is not None:
+                        pass
+
+    def createShards(self):
+        for i in range(self.threadCount):
+            name = 'shard_{0}'.format(i)
+            self.threads.set(name,Shard(id=i,count=self.threadCount,name=name))
+
+def isRequest(value):
+    return isinstance(value,ThreadController.Request)
 
 if __name__ == '__main__':
-    controller = ThreadController(threads=2)
+    controller = ThreadController(threads=3)
     controller.start()
