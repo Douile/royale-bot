@@ -531,7 +531,8 @@ class Shard(discord.Client):
         self.database = sql.Database(False, url=DATABASE_URL)
         modals.setup(self)
 
-    async def threadRequest(self, request):
+    @asyncio.coroutine
+    def threadRequest(self, request):
         if isinstance(request,transportDefs.ThreadRequest):
             id = request.requestId
             self.output.put(request)
@@ -539,7 +540,7 @@ class Shard(discord.Client):
                 resp = self.input.getId(id)
                 if resp is not None:
                     return resp
-                await asyncio.sleep(0.1)
+                yield from asyncio.sleep(0.25)
         else:
             raise RuntimeError('Must provide a valid thread request')
         return None
