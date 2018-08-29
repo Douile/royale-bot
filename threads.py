@@ -8,7 +8,7 @@ class Queue(queue.Queue):
         i = 0
         for item in self.queue:
             if test(item):
-                i++
+                i += 1
         return i
 
 class WorkerThread(threading.Thread):
