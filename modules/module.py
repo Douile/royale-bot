@@ -15,7 +15,7 @@ class Module:
         self.types = []
         self.client_id = client_id
     @asyncio.coroutine
-    def _run(self,empty,command,msg,settings):
+    def _run(self,client,empty,command,msg,settings):
         output = empty
         run = getattr(self,'run',None)
         if callable(run):
@@ -27,10 +27,10 @@ class Module:
                 if command.startswith(cmd):
                     is_command = True
                 if is_command and isinstance(self.commands[cmd],Command):
-                    output = yield from self._run_command(empty,cmd,curcommand,msg,settings)
+                    output = yield from self._run_command(client,empty,cmd,curcommand,msg,settings)
         return output
     @asyncio.coroutine
-    def _run_alias(self,empty,command,msg,settings):
+    def _run_alias(self,client,empty,command,msg,settings):
         output = empty
         run = getattr(self,'run',None)
         if callable(run):
@@ -45,10 +45,10 @@ class Module:
                         is_command = True
                         curcommand = msg.content[len(alias_cmd):]
                 if is_command and isinstance(self.commands[cmd],Command):
-                    output = yield from self._run_command(empty,cmd,curcommand,msg,settings)
+                    output = yield from self._run_command(client,empty,cmd,curcommand,msg,settings)
         return output
     @asyncio.coroutine
-    def _run_command(self,empty,cmd,command,msg,settings):
+    def _run_command(self,client,empty,cmd,command,msg,settings):
         output = empty
         if self.commands[cmd].permission != None:
             if self.commands[cmd].permission != 'admin':
@@ -56,11 +56,11 @@ class Module:
             else:
                 pcheck = msg.author.server_permissions.administrator or msg.author.id == '293482190031945739'
             if pcheck:
-                output = yield from self.commands[cmd]._run(command,msg,settings)
+                output = yield from self.commands[cmd]._run(client,command,msg,settings)
             else:
                 output.noPermission = self.commands[cmd].permission
         else:
-            output = yield from self.commands[cmd]._run(command,msg,settings)
+            output = yield from self.commands[cmd]._run(client,command,msg,settings)
         return output
 class Command:
     def __init__(self,name="",description="",permission=None,aliases=[]):
@@ -70,14 +70,14 @@ class Command:
         self.aliases = aliases
         self.reset()
     @asyncio.coroutine
-    def _run(self,command,msg,settings):
+    def _run(self,client,command,msg,settings):
         self.reset()
         try:
             if callable(self.run):
                 if asyncio.iscoroutinefunction(self.run):
-                    yield from self.run(command,msg,settings)
+                    yield from self.run(client,command,msg,settings)
                 else:
-                    self.run(command,msg,settings)
+                    self.run(client,command,msg,settings)
         except:
             error = traceback.format_exc()
             logging.getLogger('module').error('Error running command %s', error)

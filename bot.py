@@ -10,6 +10,7 @@ import time
 import traceback
 import logging
 import logging.config
+import transportDefs
 
 import localisation
 from modules import default, fortnite, moderation, testing
@@ -454,18 +455,18 @@ def commandHandler(client, command, msg, serversettings):
     output = Command()
     output.delete_command = False
     if command != None:
-        output = yield from client.defaultmodule._run(output,command,msg,serversettings)
+        output = yield from client.defaultmodule._run(client,output,command,msg,serversettings)
         if output.empty:
             for i in range(0,len(client.cmodules)):
-                output = yield from client.cmodules[i]._run(output,command,msg,serversettings)
+                output = yield from client.cmodules[i]._run(client,output,command,msg,serversettings)
         if output.empty:
             for i in range(0,len(client.cmodules)):
-                output = yield from client.cmodules[i]._run_alias(output,command,msg,serversettings)
+                output = yield from client.cmodules[i]._run_alias(client,output,command,msg,serversettings)
     else:
-        output = yield from client.defaultmodule._run_alias(output,command,msg,serversettings)
+        output = yield from client.defaultmodule._run_alias(client,output,command,msg,serversettings)
         if output.empty:
             for i in range(0,len(client.cmodules)):
-                output = yield from client.cmodules[i]._run_alias(output,command,msg,serversettings)
+                output = yield from client.cmodules[i]._run_alias(client,output,command,msg,serversettings)
     if len(output.queue) > 0:
         client.queued_actions += output.queue
         logger.debug('Added queued action')
@@ -523,10 +524,25 @@ def commandStatus(msg,settings):
 
 class Shard(discord.Client):
     def __init__(self,*,id=0,count=1,input=None,output=None):
-        super().__init__(shard_id=id,shard_count=count,loop=asyncio.new_event_loop(),max_messages=500)
+        super().__init__(shard_id=id,shard_count=count,loop=asyncio.new_event_loop(),max_messages=100)
         self.queued_actions = []
+        self.input = input
+        self.output = output
         self.database = sql.Database(False, url=DATABASE_URL)
         modals.setup(self)
+
+    async def threadRequest(self, request):
+        if isinstance(request,transportDefs.ThreadRequest):
+            id = request.requestId
+            self.output.put(request)
+            while 1:
+                resp = self.input.get(id)
+                if resp is not None:
+                    return resp
+                await asyncio.sleep(0.1)
+        else:
+            raise RuntimeError('Must provide a valid thread request')
+        return None
 
     @asyncio.coroutine
     def on_reaction_add(self, reaction,user):

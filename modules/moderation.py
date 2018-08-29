@@ -21,7 +21,7 @@ class Mute(Command):
     def __init__(self):
         super().__init__(name='mute',description='Globally mute a user. `{prefix}mute [@user] [reason]`')
         self.permission = 'admin'
-    def run(self,command,msg,settings):
+    def run(self,client,command,msg,settings):
         self.reset()
         not_found = 'Sorry <@!{author}> couldn\'t find that user'
         args = msg.content.split(' ')
@@ -82,7 +82,7 @@ class Kick(Command):
     def __init__(self):
         super().__init__(name='kick',description='Kick a user from the server.`{prefix}kick @user reason...`',permission='admin')
     @asyncio.coroutine
-    def run(self,command,msg,settings):
+    def run(self,client,command,msg,settings):
         l = len('kick ')
         data = command[l:]
         try:
@@ -113,7 +113,7 @@ class Analytics(Command):
     def __init__(self):
         super().__init__(name='analytics',description='Get server analytics. `{prefix}analytics`',permission='admin')
     @asyncio.coroutine
-    def run(self,command,msg,settings):
+    def run(self,client,command,msg,settings):
         self.embed = AnalyticsEmbed(msg.server.name,msg.server.icon_url)
         self.embed.update_region(str(msg.server.region))
         self.embed.update_time(msg.server.created_at)

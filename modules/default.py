@@ -36,14 +36,14 @@ class Status(Command):
         super().__init__(name='botinfo',description=localisation.PreMessage('botinfo_help'))
         self.version = Map(version)
     @asyncio.coroutine
-    def run(self,command,msg,settings):
+    def run(self,client,command,msg,settings):
         raw = '<@!{author}> {name} {version_name} ({revison} {description}: {lines} lines) is online.) shards: {shards}'
         self.content = raw.format_map(self.version)
 class Help(Command):
     def __init__(self,modules):
         super().__init__(name='help',description='Print out all the commands you can use. `{prefix}help`',aliases=['<@{bot_id}>','<@!{bot_id}>'])
         self.modules = modules
-    def run(self,command,msg,settings):
+    def run(self,client,command,msg,settings):
         self.reset()
         self.is_help = True
         admin = msg.author.server_permissions.administrator
@@ -82,7 +82,7 @@ class SetChannel(Command):
         self.permission = 'admin'
         self.types = types
     @asyncio.coroutine
-    def run(self,command,msg,settings):
+    def run(self,client,command,msg,settings):
         locale = settings.get('locale')
         channelid = msg.channel.id
         try:
@@ -111,7 +111,7 @@ class ResetChannels(Command):
         super().__init__(name='resetchannels',description=localisation.PreMessage('resetchannels_help',types=arrays.message_string(self.types,'all')))
         self.permission = 'admin'
     @asyncio.coroutine
-    def run(self,command,msg,settings):
+    def run(self,client,command,msg,settings):
         locale = settings.get('locale')
         serverid = msg.server.id
         try:
@@ -135,7 +135,7 @@ class Channels(Command):
         super().__init__(name='channels',description=localisation.PreMessage('channels_help'))
         self.permission = 'admin'
         self.types = types
-    def run(self,command,msg,settings):
+    def run(self,client,command,msg,settings):
         self.reset()
         serverid = msg.server.id
         name = '{0}\'s channels'.format(settings.get('server_name',''))
@@ -155,7 +155,7 @@ class SetPrefix(Command):
         super().__init__(name='setprefix',description=localisation.PreMessage('setprefix_help'))
         self.permission = 'admin'
     @asyncio.coroutine
-    def run(self,command,msg,settings):
+    def run(self,client,command,msg,settings):
         locale = settings.get('locale')
         if command.count('"') > 1:
             command = command[command.index('"')+1:]
@@ -208,7 +208,7 @@ class SetLocale(Command):
     def __init__(self):
         super().__init__(name='setlocale',description=localisation.PreMessage('setlocale_help'),permission='admin')
     @asyncio.coroutine
-    def run(self,command,msg,settings):
+    def run(self,client,command,msg,settings):
         locale = settings.get('locale')
         embed = LocaleEmbed(locale=locale)
         self.custom = modals.Modal(embed=embed,only=msg.author)

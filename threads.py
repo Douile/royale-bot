@@ -1,6 +1,7 @@
 import threading, queue, asyncio
 from imagegeneration import shop, stats, upcoming
 import bot
+import transportDefs
 
 class Queue(queue.Queue):
     def find(self, test):
@@ -10,6 +11,13 @@ class Queue(queue.Queue):
             if test(item):
                 i += 1
         return i
+    def get(self,requestId):
+        for item in self.queue:
+            if isinstance(item,transportDefs.ThreadRequest):
+                if item.requestId == requestId:
+                    self.queue.remove(item)
+                    return item
+        return None
 
 class WorkerThread(threading.Thread):
     def __init__(self):
@@ -19,71 +27,42 @@ class WorkerThread(threading.Thread):
         self.stoprequest = threading.Event()
 
 class ShopImage(WorkerThread):
-    class Request:
-        def __init__(self,requestId,*,apikey=None,serverid=None,backgrounds=[]):
-            self.apikey = apikey
-            self.serverid = serverid
-            self.backgrounds = backgrounds
-            self.requestId = requestId
-    class Response:
-        def __init__(self,requestId,*,image=None):
-            self.image = image
-            self.requestId = requestId
     def run(self):
         loop = asyncio.new_event_loop()
         while not self.stoprequest.isSet():
             try:
                 request = self.input.get(True, 0.05)
-                image = loop.run_until_complete(shop.generate(request.apikey,request.serverid,request.backgrounds))
-                self.output.put(self.Response(request.requestId,image=image))
-            except Queue.Empty:
+                if isinstance(request,transportDefs.ShopImage.Request):
+                    image = loop.run_until_complete(shop.generate(request.apikey,request.serverid,request.backgrounds))
+                    self.output.put(transportDefs.ShopImage.Response(request.source,request.requestId,image=image))
+            except queue.Empty:
                 continue
 
 class StatsImage(WorkerThread):
-    class Request:
-        def __init__(self,requestId,*,apikey=None,playername='',platform='pc',backgrounds=[],currentSeason=False):
-            self.apikey = apikey
-            self.playername = playername
-            self.platform = platform
-            self.backgrounds = backgrounds
-            self.currentSeason = currentSeason
-            self.requestId = requestId
-    class Response:
-        def __init__(self,requestId,*,image=None):
-            self.image = image
-            self.requestId = requestId
     def run(self):
         loop = asyncio.new_event_loop()
         while not self.stoprequest.isSet():
             try:
                 request = self.input.get(True, 0.05)
-                if request.currentSeason:
-                    image = loop.run_until_complete(stats.generate_season(request.apikey,request.playername,request.platform,request.backgrounds))
-                else:
-                    image = loop.run_until_complete(stats.generate(request.apikey,request.playername,request.platform,request.backgrounds))
-                self.output.put(self.Response(request.requestId,image=image))
-            except Queue.Empty:
+                if isinstance(request,transportDefs.StatsImage.Request):
+                    if request.currentSeason:
+                        image = loop.run_until_complete(stats.generate_season(request.apikey,request.playername,request.platform,request.backgrounds))
+                    else:
+                        image = loop.run_until_complete(stats.generate(request.apikey,request.playername,request.platform,request.backgrounds))
+                    self.output.put(transportDefs.StatsImage.Response(request.source,request.requestId,image=image))
+            except queue.Empty:
                 continue
 
 class UpcomingImage(WorkerThread):
-    class Request:
-        def __init__(self,requestId,*,apikey=None,serverid=None,backgrounds=[]):
-            self.apikey = apikey
-            self.serverid = serverid
-            self.backgrounds = backgrounds
-            self.requestId = requestId
-    class Response:
-        def __init__(self,requestId,*,image=None):
-            self.image = image
-            self.requestId = requestId
     def run(self):
         loop = asyncio.new_event_loop()
         while not self.stoprequest.isSet():
             try:
                 request = self.input.get(True, 0.05)
-                image = loop.run_until_complete(upcoming.generate(request.apikey,request.serverid,request.backgrounds))
-                self.output.put(self.Response(request.requestId,image=image))
-            except Queue.Empty:
+                if isinstance(request,transportDefs.UpcomingImage.Request):
+                    image = loop.run_until_complete(upcoming.generate(request.apikey,request.serverid,request.backgrounds))
+                    self.output.put(transportDefs.UpcomingImage.Response(request,source,request.requestId,image=image))
+            except queue.Empty:
                 continue
 
 class Shard(WorkerThread):
@@ -108,6 +87,7 @@ class ThreadController(threading.Thread):
         self.reqNo = 0
     def run(self):
         self.createShards()
+        self.createWorkers()
         for threadName in self.threads:
             thread = self.threads[threadName]
             thread.start()
@@ -120,16 +100,28 @@ class ThreadController(threading.Thread):
                     except queue.Empty:
                         request = None
                     if request is not None:
-                        pass
+                        if request.to in self.threads:
+                            request.from = threadName
+                            self.threads[request.to].input.put(request)
 
     def createShards(self):
         for i in range(self.threadCount):
             name = 'shard_{0}'.format(i)
             self.threads[name] = Shard(id=i,count=self.threadCount,name=name)
+    def createWorkers(self):
+        threadMap = {
+            'shop': ShopImage(),
+            'stats': StatsImage(),
+            'upcoming': UpcomingImage()
+        }
+        for name in threadMap:
+            self.threads[name] = threadMap[name]
+        del threadMap
+
 
 def isRequest(value):
     return isinstance(value,ThreadController.Request)
 
 if __name__ == '__main__':
-    controller = ThreadController(threads=3)
+    controller = ThreadController(threads=2)
     controller.start()

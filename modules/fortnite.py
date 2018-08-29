@@ -9,6 +9,7 @@ import discord
 import asyncio
 import urllib
 import logging
+import transportDefs
 
 logger = logging.getLogger('bot.fortnite')
 
@@ -38,28 +39,14 @@ class Shop(Command):
         self.permission = 'shop'
         self.fnbr_key = fnbr_key
     @asyncio.coroutine
-    def run(self,command,msg,settings):
+    def run(self,client,command,msg,settings):
         locale = settings.get('locale')
         logger = logging.getLogger('shop-command')
+        bgs = settings.get('backgrounds',{}).get('shop',[])
+        request = transportDefs.ShopImage.Request(msg.id,apikey=self.fnbr_key,serverid=msg.server.id,backgrounds=bgs)
         try:
-            # shopdata = yield from shop.getShopData(self.fnbr_key)
-            # if shopdata.status == 200:
-            #     bgs = settings.get('backgrounds',{})
-            #     bgs_s = bgs.get('shop',[])
-            #     logger.debug('Generating shop')
-            #     file = yield from shop.generate(shopdata,bgs_s,msg.server.id)
-            #     self.typing = True
-            #     self.file = file
-            #     self.content = "Data from <https://fnbr.co>"
-            #     self.settings = {'latest_shop': file}
-            # else:
-            #     self.content = "Sorry there was an api error: {0}. All data from <https://fnbr.co>".format(shopdata.status)
-            #     if 'latest_shop' in settings and settings['latest_shop'] != '':
-            #         self.file = settings['latest_shop']
             logger.debug('Generating')
-            bgs = settings.get('backgrounds',{})
-            bgs_s = bgs.get('shop',[])
-            file = yield from shop.generate(self.fnbr_key,msg.server.id,bgs_s)
+            file = yield from client.threadRequest(request)
             self.typing = True
             self.file = file
             self.content = localisation.getMessage('shop_success',lang=locale)
@@ -71,7 +58,7 @@ class Upcoming(Command):
         super().__init__(name="upcoming",description=localisation.PreMessage('upcoming_help'),permission='upcoming')
         self.fnbr_key = fnbr_key
     @asyncio.coroutine
-    def run(self,command,msg,settings):
+    def run(self,client,command,msg,settings):
         locale = settings.get('locale')
         logger = logging.getLogger('upcomming-command')
         try:
@@ -103,7 +90,7 @@ class Stats(Command):
         self.tn_key = tn_key
         self.sql = sql
     @asyncio.coroutine
-    def run(self,command,msg,settings):
+    def run(self,client,command,msg,settings):
         locale = settings.get('locale')
         logger = logging.getLogger('stats')
         if command.startswith('stats'):
@@ -159,7 +146,7 @@ class Matches(Command):
         self.tn_key = tn_key
         self.sql = sql
     @asyncio.coroutine
-    def run(self,command,msg,settings):
+    def run(self,client,command,msg,settings):
         logger = logging.getLogger('matches')
         if command.startswith('matches'):
             args = command[len('matches'):].strip()
@@ -188,7 +175,7 @@ class Link(Command):
         super().__init__(name='link',description=localisation.PreMessage('link_help'),permission='stats')
         self.sql = sql
     @asyncio.coroutine
-    def run(self,command,msg,settings):
+    def run(self,client,command,msg,settings):
         locale = settings.get('locale')
         command_size = len('link ')
         if len(command) > command_size:
@@ -211,7 +198,7 @@ class UnLink(Command):
         super().__init__(name='unlink',description=localisation.PreMessage('unlink_help'),permission='stats')
         self.sql = sql
     @asyncio.coroutine
-    def run(self,command,msg,settings):
+    def run(self,client,command,msg,settings):
         locale = settings.get('locale')
         try:
             self.sql.delete_link(msg.author.id)
@@ -225,7 +212,7 @@ class SetBackgrounds(Command):
         super().__init__(name='setbackground',description=localisation.PreMessage('setbackground_help',types=arrays.message_string(self.background_types)))
         self.permission = 'admin'
     @asyncio.coroutine
-    def run(self,command,msg,settings):
+    def run(self,client,command,msg,settings):
         locale = settings.get('locale')
         urls = command.split(" ")
         type = None
@@ -247,7 +234,7 @@ class News(Command):
         super().__init__(name='news',description=localisation.PreMessage('news_help'))
         self.permission = 'news'
     @asyncio.coroutine
-    def run(self,command,msg,settings):
+    def run(self,client,command,msg,settings):
         locale = settings.get('locale')
         news = meta.getNews(locale)
         if news['success']:
@@ -261,7 +248,7 @@ class Servers(Command):
     def __init__(self):
         super().__init__(name='status',description=localisation.PreMessage('status_help'),permission='status')
     @asyncio.coroutine
-    def run(self,command,msg,settings):
+    def run(self,client,command,msg,settings):
         locale = settings.get('locale')
         try:
             status = yield from meta.getStatus()
@@ -276,7 +263,7 @@ class PatchNotes(Command):
     def __init__(self):
         super().__init__(name='patchnotes',description="Get the latest patchnotes. `{prefix}patchnotes ([d], [detail])` include `d` or `detail` for a more detailed breakdown of the patchnotes.", permission='patchnotes')
     @asyncio.coroutine
-    def run(self,command,msg,settings):
+    def run(self,client,command,msg,settings):
         args = command.split(" ")
         try:
             arg = args[1].lower()
@@ -302,7 +289,7 @@ class ResetStatus(Command):
     def __init__(self):
         super().__init__(name='resetstatus',description=localisation.PreMessage('resetstatus_help'),permission='admin')
     @asyncio.coroutine
-    def run(self,command,msg,settings):
+    def run(self,client,command,msg,settings):
         self.content = 'Reseting your autostatus, a new message will be delivered on the next update (every 2 mins)'
         self.settings = {'last_status_msg':None,'last_status_channel':None}
 
