@@ -23,7 +23,6 @@ from utils.times import day_string as parse_second_time
 from utils.times import tommorow
 from time import time as now
 from utils.discord import count_client_users, get_server_priority
-from codemodules import modals
 
 # constants
 KEY_DISCORD = getEnv("KEY_DISCORD")
@@ -529,7 +528,6 @@ class Shard(discord.Client):
         self.input = input
         self.output = output
         self.database = sql.Database(False, url=DATABASE_URL)
-        modals.setup(self)
 
     @asyncio.coroutine
     def threadRequest(self, request):

@@ -167,7 +167,7 @@ class SetPrefix(Command):
                 prefix = ''
         if prefix != '':
             text = localisation.getFormattedMessage('setprefix_confirm',author=msg.author.id,prefix=prefix,lang=locale)
-            self.custom = modals.AcceptModal(content=text,accept=self.acceptModal,decline=self.declineModal,only=msg.author)
+            self.custom = modals.AcceptModal(client,content=text,accept=self.acceptModal,decline=self.declineModal,only=msg.author)
             self.custom.prefix = prefix
             self.custom.locale = locale
             yield from self.custom.send(msg.channel)
@@ -211,7 +211,7 @@ class SetLocale(Command):
     def run(self,client,command,msg,settings):
         locale = settings.get('locale')
         embed = LocaleEmbed(locale=locale)
-        self.custom = modals.Modal(embed=embed,only=msg.author)
+        self.custom = modals.Modal(client,embed=embed,only=msg.author)
         self.custom.locale = locale
         self.custom.add_action(u'\u274C',self.cancel)
         self.custom.flagMap = embed.flags

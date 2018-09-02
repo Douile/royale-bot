@@ -73,7 +73,14 @@ class Shard(WorkerThread):
         self.name = name
     def run(self):
         self.shard = bot.Shard(id=self.id,count=self.count,input=self.input,output=self.output)
+        self.shard.loop.create_task(self.kill())
         self.shard.run()
+    @asyncio.coroutine
+    def kill(self):
+        while not self.stoprequest.isSet():
+            yield from asyncio.sleep(0.1)
+        print('Logging out of client')
+        yield from self.shard.logout()
 
 class ThreadController(threading.Thread):
     class Request:

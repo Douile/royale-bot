@@ -4,13 +4,7 @@ from discord import Embed
 
 ACTION_TIMEOUT = 0.15
 
-client = None
-
 active_modals = {}
-
-def setup(client_new):
-    global client
-    client = client_new
 
 @asyncio.coroutine
 def reaction_handler(reaction,user):
@@ -27,18 +21,19 @@ def reaction_handler(reaction,user):
 
 
 class Modal:
-    def __init__(self,*,content=None,embed=None,only=None):
+    def __init__(self,client,*,content=None,embed=None,only=None):
+        self.client = client
         self.actions = ModalActionList()
         self.content = content
         self.embed = embed
         self.only = only
     async def send(self,destination):
         async with timeout(120):
-            self.message = await client.send_message(destination,content=self.content,embed=self.embed)
+            self.message = await self.client.send_message(destination,content=self.content,embed=self.embed)
             active_modals[self.message.id] = self
             for action in self.actions:
                 await asyncio.sleep(ACTION_TIMEOUT)
-                await client.add_reaction(self.message,action.emoji)
+                await self.client.add_reaction(self.message,action.emoji)
         return self.message
     def add_action(self,key,action):
         self.actions.append(ModalAction(emoji=key,action=action))
@@ -78,13 +73,14 @@ class ModalActionList(list):
 
 
 class AcceptModal(Modal):
-    def __init__(self,*,content=None,embed=None,only=None,accept=None,decline=None):
-        super().__init__(content=content,embed=embed,only=only)
+    def __init__(self,client,*,content=None,embed=None,only=None,accept=None,decline=None):
+        super().__init__(client,content=content,embed=embed,only=only)
         self.add_action(u'\u274E',decline)
         self.add_action(u'\u2705',accept)
 
 class PagedModal(Modal):
-    def __init__(self,*,center_actions=[],only=None):
+    def __init__(self,client,*,center_actions=[],only=None):
+        self.client = client
         self.only = only
         self.page = None
         self.pages = []
@@ -131,7 +127,8 @@ class PagedModal(Modal):
             self.embed = embed
 
 class ItemModal(Modal):
-    def __init__(self,*,parent=None,only=None,title='_ _',description='_ _'):
+    def __init__(self,client,*,parent=None,only=None,title='_ _',description='_ _'):
+        self.client = client
         self.parent = parent
         self.only = only
         self.items = []
