@@ -23,6 +23,7 @@ from utils.times import day_string as parse_second_time
 from utils.times import tommorow
 from time import time as now
 from utils.discord import count_client_users, get_server_priority
+from codemodules import modals
 
 # constants
 KEY_DISCORD = getEnv("KEY_DISCORD")
@@ -538,7 +539,7 @@ class Shard(discord.Client):
                 resp = self.input.getId(id)
                 if resp is not None:
                     return resp
-                yield from asyncio.sleep(0.25)
+                yield from asyncio.sleep(0.1)
         else:
             raise RuntimeError('Must provide a valid thread request')
         return None
