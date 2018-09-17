@@ -25,6 +25,8 @@ from time import time as now
 from utils.discord import count_client_users, get_server_priority
 from codemodules import modals
 
+from memory_profiler import profile
+
 # constants
 KEY_DISCORD = getEnv("KEY_DISCORD")
 KEY_FNBR = getEnv("KEY_FNBR")
