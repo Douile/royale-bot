@@ -13,6 +13,7 @@ Pillow = "==5.1.0"
 dbl = {git = "https://github.com/Douile/DBL-Python-Library.git"}
 "discord.py" = "*"
 async-timeout = "*"
+memory-profiler = "*"
 
 [dev-packages]
 
