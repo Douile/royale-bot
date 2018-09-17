@@ -39,21 +39,21 @@ class Modal:
         self.actions.append(ModalAction(emoji=key,action=action))
     @asyncio.coroutine
     def delete(self):
-        yield from client.delete_message(self.message)
+        yield from self.client.delete_message(self.message)
         active_modals.pop(self.message.id,None)
     @asyncio.coroutine
     def reset(self):
         if self.content != self.message.content or self.embed != self.message.embeds[0]:
-            self.message = yield from client.edit_message(self.message,new_content=self.content,embed=self.embed)
+            self.message = yield from self.client.edit_message(self.message,new_content=self.content,embed=self.embed)
         try:
-            yield from client.clear_reactions(self.message)
+            yield from self.client.clear_reactions(self.message)
         except: # include actual errors
             pass
         has_actions = False
         for action in self.actions:
             has_actions = True
             yield from asyncio.sleep(ACTION_TIMEOUT)
-            yield from client.add_reaction(self.message,action.emoji)
+            yield from self.client.add_reaction(self.message,action.emoji)
         if not has_actions:
             active_modals.pop(self.message.id,None)
 
