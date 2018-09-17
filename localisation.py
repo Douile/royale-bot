@@ -2,6 +2,7 @@ import os
 import os.path
 import json
 import logging
+from memory_profiler import profile
 
 class FormatMap(dict):
     def __missing__(self, key):
@@ -80,6 +81,7 @@ class Locale(dict):
         self.nameEn = info.get('name_en')
         self.author = info.get('author')
         self.authorName = info.get('author_name')
+    @profile
     def getMessage(self,key):
         data = self.get(key)
         if data is not None:
@@ -88,6 +90,7 @@ class Locale(dict):
         else:
             resp = LocaleResponse(msesage='Message not set',lang=self.lang)
         return resp
+    @profile
     def getFormattedMessage(self,key,**variables):
         data = self.get(key,)
         if data is not None:
@@ -96,6 +99,7 @@ class Locale(dict):
         else:
             resp = LocaleResponse(msesage='Message not set',lang=self.lang)
         return resp
+    @profile
     def getInfo(self):
         return self.LocaleInfo(lang=self.lang,name=self.name,nameEn=self.nameEn,author=self.author,authorName=self.authorName)
     class LocaleInfo:
