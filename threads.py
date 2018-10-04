@@ -2,7 +2,6 @@ import threading, queue, asyncio
 from imagegeneration import shop, stats, upcoming
 import bot
 import transportDefs
-from memory_profiler import profile
 
 class Queue(queue.Queue):
     def find(self, test):
@@ -93,7 +92,6 @@ class ThreadController(threading.Thread):
         self.threadCount = threads
         self.stoprequest = threading.Event()
         self.reqNo = 0
-    @profile
     def run(self):
         self.createShards()
         # self.createWorkers()

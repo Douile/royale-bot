@@ -25,8 +25,6 @@ from time import time as now
 from utils.discord import count_client_users, get_server_priority
 from codemodules import modals
 
-from memory_profiler import profile
-
 # constants
 KEY_DISCORD = getEnv("KEY_DISCORD")
 KEY_FNBR = getEnv("KEY_FNBR")
@@ -114,7 +112,7 @@ def debugger(client,function):
             logger.error('Debugging error %s restarting...',error)
             count += 1
 
-@profile
+
 @asyncio.coroutine
 def autoshop(client): # add fnbr not accessable fallback
     logger = logging.getLogger('autoshop')
@@ -180,7 +178,7 @@ def autoshop(client): # add fnbr not accessable fallback
         logger.info("Autoshop now:%d next:%d updating in: %s", now, nextshop, parse_second_time(nextshop-now))
         yield from asyncio.sleep(time_until_next)
 
-@profile
+
 @asyncio.coroutine
 def autostatus(client):
     logger = logging.getLogger('autostatus')
@@ -262,7 +260,7 @@ def autostatus(client):
         if next_time > 0:
             yield from asyncio.sleep(next_time)
 
-@profile
+
 @asyncio.coroutine
 def autonews(client):
     logger = logging.getLogger('autonews')
@@ -298,7 +296,7 @@ def autonews(client):
         if update_time > 0:
             yield from asyncio.sleep(update_time)
 
-@profile
+
 @asyncio.coroutine
 def autocheatsheets(client):
     logger = logging.getLogger('autosheets')
@@ -450,7 +448,7 @@ def count_users(client_class):
         users += len(server.members)
     return users
 
-@profile
+
 @asyncio.coroutine
 def commandHandler(client, command, msg, serversettings):
     logger = logging.getLogger('commandHandler')
