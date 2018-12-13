@@ -4,9 +4,9 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-postgres = "==2.2.1"
-aiohttp = "==1.0.5"
-requests = "==2.18.4"
+postgres = ">=2.2.1"
+aiohttp = ">=1.0.5"
+requests = ">=2.20.0"
 "beautifulsoup4" = "==4.6.0"
 "html2text" = "==2018.1.9"
 Pillow = "==5.1.0"
@@ -14,6 +14,7 @@ dbl = {git = "https://github.com/Douile/DBL-Python-Library.git"}
 "discord.py" = "*"
 async-timeout = "*"
 memory-profiler = "*"
+urllib3 = ">=1.23"
 
 [dev-packages]
 
