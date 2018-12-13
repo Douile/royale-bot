@@ -1,4 +1,3 @@
-import requests
 import bs4
 import html2text
 import asyncio
@@ -43,11 +42,13 @@ def getStatus():
         output['services'][name] = status
     return output
 
+@asyncio.coroutine
 def getNews(language='en'):
-    response = requests.get(NEWS,headers={'Accept-Language':language})
+    session = aiohttp.ClientSession()
+    response = yield from session.get(NEWS,headers={'Accept-Language':language})
     output = {'success':False}
-    if response.status_code == 200:
-        data = response.json()
+    if response.status == 200:
+        data = yield from response.json()
         if 'battleroyalenews' in data:
             output['updated'] = data['battleroyalenews']['lastModified']
             output['messages'] = []

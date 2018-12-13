@@ -10,7 +10,6 @@ import time
 import traceback
 import logging
 import logging.config
-import transportDefs
 
 import localisation
 from modules import default, fortnite, moderation, testing
@@ -387,43 +386,7 @@ def ticker():
             yield from client.change_presence(game=game)
             yield from asyncio.sleep(TICKER_TIME)
 
-@asyncio.coroutine
-def dbl_api():
-    logger = logging.getLogger('dbl_api')
-    if KEY_DBL is not None:
-        dbl_client = dbl.Client(client,KEY_DBL)
-        logger.info('dbl updater started')
-        yield from client.wait_until_ready()
-        while not client.is_closed:
-            sleeptime = 1800
-            try:
-                yield from dbl_client.post_server_count(client.shard_count,client.shard_id)
-                logger.info('Posted server count to dbl')
-            except dbl.errors.Forbidden:
-                logger.warning('Forbidden to update server count')
-                sleeptime = 30
-            except:
-                error = traceback.format_exc()
-                logger.error('Error posting server count: {}'.format(error))
-            yield from asyncio.sleep(sleeptime)
-    else:
-        logger.info('DBL api key not found')
 
-
-@asyncio.coroutine
-def server_deleter(client):
-    logger = logging.getLogger('server_deleter')
-    delete_time = 60*60*3
-    yield from client.wait_until_ready()
-    logger.info('Started')
-    while not client.is_closed:
-        last_seen = round(now())
-        for server in client.servers:
-            client.database.set_server_info(server.id,last_seen=last_seen)
-        purge_ready = client.database.get_purge(last_seen-delete_time)
-        for server in purge_ready:
-            client.database.delete_server(server.get('server_id'))
-        yield from asyncio.sleep(60*60)
 
 @asyncio.coroutine
 def pre_cache():
@@ -527,7 +490,7 @@ def noPermission(client, msg,type,settings):
 def commandStatus(msg,settings):
     '<@!{0}> bot v{1} is online!'.format(msg.author.id,VERSION)
 
-class Shard(discord.Client):
+class Bot(discord.Client):
     def __init__(self,*,id=0,count=1,input=None,output=None):
         super().__init__(shard_id=id,shard_count=count,loop=asyncio.new_event_loop(),max_messages=100)
         self.queued_actions = []
@@ -536,29 +499,15 @@ class Shard(discord.Client):
         self.database = sql.Database(False, url=DATABASE_URL)
 
     @asyncio.coroutine
-    def threadRequest(self, request):
-        if isinstance(request,transportDefs.ThreadRequest):
-            id = request.requestId
-            self.output.put(request)
-            while 1:
-                resp = self.input.getId(id)
-                if resp is not None:
-                    return resp
-                yield from asyncio.sleep(0.1)
-        else:
-            raise RuntimeError('Must provide a valid thread request')
-        return None
-
-    @asyncio.coroutine
     def on_reaction_add(self, reaction,user):
         yield from modals.reaction_handler(reaction,user)
 
     @asyncio.coroutine
     def on_ready(self):
         logger = logging.getLogger()
-        logger.info("Discord client logged in: %s %s %d/%d", self.user.name, self.user.id, self.shard_id, self.shard_count)
-        if self.shard_id == 0:
-            yield from self.change_presence(game=discord.Game(name="Est. 2018 @mention for help",type=0),status="online",afk=False)
+        logger.info("Discord client logged in: %s (%s) Shard:%d/%d", self.user.name, self.user.id, self.shard_id, self.shard_count)
+        logger.info("Invite url: %s", discord.utils.oauth_url(self.user.id,permissions=discord.Permissions(administrator=True)))
+        yield from self.change_presence(game=discord.Game(name="Est. 2018 @mention for help",type=0),status="online",afk=False)
         self.defaultmodule.client_id = self.user.id
 
     @asyncio.coroutine
@@ -584,10 +533,9 @@ class Shard(discord.Client):
         self.loop.create_task(debugger(self,autonews))
         self.loop.create_task(debugger(self,autocheatsheets))
         self.loop.create_task(debugger(self,autoshop))
-        self.loop.create_task(debugger(self,server_deleter))
-        self.loop.create_task(handle_queue(self))
         super().run(KEY_DISCORD)
 
 
-def close():
-    asyncio.ensure_future(client.close())
+if __name__ == '__main__':
+    bot = bot()
+    bot.run()
