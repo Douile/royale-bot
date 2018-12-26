@@ -9,7 +9,6 @@ import discord
 import asyncio
 import urllib
 import logging
-import transportDefs
 
 logger = logging.getLogger('bot.fortnite')
 
@@ -40,19 +39,14 @@ class Shop(Command):
         self.fnbr_key = fnbr_key
     @asyncio.coroutine
     def run(self,client,command,msg,settings):
-        locale = settings.get('locale')
         logger = logging.getLogger('shop-command')
-        bgs = settings.get('backgrounds',{}).get('shop',[])
-        request = transportDefs.ShopImage.Request(msg.id,apikey=self.fnbr_key,serverid=msg.server.id,backgrounds=bgs)
-        try:
-            logger.debug('Generating')
-            file = yield from client.threadRequest(request)
-            self.typing = True
-            self.file = file
-            self.content = localisation.getMessage('shop_success',lang=locale)
-        except Exception as e:
-            self.content = localisation.getMessage('shop_error',lang=locale)
-            logger.error(traceback.format_exc())
+        logger.debug('Generating')
+        bgs = settings.get('backgrounds',{})
+        bgs_s = bgs.get('shop',[])
+        file = yield from shop.generate(self.fnbr_key,msg.server.id,bgs_s)
+        self.typing = True
+        self.file = file
+        self.content = localisation.getMessage('shop_success',lang=locale)
 class Upcoming(Command):
     def __init__(self,fnbr_key):
         super().__init__(name="upcoming",description=localisation.PreMessage('upcoming_help'),permission='upcoming')
