@@ -17,6 +17,6 @@ You can set up the database on the same machine as you run the bot, download the
 The default username when you create the postgres database is `postgres`.
 #### Running
 ##### Windows
-Before you run you must modify the `start.bat` file, modify lines 10-17 with your respective values. Then run `start.bat`.
+Before you run you must modify the `start.bat` file, modify lines 9-16 with your respective values. Then run `start.bat`.
 ##### Unix (linux/mac)
-Before you start you must modify the `start.sh` file, modify lines 10-17 with your respective values. Then run `start.sh`.
+Before you start you must modify the `start.sh` file, modify lines 9-16 with your respective values. Then run `start.sh`.

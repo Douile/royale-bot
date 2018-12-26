@@ -1,10 +1,9 @@
 @echo off
 
-echo "Installing/Upgrading requirements"
+echo Installing/Upgrading requirements
 pip install -r requirements.txt
 
-echo "Setting env vars"
-
+echo Setting env vars
 rem enter you own variables here
 
 rem discord bot key
@@ -14,7 +13,7 @@ SET KEY_FNBR="YOUR_KEY"
 rem fortnite tracker network api key
 SET KEY_TRACKERNETWORK="YOUR_KEY"
 rem your postgresql access url (see README for details on setting up)
-SET DATABASE_URL="postgresql://my.database"
+SET DATABASE_URL="postgres://my.database"
 
-echo "Starting..."
+echo Starting...
 python ./bot.py
