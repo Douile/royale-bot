@@ -537,5 +537,5 @@ class Bot(discord.Client):
 
 
 if __name__ == '__main__':
-    bot = bot()
+    bot = Bot()
     bot.run()

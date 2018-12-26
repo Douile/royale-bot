@@ -143,8 +143,8 @@ class LocaleContainer(dict):
 locales = LocaleContainer()
 
 def readJson(filename):
-    f = open(filename,'r')
-    c = f.read()
+    f = open(filename,'rb')
+    c = str(f.read(),'utf-8')
     f.close()
     try:
         j = json.loads(c)
