@@ -270,7 +270,7 @@ def autonews(client):
         cache = client.database.get_cache("news",once=False)
         if cache is None:
             cache = []
-        data = meta.getNews('en')
+        data = yield from meta.getNews('en')
         used = []
         embeds = []
         for msg in data['messages']:
@@ -529,10 +529,10 @@ class Bot(discord.Client):
     def run(self):
         self.cmodules = [fortnite.FortniteModule(KEY_FNBR, KEY_TRACKERNETWORK, self.database), moderation.ModerationModule()]
         self.defaultmodule = default.DefaultModule(self.cmodules, VERSION, database=self.database)
-        self.loop.create_task(debugger(self,autostatus))
-        self.loop.create_task(debugger(self,autonews))
-        self.loop.create_task(debugger(self,autocheatsheets))
-        self.loop.create_task(debugger(self,autoshop))
+        self.loop.create_task(autostatus(self))
+        self.loop.create_task(autonews(self))
+        self.loop.create_task(autocheatsheets(self))
+        self.loop.create_task(autoshop(self))
         super().run(KEY_DISCORD)
 
 

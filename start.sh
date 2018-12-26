@@ -1,7 +1,7 @@
 #!/bin/sh
 
 echo "Installing/Upgrading requirements"
-pip install -r requirements.txt
+pip install -U -r requirements.txt
 
 echo "Setting env vars"
 # enter you own variables here

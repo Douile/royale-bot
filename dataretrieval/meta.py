@@ -23,7 +23,6 @@ def getStatus():
     session = aiohttp.ClientSession()
     response = yield from session.get(STATUS)
     data = yield from response.json()
-    yield from session.close()
     if len(data) > 0:
         data = data[0]
     output = {'online':False,'message':'','services':{}}
@@ -32,14 +31,16 @@ def getStatus():
     else:
         output['online'] = False
     output['message'] = data['message']
-    response = requests.get(STATUS_SERVICES)
-    html = bs4.BeautifulSoup(response.text,'html.parser')
+    response = yield from session.get(STATUS_SERVICES)
+    text = yield from response.text()
+    html = bs4.BeautifulSoup(text,'html.parser')
     componentscont = html.find('div',attrs={'class':'child-components-container'})
     components = componentscont.findAll('div',recursive=False)
     for component in components:
         name = component.find('span',attrs={'class':'name'}).getText(strip=True)
         status = component.find('span',attrs={'class':'component-status'}).getText(strip=True)
         output['services'][name] = status
+    yield from session.close()
     return output
 
 @asyncio.coroutine
