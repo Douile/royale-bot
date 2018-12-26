@@ -1,3 +1,4 @@
+@echo off
 
 echo "Installing/Upgrading requirements"
 pip install -r requirements.txt
