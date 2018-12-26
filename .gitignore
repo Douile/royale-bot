@@ -5,5 +5,4 @@ __pycache__/
 
 # Custom
 .ignore/
-*.bat
 *.exe
