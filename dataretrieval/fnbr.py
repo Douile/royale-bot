@@ -170,22 +170,23 @@ class APIResponse():
                     self.error = self.json['error']
                 except KeyError:
                     self.error = response.reason
-            elif '/images' in url:
+            # url : Yarl.URL
+            elif url.path.find('/images') > -1:
                 self.type = IMAGE_TYPE
                 self.data = ImageResponse(self.json)
-            elif '/shop' in url:
+            elif url.path.find('/shop') > -1:
                 self.type = SHOP_TYPE
                 self.data = ShopResponse(self.json)
-            elif '/upcoming' in url:
+            elif url.path.find('/upcoming') > -1:
                 self.type = UPCOMING_TYPE
                 self.data = UpcomingResponse(self.json)
-            elif '/stats' in url:
+            elif url.path.find('/stats') > -1:
                 self.type = STATS_TYPE
                 self.data = StatResponse(self.json)
-            elif '/seen' in url:
+            elif url.path.find('/seen') > -1:
                 self.type = SEEN_TYPE
                 self.data = SeenResponse(self.json)
-            elif '/list' in url:
+            elif url.path.find('/list') > -1:
                 self.type = LIST_TYPE
                 self.data = ItemListResponse(response.text)
 class ShopResponse():

@@ -43,6 +43,7 @@ class Shop(Command):
         logger.debug('Generating')
         bgs = settings.get('backgrounds',{})
         bgs_s = bgs.get('shop',[])
+        locale = settings.get('locale')
         file = yield from shop.generate(self.fnbr_key,msg.server.id,bgs_s)
         self.typing = True
         self.file = file
