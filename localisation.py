@@ -2,6 +2,7 @@ import os
 import os.path
 import json
 import logging
+import re
 
 class FormatMap(dict):
     def __missing__(self, key):
@@ -124,11 +125,19 @@ class LocaleContainer(dict):
     def getMessage(self,key,lang=None):
         if lang is None:
             lang = self.defaultLang
+        if not lang in self:
+            keys = list(self.keys())
+            lang = keys[0]
+            print('Langs: {0}'.format(keys))
         res = self[lang].getMessage(key)
         return str(self.applyGlobals(res))
     def getFormattedMessage(self,key,lang=None,**variables):
         if lang is None:
             lang = self.defaultLang
+        if not lang in self:
+            keys = list(self.keys())
+            lang = keys[0]
+            print('Langs: {0}'.format(keys))
         res = self[lang].getFormattedMessage(key,**variables)
         return str(self.applyGlobals(res))
     def applyGlobals(self,response):
@@ -156,6 +165,7 @@ def loadLocales():
     global locales
     logger = logging.getLogger('locales')
     locales_dir = os.path.join(os.getcwd(),'_locales')
+    x = re.compile('[\\\\\\\/]')
     if os.path.isdir(locales_dir):
         locale_names = [x[0] for x in os.walk(locales_dir)]
         for locale_path in locale_names:
@@ -172,7 +182,7 @@ def loadLocales():
                 info = None
                 logger.warn('No manifest.json found for %s',locale_path)
             if data is not None:
-                split = locale_path.split('/')
+                split = x.split(locale_path)
                 locale_name = split[-1]
                 locales.addLocale(locale_name,info,data)
                 logger.info('Loaded locale %s',locale_name)
