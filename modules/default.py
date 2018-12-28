@@ -125,7 +125,7 @@ class ResetChannels(Command):
             self.content = localisation.getFormattedMessage('resetchannels_all',author=msg.author.id,lang=locale)
         else:
             if type in self.types:
-                self.settings['channels'] = {}
+                self.settings = {'channels':{}}
                 self.settings['channels'][type] = None
                 self.content = localisation.getFormattedMessage('resetchannels_success',author=msg.author.id,type=type,lang=locale)
             else:
