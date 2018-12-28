@@ -6,4 +6,5 @@ __pycache__/
 # Custom
 .ignore/
 *.exe
-*.active*
+start.bat
+start.sh
