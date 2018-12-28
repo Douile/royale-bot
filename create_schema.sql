@@ -125,7 +125,7 @@ CREATE TABLE server_data (
     last_help_channel text,
     next_shop integer,
     latest_shop text,
-    prefix text DEFAULT '.rb'::text,
+    prefix text DEFAULT '.rb '::text,
     last_status_msg text,
     last_status_channel text,
     priority smallint,
