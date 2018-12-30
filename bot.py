@@ -512,6 +512,8 @@ class Bot(discord.Client):
 
     @asyncio.coroutine
     def on_message(self, msg):
+        if server is None:
+            return None
         settings = self.database.server_info(msg.server.id,channels=True,backgrounds=True)
         if settings == None:
             prefix = DEFAULT_PREFIX
