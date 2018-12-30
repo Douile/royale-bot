@@ -1,6 +1,6 @@
 import asyncio
 from async_timeout import timeout
-from discord import Embed
+from discord import Embed, Forbidden, NotFound
 
 ACTION_TIMEOUT = 0.15
 
@@ -47,7 +47,11 @@ class Modal:
             self.message = yield from self.client.edit_message(self.message,new_content=self.content,embed=self.embed)
         try:
             yield from self.client.clear_reactions(self.message)
-        except: # include actual errors
+        except Forbidden:
+            print('Unable to reset modal {0}: no permission'.format(self.message.id))
+        except NotFound:
+            print('Unable to reset modal {0}: not found'.format(self.message.id))
+        except:
             pass
         has_actions = False
         for action in self.actions:
