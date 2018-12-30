@@ -120,6 +120,7 @@ def autoshop(client): # add fnbr not accessable fallback
     while not client.is_closed:
         servers = yield from get_server_priority(list(client.servers),client.database.get_priority_servers)
         needRestart = False
+        nextshop = tommorow()
         for servers_r in servers:
             if needRestart:
                 break
@@ -129,7 +130,7 @@ def autoshop(client): # add fnbr not accessable fallback
                 if 'autoshop' in server['channels']:
                     locale = server.get('locale')
                     now = time.time()
-                    nextshop = server.get('next_shop')
+                    # nextshop = server.get('next_shop')
                     if nextshop is None:
                         nextshop = time.mktime(datetime.now().utctimetuple())
                     if now >= nextshop:
@@ -146,7 +147,7 @@ def autoshop(client): # add fnbr not accessable fallback
                         nextshoptime = tommorow()
                         try:
                             yield from client.send_file(discord.Object(server['channels']['autoshop']),file,content=content)
-                            client.database.set_server_info(serverid,next_shop=nextshoptime,latest_shop=file)
+                            # client.database.set_server_info(serverid,next_shop=nextshoptime,latest_shop=file)
                         except (discord.errors.Forbidden, discord.errors.NotFound):
                             logger.info('Forbidden or not found on server: {}'.format(serverid))
                             serverdata = client.get_server(serverid)
@@ -154,7 +155,7 @@ def autoshop(client): # add fnbr not accessable fallback
                                 client.database.delete_server(serverid)
                             else:
                                 try:
-                                    client.database.set_server_info(serverid,next_shop=nextshoptime,latest_shop=file)
+                                    # client.database.set_server_info(serverid,next_shop=nextshoptime,latest_shop=file)
                                     client.database.set_server_channel(serverid,'autoshop',None)
                                 except:
                                     error = traceback.format_exc()
@@ -328,7 +329,7 @@ def autocheatsheets(client):
                 error = traceback.format_exc()
                 logger.error('Error updating cache: %s',error)
         else:
-            logger.debug('%s\n%s',str(old_cache),str(cache))
+            logger.debug('%s -> %s',str(old_cache),str(cache))
         if update is not None:
             title = localisation.getFormattedMessage('autocheatsheets_title',season=update.season,week=update.week)
             description = localisation.getMessage('autocheatsheets_desc')
