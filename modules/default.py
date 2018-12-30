@@ -63,7 +63,7 @@ class Help(Command):
         except IndexError:
             category = None
         self.embed = HelpEmbed(prefix=prefix,category=category,icon_url=msg.server.icon_url,admin=admin)
-        self.embed.generate(self.modules,lang=settings.get('locale'))
+        self.embed.generate(self.modules,lang=settings.get('locale'),bot_id=client.user.id)
         last_help_msg = settings.get('last_help_msg',None)
         if last_help_msg != None:
             last_help = discord.Object(last_help_msg)
@@ -303,7 +303,7 @@ class HelpEmbed(discord.Embed):
             self.set_thumbnail(url=icon_url)
         if self.category != None:
             self.title = "Help ({0})".format(self.category)
-    def generate(self,modules,lang=None):
+    def generate(self,modules,lang=None,bot_id='424265028267540490'):
         commands = {}
         for module in modules:
             if module.category == self.category:
@@ -331,7 +331,7 @@ class HelpEmbed(discord.Embed):
                             if len(cmd.aliases) > 0:
                                 commands[command] += ' Aliases for this command are '
                                 for alias in cmd.aliases:
-                                    alias_format = alias.format_map(Map({'prefix':self.prefix,'bot_id':'424265028267540490'})) # change from hard coding
+                                    alias_format = alias.format_map(Map({'prefix':self.prefix,'bot_id':bot_id}))
                                     if alias_format.startswith('<@'):
                                         commands[command] += '{}, '.format(alias_format)
                                     else:
