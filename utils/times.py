@@ -8,22 +8,17 @@ def isotime(string):
     else:
         time = datetime.strptime(string, "%Y-%m-%dT%H:%M:%S.%f")
     return time
-def epoch_now():
-    return datetime.utcnow().timestamp()
 
 def now():
-    t = datetime.utcnow()
-    return mktime(t.utctimetuple())
+    return datetime.utcnow().timestamp()
 
 def morning():
-    tnow = now()
-    now_d = datetime.utcnow()
-    morning = tnow - (now_d.hour*60*60) - (now_d.minute*60) - (now_d.second)
-    return morning
+    now = datetime.utcnow()
+    return now.timestamp() - 3600*now.hour - 60*now.minute - now.second
 
 def tommorow():
     m = morning()
-    return m + 60*60*24
+    return m + 86400
 
 def minute_string(timeSecs):
     minutes = floor(timeSecs/60)

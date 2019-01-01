@@ -18,8 +18,7 @@ from dataretrieval import meta, cheatsheets
 from imagegeneration import shop, upcoming
 from datamanagement import sql
 from utils import getEnv
-from utils.times import day_string as parse_second_time
-from utils.times import tommorow
+from utils.times import day_string as parse_second_time, tommorow as tommorow_time, now as now_time
 from time import time as now
 from utils.discord import count_client_users, get_server_priority
 from codemodules import modals
@@ -120,7 +119,7 @@ def autoshop(client): # add fnbr not accessable fallback
     while not client.is_closed:
         servers = yield from get_server_priority(list(client.servers),client.database.get_priority_servers)
         needRestart = False
-        nextshop = tommorow()
+        nextshop = tommorow_time()
         for servers_r in servers:
             if needRestart:
                 break
@@ -129,7 +128,7 @@ def autoshop(client): # add fnbr not accessable fallback
                 server = client.database.server_info(serverid,backgrounds=True,channels=True)
                 if 'autoshop' in server['channels']:
                     locale = server.get('locale')
-                    now = time.time()
+                    now = now_time()
                     # nextshop = server.get('next_shop')
                     if nextshop is None:
                         nextshop = time.mktime(datetime.now().utctimetuple())
