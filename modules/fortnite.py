@@ -231,7 +231,7 @@ class News(Command):
     @asyncio.coroutine
     def run(self,client,command,msg,settings):
         locale = settings.get('locale')
-        news = meta.getNews(locale)
+        news = yield from meta.getNews(locale)
         if news['success']:
             self.embeds = []
             for msg in news['messages']:
