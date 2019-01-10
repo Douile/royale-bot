@@ -113,6 +113,7 @@ def debugger(client,function):
 
 @asyncio.coroutine
 def autoshop(client): # add fnbr not accessable fallback
+    # errors with timing (repeated) - possibly timezones
     logger = logging.getLogger('autoshop')
     yield from client.wait_until_ready()
     logger.info('Autoshop started')
@@ -130,8 +131,8 @@ def autoshop(client): # add fnbr not accessable fallback
                     locale = server.get('locale')
                     now = now_time()
                     # nextshop = server.get('next_shop')
-                    if nextshop is None:
-                        nextshop = time.mktime(datetime.now().utctimetuple())
+                    # if nextshop is None:
+                    #     nextshop = time.mktime(datetime.now().utctimetuple())
                     if now >= nextshop:
                         bgs = server.get('backgrounds',{})
                         bgs_s = bgs.get('shop',[])
@@ -150,6 +151,7 @@ def autoshop(client): # add fnbr not accessable fallback
                         except (discord.errors.Forbidden, discord.errors.NotFound):
                             logger.info('Forbidden or not found on server: {}'.format(serverid))
                             serverdata = client.get_server(serverid)
+                            # delete server check make this seperate function (repeated in automated tasks)
                             if serverdata is None:
                                 client.database.delete_server(serverid)
                             else:
@@ -531,6 +533,8 @@ class Bot(discord.Client):
     def run(self):
         self.cmodules = [fortnite.FortniteModule(KEY_FNBR, KEY_TRACKERNETWORK, self.database), moderation.ModerationModule()]
         self.defaultmodule = default.DefaultModule(self.cmodules, VERSION, database=self.database)
+        # create cron like scheduler?
+        # 1 loop that dispatches these auto tasks, kills + restarts if take to long/freeze
         self.loop.create_task(autostatus(self))
         self.loop.create_task(autonews(self))
         self.loop.create_task(autocheatsheets(self))
