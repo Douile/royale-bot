@@ -22,7 +22,7 @@ class CheatSheet:
 @asyncio.coroutine
 def get_reddit_posts(user):
     url = 'http://api.reddit.com/user/{0}/submitted/?sort=new'.format(user)
-    session = aiohttp.ClientSession(headers={'User-Agent':'RoyaleBot vX.X.X'})
+    session = aiohttp.ClientSession(headers={'User-Agent':'RoyaleBot'})
     response = yield from session.get(url)
     json = None
     if response.status == 200:
@@ -34,6 +34,7 @@ def get_reddit_posts(user):
 
 @asyncio.coroutine
 def parse_cheat_sheets(data):
+    session = aiohttp.ClientSession(headers={'User-Agent':'RoyaleBot'})
     sheets = []
     kind = data.get('kind')
     if kind == 'Listing':
@@ -48,10 +49,23 @@ def parse_cheat_sheets(data):
                         week = strings.num_after(title.lower(),'week')
                         if season is not None and week is not None:
                             image = None
-                            images = item.get('preview',{}).get('images',[])
-                            if len(images) > 0:
-                                image = images[0].get('source',{}).get('url')
+                            def_image = item.get('url')
+                            if def_image is not None:
+                                response = yield from session.head(def_image)
+                                if response.status == 200:
+                                    image = def_image
+                            if image is None:
+                                images = item.get('preview',{}).get('images',[])
+                                if len(images) > 0:
+                                    for oimage in images:
+                                        image_url = oimage.get('source',{}).get('url')
+                                        if image_url is not None:
+                                            response = yield from session.head(image_url)
+                                            if response.status == 200:
+                                                image = image_url
+                                                break
                             sheets.append(CheatSheet(title=title,season=season,week=week,image=image))
+    yield from session.close()
     return sheets
 
 @asyncio.coroutine
