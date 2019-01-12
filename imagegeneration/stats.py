@@ -188,7 +188,7 @@ class Performance:
             bottom = self.size[1]-self.padding-5
             height = self.size[1]-self.padding*2-5
             last_pos = None
-            now = times.epoch_now()/60
+            now = times.now()/60
             for i in range(1,len(matches_real)+1):
                 if i-2 > 0:
                     last_no = matches_real[i-2].kd
