@@ -536,7 +536,7 @@ class Bot(discord.Client):
         self.defaultmodule = default.DefaultModule(self.cmodules, VERSION, database=self.database)
         # create cron like scheduler?
         # 1 loop that dispatches these auto tasks, kills + restarts if take to long/freeze
-        self.loop.create_task(debugger(self,autostatus)
+        self.loop.create_task(debugger(self,autostatus))
         self.loop.create_task(debugger(self,autonews))
         self.loop.create_task(debugger(self,autocheatsheets))
         self.loop.create_task(debugger(self,autoshop))
