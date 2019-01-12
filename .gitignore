@@ -9,3 +9,7 @@ __pycache__/
 start.bat
 start.sh
 TODO
+
+# Images
+*.png
+\!assets/*.png
