@@ -33,6 +33,7 @@ TICKER_TIME = int(getEnv("TICKER_TIME", 30))
 DEFAULT_PREFIX = getEnv("DEFAULT_PREFIX",".rb ")
 VERSION = {'name': BOT_NAME, 'version_name': '1.1.6', 'revison': getEnv('HEROKU_RELEASE_VERSION', 'v1'), 'description': getEnv('HEROKU_SLUG_DESCRIPTION', '')}
 RATE_LIMIT_TIME = 0.25
+DEBUG_CRASH_ALLOWED = 2
 
 # functions
 def checkPermissions(channel,type,settings):
@@ -102,7 +103,7 @@ localisation.setDefault('en')
 def debugger(client,function):
     logger = logging.getLogger('debugger')
     count = 0
-    while not client.is_closed and count < 50:
+    while not client.is_closed and count < DEBUG_CRASH_ALLOWED:
         try:
             yield from function(client)
         except:
@@ -144,7 +145,7 @@ def autoshop(client): # add fnbr not accessable fallback
                             needRestart = True
                             break
                         content = localisation.getMessage('autoshop',lang=locale)
-                        nextshoptime = tommorow()
+                        # nextshoptime = tommorow_time()
                         try:
                             yield from client.send_file(discord.Object(server['channels']['autoshop']),file,content=content)
                             # client.database.set_server_info(serverid,next_shop=nextshoptime,latest_shop=file)
@@ -176,7 +177,7 @@ def autoshop(client): # add fnbr not accessable fallback
                 time_until_next = 1
             else:
                 time_until_next += 10
-        logger.info("Autoshop now:%d next:%d updating in: %s", now, nextshop, parse_second_time(nextshop-now))
+        logger.info("Autoshop now:%d next:%d updating in: %s", now_time(), nextshop, parse_second_time(nextshop-now_time()))
         yield from asyncio.sleep(time_until_next)
 
 
@@ -535,10 +536,10 @@ class Bot(discord.Client):
         self.defaultmodule = default.DefaultModule(self.cmodules, VERSION, database=self.database)
         # create cron like scheduler?
         # 1 loop that dispatches these auto tasks, kills + restarts if take to long/freeze
-        self.loop.create_task(autostatus(self))
-        self.loop.create_task(autonews(self))
-        self.loop.create_task(autocheatsheets(self))
-        self.loop.create_task(autoshop(self))
+        self.loop.create_task(debugger(self,autostatus)
+        self.loop.create_task(debugger(self,autonews))
+        self.loop.create_task(debugger(self,autocheatsheets))
+        self.loop.create_task(debugger(self,autoshop))
         super().run(KEY_DISCORD)
 
 
