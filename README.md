@@ -1,4 +1,6 @@
 # Royale Bot _Personal_
+[![CodeFactor](https://www.codefactor.io/repository/github/douile/royale-bot/badge/personal)](https://www.codefactor.io/repository/github/douile/royale-bot/overview/personal)
+
 RoyaleBot is a fortnite discord bot that allows users to view their ingame stats, the current shop and in game news.
 
 The following is a guide on how to install and run RoyaleBot in your own enviroment
@@ -22,6 +24,8 @@ Before you run you must modify the `start.template.bat` file, modify lines 9-16 
 Before you start you must modify the `start.template.sh` file, modify lines 9-16 with your respective values, then save as `start.sh`. Run `start.sh`.
 
 _Below is things I need to do before the personal version is completely ready, if there is anything you think I need to add raise an issue on github_
+
+
 ---
 # TODO
 
