@@ -1,5 +1,8 @@
 #!/bin/sh
 
+echo "Updating files"
+git pull
+
 echo "Installing/Upgrading requirements"
 pip install -U -r requirements.txt
 
