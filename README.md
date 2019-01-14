@@ -26,29 +26,29 @@ _Below is things I need to do before the personal version is completely ready, i
 # TODO
 
 **Check for errors**
- - Auto functions timing
-   + Possibly create a new auto function dispatcher loop
+ - [ ] Auto functions timing
+   + [x] Possibly create a new auto function dispatcher loop
 
 
  **Clean up code**
-  - Remove duplicate imports
-  - Remove files not used
-  - Standardise module names and content
-  - Give descriptions to important functions
-  - Rename module containers (modules, imagegeneration, dataretrieval, codemodules -> merge utils & datamanagement)
+  - [ ] Remove duplicate imports
+  - [ ] Remove files not used
+  - [ ] Standardise module names and content
+  - [ ] Give descriptions to important functions
+  - [ ] Rename module containers (modules, imagegeneration, dataretrieval, codemodules -> merge utils & datamanagement)
 
 
 **Helper code**
-  - Create installer script
-    + Clone repo
-    + Create database (possibly convert to sqlite database instead of postgres or give option of either)
-    + Ask for values (keys, other options)
-    + Create starter script
-  - Create starter script (new)
-    + Must work linux + windows
-    + Possibly accept argv for bot management such as updating env vars
-      + Update (pull) repo (optional?)
-      + Update PIP requirements (Maybe allow PIPEnv)
-      + Check database running (postgres only), start if not
-      + ? Possibly connect to database and check tables are setup correctly
-      + Start bot
+  - [ ] Create installer script
+    + [ ] Clone repo
+    + [ ] Create database (possibly convert to sqlite database instead of postgres or give option of either)
+    + [ ] Ask for values (keys, other options)
+    + [ ] Create starter script
+  - [ ] Create starter script (new)
+    + [ ] Must work linux + windows
+    + [ ] Possibly accept argv for bot management such as updating env vars
+      + [ ] Update (pull) repo (optional?)
+      + [ ] Update PIP requirements (Maybe allow PIPEnv)
+      + [ ] Check database running (postgres only), start if not
+      + [ ] ? Possibly connect to database and check tables are setup correctly
+      + [ ] Start bot
