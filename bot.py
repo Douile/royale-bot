@@ -69,11 +69,12 @@ def debugger(client,function):
 def autoshop(client): # add fnbr not accessable fallback
     # errors with timing (repeated) - possibly timezones
     logger = logging.getLogger('autoshop')
-    logger.info('Autoshop started')
+    logger.info('Autoshop updating')
     servers = yield from get_server_priority(list(client.servers),client.database.get_priority_servers)
+    # needRestart = False
     for servers_r in servers:
-        if needRestart:
-            break
+        # if needRestart:
+        #     break
         for serverd in servers_r:
             serverid = serverd.id
             server = client.database.server_info(serverid,backgrounds=True,channels=True)
@@ -86,8 +87,9 @@ def autoshop(client): # add fnbr not accessable fallback
                 except:
                     error = traceback.format_exc()
                     logger.error('Error generating image: %s',error)
-                    needRestart = True
-                    break
+                    # needRestart = True
+                    # break
+                    continue
                 content = localisation.getMessage('autoshop',lang=locale)
                 # nextshoptime = tommorow_time()
                 try:
