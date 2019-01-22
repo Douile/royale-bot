@@ -1,6 +1,6 @@
 from .module import Module, Command
 from discord import Embed
-from codemodules import modals
+from utils import modals
 from random import randint
 import asyncio
 

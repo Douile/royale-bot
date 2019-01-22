@@ -9,7 +9,7 @@ import asyncio
 from os.path import isfile
 import logging
 
-from dataretrieval import fnbr
+from data import fnbr
 from .shop import ItemImage
 
 FONT = "assets/burbank.ttf"

@@ -1,12 +1,6 @@
 import discord
 import asyncio
 import json
-import os
-import os.path
-import sys
-import signal
-from datetime import datetime
-import time
 import traceback
 import logging
 import logging.config
@@ -14,14 +8,11 @@ import logging.config
 import localisation
 from modules import default, fortnite, moderation, testing
 from modules.module import Command
-from dataretrieval import meta, cheatsheets
-from imagegeneration import shop, upcoming
-from datamanagement import sql
-from utils import getEnv, dispatcher
+from data import meta, cheatsheets
+from images import shop, upcoming
+from utils import getEnv, dispatcher, sql, modals
 from utils.times import day_string as parse_second_time, tommorow as tommorow_time, now as now_time
-from time import time as now
 from utils.discord import count_client_users, get_server_priority
-from codemodules import modals
 
 # constants
 KEY_DISCORD = getEnv("KEY_DISCORD")
@@ -34,44 +25,6 @@ DEFAULT_PREFIX = getEnv("DEFAULT_PREFIX",".rb ")
 VERSION = {'name': BOT_NAME, 'version_name': '1.1.6', 'revison': getEnv('HEROKU_RELEASE_VERSION', 'v1'), 'description': getEnv('HEROKU_SLUG_DESCRIPTION', '')}
 RATE_LIMIT_TIME = 0.25
 DEBUG_CRASH_ALLOWED = 2
-
-# functions
-def checkPermissions(channel,type,settings):
-    try:
-        if settings[type] == channel or settings[type] == '':
-            p = True
-        else:
-            p = False
-    except KeyError:
-        p = False
-    return p
-def get_prefix(settings):
-    prefix = settings.get('prefix',DEFAULT_PREFIX)
-    if prefix == None:
-        prefix = DEFAULT_PREFIX
-    return prefix
-
-def changes(original={},new={}):
-    changed = {}
-    for a in new:
-        t = type(new[a])
-        if t is str or t is int or t is bool:
-            try:
-                if original[a] == new[a]:
-                    changed[a] = False
-                else:
-                    changed[a] = True
-            except KeyError:
-                changed[a] = True
-        elif t is dict or t is list:
-            try:
-                changed[a] = changes(original[a],new[a])
-            except KeyError:
-                changed[a] = {}
-                for b in new[a]:
-                    changed[a][b] = True
-    return changed
-
 
 # setup logging
 logging_config = {
@@ -126,10 +79,6 @@ def autoshop(client): # add fnbr not accessable fallback
             server = client.database.server_info(serverid,backgrounds=True,channels=True)
             if 'autoshop' in server['channels']:
                 locale = server.get('locale')
-                # nextshop = server.get('next_shop')
-                # if nextshop is None:
-                #     nextshop = time.mktime(datetime.now().utctimetuple())
-                # if now >= nextshop:
                 bgs = server.get('backgrounds',{})
                 bgs_s = bgs.get('shop',[])
                 try:
@@ -340,25 +289,6 @@ def handle_queue(client):
             logger.info('Handled queue action %s (%s), %s remain', str(queue_item.function), str(args), len(client.queued_actions))
         yield from asyncio.sleep(0.5)
 
-@asyncio.coroutine
-def ticker():
-    logger = logging.getLogger('ticker')
-    ticker_text = ['Est. 2018 @mention for help','Powering {server_count} communities']
-    yield from client.wait_until_ready()
-    logger.info('Ticker started')
-    while not client.is_closed:
-        for ticker in ticker_text:
-            ticker_f = ticker
-            if ticker.find('{server_count}') >= 0:
-                ticker_f = ticker_f.replace('{server_count}',str(len(client.servers)))
-            if ticker.find('{user_count}') >= 0:
-                users = yield from count_client_users(client,False)
-                ticker_f = ticker_f.replace('{user_count}',str(users))
-            game = discord.Game(name=ticker_f,type=0)
-            yield from client.change_presence(game=game)
-            yield from asyncio.sleep(TICKER_TIME)
-
-
 
 @asyncio.coroutine
 def pre_cache():
@@ -375,13 +305,6 @@ def pre_cache():
     except:
         error = traceback.format_exc()
         logger.error('Error precaching: %s',error)
-
-@asyncio.coroutine
-def count_users(client_class):
-    users = 0
-    for server in client_class.servers:
-        users += len(server.members)
-    return users
 
 
 @asyncio.coroutine
@@ -515,6 +438,7 @@ class Bot(discord.Client):
         self.dispatcher.register(autocheatsheets,pass_client=True,hours=None,minutes=dispatcher.Times.MINS_10)
         self.dispatcher.register(autoshop,pass_client=True,hours=0,minutes=2)
         self.loop.create_task(debugger(self,self.dispatcher.run))
+        # help deletes aren't working because queue handler is never registered
         super().run(KEY_DISCORD)
 
 

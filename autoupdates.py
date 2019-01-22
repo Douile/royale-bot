@@ -1,3 +1,4 @@
+# old autoupdates? where did this come from?
 import discord_wrapper as discord
 import dbl
 import asyncio
@@ -5,9 +6,9 @@ import logging
 import logging.config
 import os
 
-from dataretrieval import meta
-from imagegeneration import shop
-from datamanagement import sql
+from data import meta
+from images import shop
+from utils import sql
 from utils.times import day_string as parse_second_time
 
 def getEnv(name,default=None):

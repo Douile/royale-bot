@@ -11,7 +11,7 @@ from os.path import isfile
 import logging
 import traceback
 
-from dataretrieval import fnbr
+from data import fnbr
 
 FONT = "assets/burbank.ttf"
 NEW_IMG = "assets/new.png"

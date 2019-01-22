@@ -1,10 +1,9 @@
 from .module import Module, Command, checkPermissions, QueueAction, get_prefix, Map
-from codemodules import modals
 import discord
 import asyncio
 import traceback
 import logging
-from utils import getEnv, arrays
+from utils import getEnv, arrays, modals
 import localisation
 
 DEFAULT_PREFIX = getEnv("DEFAULT_PREFIX","!")

@@ -1,6 +1,6 @@
 from .module import Module, Command, parse_user_at
-from dataretrieval import aiofnotes, meta
-from imagegeneration import shop, stats, upcoming
+from data import aiofnotes, meta
+from images import shop, stats, upcoming
 from utils import strings, arrays
 import localisation
 import traceback

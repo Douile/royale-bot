@@ -35,11 +35,11 @@ _Below is things I need to do before the personal version is completely ready, i
 
 
  **Clean up code**
-  - [ ] Remove duplicate imports
+  - [x] Remove duplicate imports
   - [ ] Remove files not used
   - [ ] Standardise module names and content
   - [ ] Give descriptions to important functions
-  - [ ] Rename module containers (modules, imagegeneration, dataretrieval, codemodules -> merge utils & datamanagement)
+  - [x] Rename module containers (modules, imagegeneration, dataretrieval, codemodules -> merge utils & datamanagement)
 
 
 **Helper code**
