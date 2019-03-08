@@ -40,7 +40,7 @@ class Status(Command):
         self.content = raw.format_map(self.version)
 class Help(Command):
     def __init__(self,modules):
-        super().__init__(name='help',description='Print out all the commands you can use. `{prefix}help`',aliases=['<@{bot_id}>','<@!{bot_id}>'])
+        super().__init__(name='help',description=localisation.PreMessage('help_help'),aliases=['<@{bot_id}>','<@!{bot_id}>'])
         self.modules = modules
     def run(self,client,command,msg,settings):
         self.reset()
@@ -316,7 +316,7 @@ class HelpEmbed(discord.Embed):
                                 else:
                                     commands[command] = str(cmd.description)
                             else:
-                                commands[command] = 'Description not set'
+                                commands[command] = localisation.getMessage("nodescription_help",lang=lang)
                         else:
                             if cmd.permission != 'admin':
                                 if cmd.description != '':
@@ -325,10 +325,10 @@ class HelpEmbed(discord.Embed):
                                     else:
                                         commands[command] = str(cmd.description)
                                 else:
-                                    commands[command] = 'Description not set'
+                                    commands[command] = localisation.getMessage("nodescription_help",lang=lang)
                         if type(commands.get(command,None)) is str:
                             if len(cmd.aliases) > 0:
-                                commands[command] += ' Aliases for this command are '
+                                commands[command] += localisation.getMessage("aliases_help",lang=lang)
                                 for alias in cmd.aliases:
                                     alias_format = alias.format_map(Map({'prefix':self.prefix,'bot_id':bot_id}))
                                     if alias_format.startswith('<@'):
@@ -338,7 +338,7 @@ class HelpEmbed(discord.Embed):
                                 if commands[command].endswith(', '):
                                     commands[command] = commands[command][:-2]
         if self.admin and commands.get('help',None) != None:
-            commands['help'] += ' Add `-u` to print non admin help as admin, add `-d` to never auto delete the help message. E.g. `{prefix}help-u-d` will print a help message for normal users that never gets deleted.'
+            commands['help'] += localisation.getMessage('help_admin_help',lang=lang)
         is_commands = False
         for command in commands:
             description = commands[command].format_map(Map({'prefix':self.prefix}))
@@ -349,11 +349,14 @@ class HelpEmbed(discord.Embed):
             categories = {}
             for module in modules:
                 if module.category != None:
-                    categories[module.category] = module.description
+                    if isinstance(module.description,str):
+                        categories[module.category] = module.description
+                    elif isinstance(module.description,localisation.Premessage):
+                        categories[module.category] = module.description.getMessage(lang=lang)
             for category in categories:
                 title = "{0}help {1}".format(self.prefix,category)
                 description = categories[category].format_map({'prefix':self.prefix})
                 self.add_field(name=title,value=description,inline=False)
         if self.category != None and is_commands == False:
-            description = "You can find categories using {0}help".format(self.prefix)
-            self.add_field(name="No commands in this category",value=description,inline=False)
+            description = localisation.getMessage("category_help",lang=lang)
+            self.add_field(name=localisation.getMessage("nocommands_help",lang=lang),value=description,inline=False)

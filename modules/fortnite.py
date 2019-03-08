@@ -14,7 +14,7 @@ logger = logging.getLogger('bot.fortnite')
 
 class FortniteModule(Module):
     def __init__(self,fnbr_key='',tn_key='',sql=None):
-        super().__init__(name="Fortnite",description="Commands related to fortnite",category="fortnite")
+        super().__init__(name="Fortnite",description=localisation.PreMessage("fortnite_help"),category="fortnite")
         self.commands = {
             'shop': Shop(fnbr_key),
             'stats': Stats(tn_key,sql),

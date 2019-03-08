@@ -3,14 +3,14 @@ import asyncio
 import discord
 import traceback
 import logging
-
+import localisation
 
 LOGGER = logging.getLogger('moderation')
 
 
 class ModerationModule(Module):
     def __init__(self):
-        super().__init__(name='Moderation',description='Commands related to moderation',category='moderation')
+        super().__init__(name='Moderation',description=localisation.PreMessage("moderation_help"),category='moderation')
         self.commands = {
             #'mute': Mute(),
             'kick': Kick(),

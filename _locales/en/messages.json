@@ -184,5 +184,29 @@
   },
   "resetstatus_help": {
     "message": "Force autostatus to reset. `{prefix}resetstatus`"
+  },
+  "help_help": {
+    "message": "Print out all the commands you can use. `{prefix}help`"
+  },
+  "help_admin_help": {
+    "message": " Add `-u` to print non admin help as admin, add `-d` to never auto delete the help message. E.g. `{prefix}help-u-d` will print a help message for normal users that never gets deleted."
+  },
+  "category_help": {
+    "message": "You can find categories using {prefix}help"
+  },
+  "nocommands_help": {
+    "message": "No commands in this category"
+  },
+  "nodescription_help": {
+    "message": "Description not set"
+  },
+  "aliases_help": {
+    "message": " Aliases for this command are "
+  },
+  "fortnite_help": {
+    "message": "Commands related to fortnite"
+  },
+  "moderation_help": {
+    "message": "Commands related to moderation"
   }
 }
