@@ -102,6 +102,11 @@ class ItemImage:
             color = (230,126,34,255)
             gradient = ((211,120,65,255),(120,55,29,255))
             background = 'assets/fortnite_legendary_rounded.png'
+        else:
+            # Default to uncommon
+            color = (56, 121, 39, 255)
+            gradient = ((96,170,58,255),(23,81,23,255))
+            background = 'assets/fortnite_uncommon_rounded.png'
         try:
             self.background = PIL.Image.open(background)
             if self.background.width != self.size or self.background.height != self.size:
@@ -110,6 +115,8 @@ class ItemImage:
             self.background = PIL.Image.new("RGBA",(self.size,self.size),color)
             draw = PIL.ImageDraw.Draw(self.background)
             images.radial_gradient(draw,self.size,self.size,gradient[1],gradient[0])
+        except:
+            self.background = PIL.Image.new("RGBA",(self.size,self.size),(0,0,0,0))
         finally:
             draw = PIL.ImageDraw.Draw(self.background)
         fontsize = round(self.size/10)
