@@ -351,7 +351,7 @@ class HelpEmbed(discord.Embed):
                 if module.category != None:
                     if isinstance(module.description,str):
                         categories[module.category] = module.description
-                    elif isinstance(module.description,localisation.Premessage):
+                    elif isinstance(module.description,localisation.PreMessage):
                         categories[module.category] = module.description.getMessage(lang=lang)
             for category in categories:
                 title = "{0}help {1}".format(self.prefix,category)
