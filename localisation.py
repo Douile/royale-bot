@@ -97,7 +97,7 @@ class Locale(dict):
             resp = LocaleResponse(message=data.get('message'),lang=self.lang)
             resp.format(variables)
         else:
-            resp = LocaleResponse(msesage='Message not set',lang=self.lang)
+            resp = LocaleResponse(message='Message not set',lang=self.lang)
         return resp
 
     def getInfo(self):
