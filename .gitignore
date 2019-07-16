@@ -9,6 +9,7 @@ __pycache__/
 start.bat
 start.sh
 TODO
+Pipfile.lock
 
 # Images
 *.png
