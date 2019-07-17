@@ -1,0 +1,16 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Custom
+.ignore/
+*.exe
+start.bat
+start.sh
+TODO
+Pipfile.lock
+
+# Images
+*.png
+\!assets/*.png
